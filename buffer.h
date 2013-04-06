@@ -24,7 +24,7 @@
 #define _BUFFER_H
 
 #ifndef BUF_SIZE
-#define BUF_SIZE 1024
+#define BUF_SIZE 4096
 #endif
 
 struct output_buffer {
