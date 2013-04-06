@@ -60,12 +60,10 @@ struct output_buffer *output_init(void)
 
 void output_fini(struct output_buffer *d)
 {
-	struct output_buffer *out = d;
-
-	if (out) {
-		free(out->buf);
-		free(out);
-		out = NULL;
+	if (d) {
+		free(d->buf);
+		free(d);
+		d = NULL;
 	}
 }
 
@@ -77,12 +75,10 @@ struct output_buffer *output_reset(struct output_buffer *d)
 
 void output_flush(struct output_buffer *d)
 {
-	struct output_buffer *out = d;
-
-	if (out) {
-		memset(out->buf, 0, out->size);
-		output_used(out) = 0;
-		output_offset(out) = output_buf(out);
+	if (d) {
+		memset(d->buf, 0, output_size(d));
+		output_used(d) = 0;
+		output_offset(d) = output_buf(d);
 	}
 }
 
