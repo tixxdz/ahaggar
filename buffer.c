@@ -169,14 +169,19 @@ void output_base_indent_to(struct output_buffer *d, const int column)
 		output_space(d);
 }
 
-int output_base_copy(struct output_buffer *dest, struct output_buffer *src)
+int output_base_copy(struct output_buffer *dest,
+		     struct output_buffer *src,
+		     size_t n)
 {
-	unsigned long need = output_strlen(src);
-	if (!need)
+	unsigned long need;
+
+	if (n && n <= output_strlen(src))
+		need = n;
+	else
 		return 0;
 
 	need++;
-	if (need < output_strlen(src))
+	if(need < n)
 		return 0;
 
 	if (need > output_size(dest)) {
@@ -184,13 +189,14 @@ int output_base_copy(struct output_buffer *dest, struct output_buffer *src)
 		dest = __output_init(need);
 	}
 
-	memcpy(output_buf(dest), output_buf(src), output_strlen(src));
+	memcpy(output_buf(dest), output_buf(src), n);
 
-	output_used(dest) = output_used(src);
+	output_used(dest) = n;
 	output_offset(dest) = output_buf(dest) + output_strlen(dest);
 	*output_offset(dest) = '\0';
 
 	return 0;
+
 }
 
 int output_base_concat(struct output_buffer *dest, struct output_buffer *src)
