@@ -50,7 +50,8 @@ struct output_buffer *output_expand(struct output_buffer *d,
 int output_base_char(struct output_buffer *d, const int c);
 int output_base_printf(struct output_buffer *d, const char *fmt, ...);
 void output_base_indent_to(struct output_buffer *d, const int column);
-int output_base_copy(struct output_buffer *dest, struct output_buffer *src);
+int output_base_copy(struct output_buffer *dest,
+		     struct output_buffer *src, size_t n);
 int output_base_concat(struct output_buffer *dest, struct output_buffer *src);
 
 #define output_char(out, c)	output_base_char(output_base(out), c)
@@ -63,8 +64,13 @@ int output_base_concat(struct output_buffer *dest, struct output_buffer *src);
 #define output_indent_to(out, n) \
 	output_base_indent_to(output_base(out), n)
 
+#define output_copy_n(dest, src, n) \
+	output_base_copy(output_base(dest), \
+			 output_base(src), n)
+
 #define output_copy(dest, src) \
-	output_base_copy(output_base(dest), output_base(src))
+	output_base_copy(output_base(dest), \
+			 output_base(src), output_strlen(src))
 
 #define output_concat(dest, src) \
 	output_base_concat(output_base(dest), output_base(src))
