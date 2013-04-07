@@ -3,6 +3,13 @@ The Ahaggar Framework
 Ahaggar is a collection of GCC plugins and various scripts intented
 to perform quick code analysis.
 
+Requirements:
+* Using GCC internals must be able at least to understand C.
+* Reduce external dependencies to the min, better without.
+* Large projects analysis should scale well.
+* Easy to package and to integrate into build systems.
+* Keep it simple.
+
 -----
 Copyright (C) 2012-2013  Djalal Harouni
 Copyright (C) 2012-2013  LIRE Laboratory,
