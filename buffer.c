@@ -163,8 +163,6 @@ void output_base_indent_to(struct output_buffer *d, const int column)
 {
 	int i;
 
-	if (column > 0)
-		output_newline(d);
 	for (i = 0; i < column; i++)
 		output_space(d);
 }
