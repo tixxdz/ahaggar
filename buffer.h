@@ -64,6 +64,13 @@ int output_base_concat(struct output_buffer *dest, struct output_buffer *src);
 #define output_indent_to(out, n) \
 	output_base_indent_to(output_base(out), n)
 
+#define output_indent_to_newline(out, n) \
+do { \
+	if (n > 0) \
+		output_newline(out); \
+	output_indent_to(out, n); \
+} while(0)
+
 #define output_copy_n(dest, src, n) \
 	output_base_copy(output_base(dest), \
 			 output_base(src), n)
