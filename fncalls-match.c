@@ -35,6 +35,7 @@
 #include "intl.h"
 #include "plugin.h"
 #include "diagnostic.h"
+#include "options.h"
 #include "hashtab.h"
 
 #include "ahaggar.h"
@@ -53,6 +54,8 @@ static int __string_eq(const void *, const void *);
 static hashval_t __string_hash(const void *);
 static inline int is_hash_safe(struct target_functions *,
 			       unsigned int);
+
+extern const char *progname;
 
 static struct target_functions errors[] = {
 #include "file-errors.h"
@@ -83,11 +86,6 @@ static struct hash_functions __hash[] = {
 		.targets_size = ARRAY_SIZE(reports),
 	},
 };
-
-static void fncalls_error(const char *msg)
-{
-	error(G_("%s"), msg);
-}
 
 static inline int is_hash_safe(struct target_functions *arr,
 			       unsigned int elements)
@@ -174,10 +172,9 @@ static int __populate_hash(struct hash_functions *hashes)
 			if (!__insert_key(h->tab, tag))
 				return ret;
 		} else {
-			fprintf(stderr,
-				"GCC plugins: warning: duplicate '%s' %s:%d\n",
-				tag->name,
-				__FILE__, __LINE__);
+			warning(0,
+				"hashtable duplicate '%s' entry %s:%d\n",
+				tag->name, __FILE__, __LINE__);
 		}
 	}
 
@@ -266,8 +263,7 @@ int fncalls_match_init(void)
 	return 0;
 
 error:
-	fprintf(stderr,
-		"GCC plugins: failed to create hash table %s:%d\n"
+	warning(0, "GCC plugins: failed to create hashtable %s:%d\n",
 		__FILE__, __LINE__);
 	return ret;
 }
