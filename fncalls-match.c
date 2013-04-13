@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "gcc-plugin.h"
 #include "config.h"
@@ -55,6 +56,17 @@ static hashval_t __string_hash(const void *);
 static inline int is_hash_safe(struct target_functions *,
 			       unsigned int);
 
+static void __error(__attribute__((unused)) int x,
+		    __attribute__((unused)) const char *str,
+		    const char *fmt, ...);
+static void __warning(__attribute__((unused)) int x,
+		      __attribute__((unused)) const char *str,
+		      const char *fmt, ...);
+
+#define out_error(fmt, args...) __error(0, NULL, fmt, ##args)
+#define out_warning(fmt, args...) __warning(0, NULL, fmt, ##args)
+#define out_report(x, s, fmt, args...) report(x, s, fmt, ##args)
+
 extern const char *progname;
 
 static struct target_functions errors[] = {
@@ -74,18 +86,52 @@ static struct hash_functions __hash[] = {
 		.tab = NULL,
 		.targets = errors,
 		.targets_size = ARRAY_SIZE(errors),
+		.out_f = __error,
 	},
 	{
 		.tab = NULL,
 		.targets = warnings,
 		.targets_size = ARRAY_SIZE(warnings),
+		.out_f = __warning,
 	},
 	{
 		.tab = NULL,
 		.targets = reports,
 		.targets_size = ARRAY_SIZE(reports),
+		.out_f = report,
 	},
 };
+
+static void __error(__attribute__((unused)) int x,
+		    __attribute__((unused)) const char *str,
+		    const char *fmt, ...)
+{
+	va_list args;
+	diagnostic_info diagnostic;
+
+	va_start(args, fmt);
+	diagnostic_set_info(&diagnostic, fmt, &args,
+			    input_location, DK_ERROR);
+
+	report_diagnostic(&diagnostic);
+	va_end(args);
+}
+
+static void __warning(__attribute__((unused)) int x,
+		      __attribute__((unused)) const char *str,
+		      const char *fmt, ...)
+{
+	va_list args;
+	diagnostic_info diagnostic;
+
+	va_start(args, fmt);
+	diagnostic_set_info(&diagnostic, fmt, &args,
+			    input_location, DK_WARNING);
+	diagnostic.option_index = 0;
+
+	report_diagnostic(&diagnostic);
+	va_end(args);
+}
 
 static inline int is_hash_safe(struct target_functions *arr,
 			       unsigned int elements)
@@ -172,8 +218,7 @@ static int __populate_hash(struct hash_functions *hashes)
 			if (!__insert_key(h->tab, tag))
 				return ret;
 		} else {
-			warning(0,
-				"hashtable duplicate '%s' entry %s:%d\n",
+			out_warning("hashtable duplicate '%s' entry %s:%d\n",
 				tag->name, __FILE__, __LINE__);
 		}
 	}
@@ -213,8 +258,7 @@ int match_function_name(void *data, void *plug_data)
 		if (!__hash[i].targets_size || !__hash[i].tab)
 			continue;
 
-		if (!__match_function_name(__hash[i].tab,
-					   fnname))
+		if (!__match_function_name(__hash[i].tab, fnname))
 			return 0;
 	}
 
@@ -223,6 +267,7 @@ int match_function_name(void *data, void *plug_data)
 
 int match_handle_output(void *plug_data)
 {
+	int i;
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
 	struct output_buffer *buffer = pdata->buffer;
 	char *offset = output_buf(buffer);
@@ -233,8 +278,11 @@ int match_handle_output(void *plug_data)
 		return 0;
 	}
 
-	/* save function declaration */
-	if (*offset != ' ' && *offset != '\n') {
+	for (i = 0; i < ARRAY_SIZE(__hash); i++) {
+		struct target_functions *target;
+
+		if (!__hash[i].targets_size || !__hash[i].tab)
+			continue;
 	}
 
 	write(pdata->fd, output_buf(buffer), output_strlen(buffer));
