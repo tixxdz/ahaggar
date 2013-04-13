@@ -47,6 +47,9 @@ struct hash_functions {
 	/* number of elements of the target_functions array.
 	 * Currently it must be know at compile time */
 	unsigned int targets_size;
+
+	/* output report */
+	void (*out_f)(int, const char *, const char *, ...);
 };
 
 int fncalls_match_init(void);
