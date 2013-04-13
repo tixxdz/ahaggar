@@ -118,3 +118,14 @@ error:
 		__FILE__);
 	return ret;
 }
+
+void report(int fd, const char *progname, const char *fmt, ...)
+{
+	va_list ap;
+
+	write_log(fd, "%s: report: ", progname);
+	va_start(ap, fmt);
+	write_log(fd, fmt, ap);
+	va_end(ap);
+	write_log(fd, "\n");
+}

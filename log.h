@@ -33,4 +33,7 @@ int close_log(int fd);
 int fsync_log(int fd);
 ssize_t write_log(int fd, const char *fmt, ...);
 
+/* Like gcc's error() and warning() functions */
+void report(int fd, const char *progname, const char *fmt, ...);
+
 #endif /* _LOG_H */
