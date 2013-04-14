@@ -167,6 +167,22 @@ void output_base_indent_to(struct output_buffer *d, const int column)
 		output_space(d);
 }
 
+int output_base_swap_meta(struct output_buffer *a,
+			  struct output_buffer *b)
+{
+	int ret = -1;
+	struct output_buffer tmp;
+
+	if (!a || !b)
+		return ret;
+
+	memcpy(&tmp, a, sizeof(tmp));
+	memcpy(a, b, sizeof(*a));
+	memcpy(b, &tmp, sizeof(*b));
+
+	return 0;
+}
+
 int output_base_copy(struct output_buffer *dest,
 		     struct output_buffer *src,
 		     size_t n)
