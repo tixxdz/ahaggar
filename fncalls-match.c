@@ -167,25 +167,40 @@ static hashval_t __string_hash(const void *str)
 	return htab_hash_string(str);
 }
 
-static struct target_functions *__lookup_key(htab_t hashtable,
-					     struct target_functions *fn)
+static void * __lookup_key(htab_t hashtable, const char *key)
 {
 	PTR *slot = NULL;
-	htab_t h = hashtable;
-	struct target_functions *f = fn;
 
-	if (!f->name || !f->name[0])
-		return NULL;
+	if (*key)
+		slot = htab_find(hashtable, key);
 
-	slot = htab_find(h, f->name);
-	if (!slot)
-		return NULL;
-
-	return *slot;
+	return slot;
 }
 
-static struct target_functions *__insert_key(htab_t hashtable,
-					     struct target_functions *fn)
+static struct target_functions *lookup_target(htab_t hashtable,
+					      struct target_functions *fn)
+{
+	htab_t h = hashtable;
+	struct target_functions *f = fn;
+
+	if (!f->name || !f->name[0])
+		return NULL;
+
+	return __lookup_key(h, f->name);
+}
+
+static void *__insert_key(htab_t hashtable, const char *key)
+{
+	PTR *slot = NULL;
+
+	if (*key)
+		slot = htab_find_slot(hashtable, key, INSERT);
+
+	return slot;
+}
+
+static struct target_functions *insert_target(htab_t hashtable,
+					      struct target_functions *fn)
 {
 	PTR *slot = NULL;
 	htab_t h = hashtable;
@@ -194,11 +209,9 @@ static struct target_functions *__insert_key(htab_t hashtable,
 	if (!f->name || !f->name[0])
 		return NULL;
 
-	slot = htab_find_slot(h, f->name, INSERT);
-	if (!slot)
-		return NULL;
-
-	*slot = f;
+	slot = __insert_key(h, f->name);
+	if (slot)
+		*slot = f;
 
 	return *slot;
 }
@@ -215,12 +228,12 @@ static int __populate_hash(struct hash_functions *hashes)
 
 	for (i = 0; i < h->targets_size; i++) {
 		struct target_functions *tag = &h->targets[i];
-		if (!__lookup_key(h->tab, tag)) {
-			if (!__insert_key(h->tab, tag))
+		if (!lookup_target(h->tab, tag)) {
+			if (!insert_target(h->tab, tag))
 				return ret;
 		} else {
 			out_warning("hashtable duplicate '%s' entry %s:%d\n",
-				tag->name, __FILE__, __LINE__);
+				    tag->name, __FILE__, __LINE__);
 		}
 	}
 
@@ -244,7 +257,7 @@ static int __match_function_name(htab_t hashtable, const char *name)
 	return 0;
 }
 
-static int __match_output(struct hash_functions *hashes, void *plug_data)
+static int handle_output(struct hash_functions *hashes, void *plug_data)
 {
 	int i;
 	int ret = -1;
@@ -256,6 +269,7 @@ static int __match_output(struct hash_functions *hashes, void *plug_data)
 		return ret;
 
 	for (i = 0; i < h->targets_size; i++) {
+		struct target_functions *tag = &h->targets[i];
 	}
 
 	return 0;
@@ -301,8 +315,8 @@ int match_handle_output(void *plug_data)
 		if (!ghash[i].targets_size || !ghash[i].tab)
 			continue;
 
-		if (__match_output(&ghash[i], plug_data)) {
-			out_warning("GCC plugins: failed to match output %s:%d\n",
+		if (handle_output(&ghash[i], plug_data)) {
+			out_warning("GCC plugins: failed to handle output %s:%d\n",
 				    __FILE__, __LINE__);
 			return ret;
 		}
@@ -323,7 +337,7 @@ int fncalls_match_init(void)
 			continue;
 
 		ghash[i].tab = __init_hash(ghash[i].targets,
-					    ghash[i].targets_size);
+					   ghash[i].targets_size);
 		if (!ghash[i].tab)
 			goto error;
 
