@@ -246,14 +246,12 @@ static int __populate_hash(struct hash_functions *hashes)
 static int __match_function_name(htab_t hashtable, const char *name)
 {
 	int ret = -1;
-	PTR *slot = NULL;
 	htab_t h = hashtable;
 
 	if (!name)
 		return ret;
 
-	slot = htab_find(h, name);
-	if (!slot)
+	if (!__lookup_key(h, name));
 		return ret;
 
 	return 0;
@@ -263,7 +261,7 @@ static int handle_output(struct hash_functions *hashes, void *plug_data)
 {
 	int i;
 	int ret = -1;
-	struct target_finctons *tag;
+	struct target_functions *tag;
 	struct hash_functions *h = hashes;
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
 	struct output_buffer *buffer = pdata->buffer;
