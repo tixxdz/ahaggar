@@ -41,6 +41,7 @@
 
 #include "ahaggar.h"
 #include "buffer.h"
+#include "str-utils.h"
 #include "log.h"
 #include "fncalls-match.h"
 
@@ -243,6 +244,23 @@ static int __match_function_name(htab_t hashtable, const char *name)
 	return 0;
 }
 
+static int __match_output(struct hash_functions *hashes, void *plug_data)
+{
+	int i;
+	int ret = -1;
+	struct hash_functions *h = hashes;
+	struct plugin_data *pdata = (struct plugin_data *)plug_data;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!h || !h->tab)
+		return ret;
+
+	for (i = 0; i < h->targets_size; i++) {
+	}
+
+	return 0;
+}
+
 /* Returns 0 if there is a match */
 int match_function_name(void *data, void *plug_data)
 {
@@ -268,6 +286,7 @@ int match_function_name(void *data, void *plug_data)
 int match_handle_output(void *plug_data)
 {
 	int i;
+	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
 	struct output_buffer *buffer = pdata->buffer;
 	char *offset = output_buf(buffer);
@@ -279,10 +298,14 @@ int match_handle_output(void *plug_data)
 	}
 
 	for (i = 0; i < ARRAY_SIZE(__hash); i++) {
-		struct target_functions *target;
-
 		if (!__hash[i].targets_size || !__hash[i].tab)
 			continue;
+
+		if (__match_output(&__hash[i], plug_data)) {
+			out_warning("GCC plugins: failed to match output %s:%d\n",
+				    __FILE__, __LINE__);
+			return ret;
+		}
 	}
 
 	write(pdata->fd, output_buf(buffer), output_strlen(buffer));
@@ -311,8 +334,8 @@ int fncalls_match_init(void)
 	return 0;
 
 error:
-	warning(0, "GCC plugins: failed to create hashtable %s:%d\n",
-		__FILE__, __LINE__);
+	out_warning("GCC plugins: failed to create hashtable %s:%d\n",
+		    __FILE__, __LINE__);
 	return ret;
 }
 
