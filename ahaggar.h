@@ -31,6 +31,9 @@
 #define PATH_MAX 4096
 #endif
 
+#define FUNCTION_DECL_CODE "<function_decl>"
+#define GIMPLE_CALL_CODE "<gimple_call>"
+
 /* Misc stuff for plugins */
 struct plugin_data {
 
