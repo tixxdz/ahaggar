@@ -52,6 +52,9 @@ struct hash_functions {
 	void (*out_f)(int, const char *, const char *, ...);
 };
 
+htab_t init_hash(struct hash_functions *hashes);
+void fini_hash(struct hash_functions *hashes);
+
 int fncalls_match_init(void);
 void fncalls_match_finish(void);
 

@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <regex.h>
 
 #include "gcc-plugin.h"
 #include "config.h"
@@ -257,6 +258,7 @@ static int __match_function_name(htab_t hashtable, const char *name)
 	return 0;
 }
 
+/* Returns non 0 on fatal errors */
 static int handle_output(struct hash_functions *hashes, void *plug_data)
 {
 	int i;
@@ -328,6 +330,20 @@ int match_handle_output(void *plug_data)
 	return 0;
 }
 
+/* Returns 0 on success */
+htab_t init_hash(struct hash_functions *hashes)
+{
+	struct hash_functions *h = hashes;
+
+	return __init_hash(h->targets, h->targets_size);
+}
+
+/* Caller should make sur that ->tab is valid */
+void fini_hash(struct hash_functions *hashes)
+{
+	htab_delete(hashes->tab);
+}
+
 int fncalls_match_init(void)
 {
 	int i;
@@ -337,8 +353,7 @@ int fncalls_match_init(void)
 		if (!ghash[i].targets_size)
 			continue;
 
-		ghash[i].tab = __init_hash(ghash[i].targets,
-					   ghash[i].targets_size);
+		ghash[i].tab = init_hash(&ghash[i]);
 		if (!ghash[i].tab)
 			goto error;
 
@@ -349,8 +364,8 @@ int fncalls_match_init(void)
 	return 0;
 
 error:
-	out_warning("GCC plugins: failed to create hashtable %s:%d\n",
-		    __FILE__, __LINE__);
+	out_error("GCC plugins: failed to create hashtable %s:%d\n",
+		  __FILE__, __LINE__);
 	return ret;
 }
 
@@ -362,6 +377,6 @@ void fncalls_match_finish(void)
 		if (!ghash[i].tab)
 			continue;
 
-		htab_delete(ghash[i].tab);
+		fini_hash(&ghash[i]);
 	}
 }
