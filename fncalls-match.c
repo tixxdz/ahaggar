@@ -82,7 +82,7 @@ static struct target_functions reports[] = {
 #include "kmalloc-reports.h"
 };
 
-static struct hash_functions __hash[] = {
+static struct hash_functions ghash[] = {
 	{
 		.tab = NULL,
 		.targets = errors,
@@ -272,11 +272,11 @@ int match_function_name(void *data, void *plug_data)
 	if (TARGETS_ARRAY_SIZE(errors, warnings, reports))
 		ret = 1;
 
-	for (i = 0; i < ARRAY_SIZE(__hash); i++) {
-		if (!__hash[i].targets_size || !__hash[i].tab)
+	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
+		if (!ghash[i].targets_size || !ghash[i].tab)
 			continue;
 
-		if (!__match_function_name(__hash[i].tab, fnname))
+		if (!__match_function_name(ghash[i].tab, fnname))
 			return 0;
 	}
 
@@ -297,11 +297,11 @@ int match_handle_output(void *plug_data)
 		return 0;
 	}
 
-	for (i = 0; i < ARRAY_SIZE(__hash); i++) {
-		if (!__hash[i].targets_size || !__hash[i].tab)
+	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
+		if (!ghash[i].targets_size || !ghash[i].tab)
 			continue;
 
-		if (__match_output(&__hash[i], plug_data)) {
+		if (__match_output(&ghash[i], plug_data)) {
 			out_warning("GCC plugins: failed to match output %s:%d\n",
 				    __FILE__, __LINE__);
 			return ret;
@@ -318,16 +318,16 @@ int fncalls_match_init(void)
 	int i;
 	int ret = -1;
 
-	for (i = 0; i < ARRAY_SIZE(__hash); i++) {
-		if (!__hash[i].targets_size)
+	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
+		if (!ghash[i].targets_size)
 			continue;
 
-		__hash[i].tab = __init_hash(__hash[i].targets,
-					    __hash[i].targets_size);
-		if (!__hash[i].tab)
+		ghash[i].tab = __init_hash(ghash[i].targets,
+					    ghash[i].targets_size);
+		if (!ghash[i].tab)
 			goto error;
 
-		if (__populate_hash(&__hash[i]))
+		if (__populate_hash(&ghash[i]))
 			goto error;
 	}
 
@@ -343,10 +343,10 @@ void fncalls_match_finish(void)
 {
 	int i;
 
-	for (i = 0; i < ARRAY_SIZE(__hash); i++) {
-		if (!__hash[i].tab)
+	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
+		if (!ghash[i].tab)
 			continue;
 
-		htab_delete(__hash[i].tab);
+		htab_delete(ghash[i].tab);
 	}
 }
