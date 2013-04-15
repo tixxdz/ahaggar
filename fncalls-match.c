@@ -221,13 +221,15 @@ static int __populate_hash(struct hash_functions *hashes)
 {
 	int i;
 	int ret = -1;
+	struct target_functions *tag;
 	struct hash_functions *h = hashes;
 
 	if (!h || !h->tab)
 		return ret;
 
 	for (i = 0; i < h->targets_size; i++) {
-		struct target_functions *tag = &h->targets[i];
+		tag = &h->targets[i];
+
 		if (!lookup_target(h->tab, tag)) {
 			if (!insert_target(h->tab, tag))
 				return ret;
@@ -261,6 +263,7 @@ static int handle_output(struct hash_functions *hashes, void *plug_data)
 {
 	int i;
 	int ret = -1;
+	struct target_finctons *tag;
 	struct hash_functions *h = hashes;
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
 	struct output_buffer *buffer = pdata->buffer;
@@ -269,7 +272,7 @@ static int handle_output(struct hash_functions *hashes, void *plug_data)
 		return ret;
 
 	for (i = 0; i < h->targets_size; i++) {
-		struct target_functions *tag = &h->targets[i];
+		tag = &h->targets[i];
 	}
 
 	return 0;
