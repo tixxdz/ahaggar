@@ -45,8 +45,12 @@ struct hash_functions {
 	struct target_functions *targets;
 
 	/* number of elements of the target_functions array.
-	 * Currently it must be know at compile time */
+	 * Currently it must be known at compile time */
 	unsigned int targets_size;
+
+	/* count matches: this is used to optimize code
+	 * and avoid unnecessary loops */
+	unsigned int mcounter;
 
 	/* output report */
 	void (*out_f)(int, const char *, const char *, ...);

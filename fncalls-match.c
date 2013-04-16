@@ -293,8 +293,10 @@ int match_function_name(void *data, void *plug_data)
 		if (!ghash[i].targets_size || !ghash[i].tab)
 			continue;
 
-		if (__lookup_key(ghash[i].tab, fnname))
+		if (__lookup_key(ghash[i].tab, fnname)) {
+			ghash[i].mcounter++;
 			ret = 0;
+		}
 	}
 
 	return ret;
