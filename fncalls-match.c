@@ -281,12 +281,13 @@ static int handle_output(struct hash_functions *hashes, void *plug_data)
 int match_function_name(void *data, void *plug_data)
 {
 	int i;
-	int ret = 0;
+	int ret = -1;
 	const char *fnname = (char *)data;
 
-	/* If we have set this then we must hit a match */
-	if (TARGETS_ARRAY_SIZE(errors, warnings, reports))
-		ret = 1;
+	/* If we have not set this then no need to looukup
+	 * for matches */
+	if (!TARGETS_ARRAY_SIZE(errors, warnings, reports))
+		return 0;
 
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
 		if (!ghash[i].targets_size || !ghash[i].tab)
