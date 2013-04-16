@@ -54,7 +54,7 @@ struct plugin_data {
 	int (*checker)(void *, void *);
 
 	/* return 0 on success */
-	int (*output_handler)(void *);
+	int (*output_handler)(void *, void *);
 
 	void *extra;
 
