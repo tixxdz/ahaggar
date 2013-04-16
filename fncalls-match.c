@@ -326,6 +326,9 @@ int match_output(__attribute__((unused)) void *data,
 				    __FILE__, __LINE__);
 			return ret;
 		}
+
+		/* reset match counter for the next round */
+		ghash[i].mcounter = 0;
 	}
 
 	write(pdata->fd, output_buf(buffer), output_strlen(buffer));
@@ -377,9 +380,7 @@ void fncalls_match_finish(void)
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
-		if (!ghash[i].tab)
-			continue;
-
-		fini_hash(&ghash[i]);
+		if (ghash[i].tab)
+			fini_hash(&ghash[i]);
 	}
 }
