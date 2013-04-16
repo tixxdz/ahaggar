@@ -217,6 +217,25 @@ static struct target_functions *insert_target(htab_t hashtable,
 	return *slot;
 }
 
+/* return 0 on success */
+static int populate_hash_target(htab_t hashtable,
+				struct target_functions *fn)
+{
+	int ret = -1;
+	htab_t h = hashtable;
+	struct target_functions *f = fn;
+
+	if (!lookup_target(h, f)) {
+		if (!insert_target(h, f))
+			return ret;
+	} else {
+		out_warning("hashtable duplicate '%s' entry %s:%d\n",
+			    f->name, __FILE__, __LINE__);
+	}
+
+	return 0;
+}
+
 /* returns 0 on success */
 static int __populate_hash(struct hash_functions *hashes)
 {
@@ -231,13 +250,8 @@ static int __populate_hash(struct hash_functions *hashes)
 	for (i = 0; i < h->targets_size; i++) {
 		tag = &h->targets[i];
 
-		if (!lookup_target(h->tab, tag)) {
-			if (!insert_target(h->tab, tag))
-				return ret;
-		} else {
-			out_warning("hashtable duplicate '%s' entry %s:%d\n",
-				    tag->name, __FILE__, __LINE__);
-		}
+		if (populate_hash_target(h->tab, tag))
+			return ret;
 	}
 
 	return 0;
