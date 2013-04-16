@@ -300,7 +300,8 @@ int match_function_name(void *data, void *plug_data)
 	return ret;
 }
 
-int match_handle_output(void *plug_data)
+int match_output(__attribute__((unused)) void *data,
+		 void *plug_data)
 {
 	int i;
 	int ret = -1;
