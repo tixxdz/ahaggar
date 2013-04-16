@@ -257,21 +257,6 @@ static int __populate_hash(struct hash_functions *hashes)
 	return 0;
 }
 
-/* returns 0 if there is a match */
-static int __match_function_name(htab_t hashtable, const char *name)
-{
-	int ret = -1;
-	htab_t h = hashtable;
-
-	if (!name)
-		return ret;
-
-	if (!__lookup_key(h, name));
-		return ret;
-
-	return 0;
-}
-
 /* Returns non 0 on fatal errors */
 static int handle_output(struct hash_functions *hashes, void *plug_data)
 {
@@ -297,7 +282,7 @@ int match_function_name(void *data, void *plug_data)
 {
 	int i;
 	int ret = 0;
-	char *fnname = (char *)data;
+	const char *fnname = (char *)data;
 
 	/* If we have set this then we must hit a match */
 	if (TARGETS_ARRAY_SIZE(errors, warnings, reports))
@@ -307,8 +292,8 @@ int match_function_name(void *data, void *plug_data)
 		if (!ghash[i].targets_size || !ghash[i].tab)
 			continue;
 
-		if (!__match_function_name(ghash[i].tab, fnname))
-			return 0;
+		if (__lookup_key(ghash[i].tab, fnname))
+			ret = 0;
 	}
 
 	return ret;
