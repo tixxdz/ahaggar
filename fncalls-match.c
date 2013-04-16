@@ -237,7 +237,7 @@ static int populate_hash_target(htab_t hashtable,
 }
 
 /* returns 0 on success */
-static int __populate_hash(struct hash_functions *hashes)
+static int populate_hash(struct hash_functions *hashes)
 {
 	int i;
 	int ret = -1;
@@ -358,7 +358,7 @@ int fncalls_match_init(void)
 		if (!ghash[i].tab)
 			goto error;
 
-		if (__populate_hash(&ghash[i]))
+		if (populate_hash(&ghash[i]))
 			goto error;
 	}
 
