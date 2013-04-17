@@ -37,16 +37,16 @@ struct substring {
 struct substring *substring_init(void);
 void substring_fini(struct substring *sub);
 
-size_t substring_set(const char *s, size_t len,
-		     struct substring *sub);
-char *substring_to_strchr(const char *s, int c,
-			  struct substring *sub);
-char *substring_move_to_strchr(const char *s, int c,
-			       struct substring *sub);
-char *substring_to_strstr(const char *s1, const char *s2,
-			  struct substring *sub);
-char *substring_move_to_strstr(const char *s1, const char *s2,
-			       struct substring *sub);
+size_t substring_set(struct substring *sub,
+		     const char *s, size_t len);
+char *substring_to_strchr(struct substring *sub,
+			  const char *s, int c);
+char *substring_move_to_strchr(struct substring *sub,
+			       const char *s, int c);
+char *substring_to_strstr(struct substring *sub,
+			  const char *s1, const char *s2);
+char *substring_move_to_strstr(struct substring *sub,
+			       const char *s1, const char *s2);
 
 size_t substring_strncpy(char *dest, struct substring *src, size_t size);
 char *substring_strdup(struct substring *sub);

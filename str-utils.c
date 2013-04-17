@@ -48,8 +48,8 @@ void substring_fini(struct substring *sub)
 	}
 }
 
-size_t substring_set(const char *s, size_t len,
-		     struct substring *sub)
+size_t substring_set(struct substring *sub,
+		     const char *s, size_t len)
 {
 	char *str = (char *)s;
 	size_t ret = len;
@@ -63,8 +63,8 @@ size_t substring_set(const char *s, size_t len,
 	return ret;
 }
 
-char *substring_to_strchr(const char *s, int c,
-			  struct substring *sub)
+char *substring_to_strchr(struct substring *sub,
+			  const char *s, int c)
 {
 	char *ch = NULL;
 	char *str = (char *)s;
@@ -79,8 +79,8 @@ char *substring_to_strchr(const char *s, int c,
 	return ch;
 }
 
-char *substring_move_to_strchr(const char *s, int c,
-			       struct substring *sub)
+char *substring_move_to_strchr(struct substring *sub,
+			       const char *s, int c)
 {
 	char *ch = NULL;
 
@@ -94,8 +94,8 @@ char *substring_move_to_strchr(const char *s, int c,
 	return ch;
 }
 
-char *substring_to_strstr(const char *s1, const char *s2,
-			  struct substring *sub)
+char *substring_to_strstr(struct substring *sub,
+			  const char *s1, const char *s2)
 {
 	char *str = NULL;
 	char *s = (char *)s1;
@@ -110,8 +110,8 @@ char *substring_to_strstr(const char *s1, const char *s2,
 	return str;
 }
 
-char *substring_move_to_strstr(const char *s1, const char *s2,
-			       struct substring *sub)
+char *substring_move_to_strstr(struct substring *sub,
+			       const char *s1, const char *s2)
 {
 	char *str = NULL;
 
