@@ -24,9 +24,9 @@
 #define _FNCALLS_MATCH_H
 
 enum __hash_ids {
-	errors_hash,
-	warns_hash,
-	reports_hash,
+	ERRORS_ID,
+	WARNS_ID,
+	REPORTS_ID,
 };
 
 struct pattern_match {
@@ -41,6 +41,8 @@ struct target_functions {
 };
 
 struct hash_functions {
+	int id; /* hash ID */
+
 	htab_t tab;
 	struct target_functions *targets;
 
