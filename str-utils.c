@@ -63,6 +63,7 @@ size_t substring_set(struct substring *sub,
 	return ret;
 }
 
+/* Make substring end right before 'int c' */
 char *substring_to_strchr(struct substring *sub,
 			  const char *s, int c)
 {
@@ -79,6 +80,7 @@ char *substring_to_strchr(struct substring *sub,
 	return ch;
 }
 
+/* Make substring starts from 'int c' and ends at '\0' */
 char *substring_move_to_strchr(struct substring *sub,
 			       const char *s, int c)
 {
@@ -144,6 +146,19 @@ char *substring_strdup(struct substring *sub)
 	char *str = xmalloc(size);
 
 	substring_strncpy(str, sub, size);
+	return str;
+}
+
+char *substring_strndup(struct substring *sub, size_t size)
+{
+	size_t len = size + 1;
+	char *str;
+
+	if (len < size)
+		return NULL;
+
+	str = xmalloc(len);
+	substring_strncpy(str, sub, len);
 	return str;
 }
 
