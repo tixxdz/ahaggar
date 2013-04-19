@@ -39,10 +39,15 @@ void substring_fini(struct substring *sub);
 
 size_t substring_set(struct substring *sub,
 		     const char *s, size_t len);
+
 char *substring_to_strchr(struct substring *sub,
 			  const char *s, int c);
+#define substring_to_nextline(sub, s) \
+	substring_to_strchr(sub_base(sub), s, '\n')
+
 char *substring_move_to_strchr(struct substring *sub,
 			       const char *s, int c);
+
 char *substring_to_strstr(struct substring *sub,
 			  const char *s1, const char *s2);
 char *substring_move_to_strstr(struct substring *sub,
@@ -50,7 +55,53 @@ char *substring_move_to_strstr(struct substring *sub,
 
 size_t substring_strncpy(char *dest, struct substring *src, size_t size);
 char *substring_strdup(struct substring *sub);
+char *substring_strndup(struct substring *sub, size_t size);
 
 bool strstarts(const char *str, const char *prefix);
+
+/* Check the next char that is just after the sub->end */
+static bool inline substring_next_strchr(struct substring *sub, int c)
+{
+	char *ch = sub_end(sub) + 1;
+	return (*ch && *ch == c);
+}
+
+static void inline substring_addchr_start(struct substring *sub)
+{
+	sub_start(sub)++;
+	sub_len(sub)--;
+}
+
+static void inline substring_addnchr_start(struct substring *sub,
+					   size_t n)
+{
+	sub_start(sub)+=n;
+	sub_len(sub)-=n;
+}
+
+static void inline substring_minuschr_start(struct substring *sub)
+{
+	sub_start(sub)--;
+	sub_len(sub)++;
+}
+
+static void inline substring_addchr_end(struct substring *sub)
+{
+	sub_end(sub)++;
+	sub_len(sub)++;
+}
+
+static void inline substring_addnchr_end(struct substring *sub,
+					 size_t n)
+{
+	sub_end(sub)+=n;
+	sub_len(sub)+=n;
+}
+
+static void inline substring_minuschr_end(struct substring *sub)
+{
+	sub_end(sub)--;
+	sub_len(sub)--;
+}
 
 #endif /* _STR_UTIL_H */
