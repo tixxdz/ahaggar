@@ -123,6 +123,7 @@ int output_base_char(struct output_buffer *d, const int c)
 
 	output_used(out) += ret;
 	output_offset(out) = output_buf(out) + output_strlen(out);
+	*output_offset(out) = '\0';
 
 	return 0;
 }
@@ -156,6 +157,7 @@ int output_base_printf(struct output_buffer *d, const char *fmt, ...)
 
 	output_used(out) += ret;
 	output_offset(out) = output_buf(out) + output_strlen(out);
+	*output_offset(out) = '\0';
 
 	return 0;
 }
