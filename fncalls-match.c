@@ -377,6 +377,14 @@ static struct target_functions *match_fncall(htab_t hashtable,
 }
 
 /* Returns non 0 on fatal errors */
+static int process_fncall(htab_t hashtable,
+			  struct target_functions *fn,
+			  struct substring *sub, void *plug_data)
+{
+	return 0;
+}
+
+/* Returns non 0 on fatal errors */
 static int process_output(struct hash_functions *hashes,
 			  void *plug_data)
 {
@@ -406,6 +414,18 @@ static int process_output(struct hash_functions *hashes,
 				continue;
 			else
 				return ret;
+		}
+
+		if (tag->patterns) {
+			if (process_fncall(h->tab, tag, substr,
+					   plug_data))
+				return ret;
+		} else if (!patterns_needed) {
+			if (print_decl)
+				dump_decl_output(plug_data);
+
+			print_decl = 0;
+			substring_write(plug_data, substr);
 		}
 	}
 
