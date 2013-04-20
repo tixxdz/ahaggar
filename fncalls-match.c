@@ -349,6 +349,33 @@ static char *extract_fnname(struct substring *sub)
 	return str;
 }
 
+static struct target_functions *match_fncall(htab_t hashtable,
+					     struct substring *sub,
+					     void *plug_data)
+{
+	char *fnname;
+	struct target_functions *fn = NULL;
+	struct substring *substr = sub;
+	struct plugin_data *pdata = (struct plugin_data *)plug_data;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!next_fncall_to_substring(substr, buffer))
+		return fn;
+
+	fnname = extract_fnname(substr);
+	if (!fnname)
+		return fn;
+
+	fn = __lookup_key(hashtable, fnname);
+
+	/* Include the next newline if any */
+	if (*sub_end(substr) == '\n')
+		substring_addchr_end(substr);
+
+	free(fnname);
+	return fn;
+}
+
 /* Returns non 0 on fatal errors */
 static int process_output(struct hash_functions *hashes,
 			  void *plug_data)
