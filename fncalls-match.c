@@ -396,6 +396,14 @@ static int process_output(struct hash_functions *hashes,
 		patterns_needed = 0;
 	}
 
+	substr = substring_init();
+
+	for (; h->mcounter; h->mcounter--) {
+		tag = match_fncall(h->tab, substr, plug_data);
+	}
+
+	substring_fini(substr);
+
 	return 0;
 }
 
