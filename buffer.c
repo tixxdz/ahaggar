@@ -100,6 +100,7 @@ struct output_buffer *output_expand(struct output_buffer *d,
 
 	output_size(out) = newsize;
 	output_buf(out) = (char *)xrealloc(d->buf, newsize);
+	output_offset(out) = output_buf(out) + output_used(out);
 	*output_offset(out) = '\0';
 
 	return out;
