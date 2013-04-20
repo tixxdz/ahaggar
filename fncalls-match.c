@@ -400,6 +400,13 @@ static int process_output(struct hash_functions *hashes,
 
 	for (; h->mcounter; h->mcounter--) {
 		tag = match_fncall(h->tab, substr, plug_data);
+		if (!tag) {
+			errors++;
+			if (errors < 3)
+				continue;
+			else
+				return ret;
+		}
 	}
 
 	substring_fini(substr);
