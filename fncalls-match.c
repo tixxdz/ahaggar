@@ -294,6 +294,44 @@ static void dump_decl_output(void *plug_data)
 	}
 }
 
+/* Save the next function call into the substring
+ * On success returns its lenght */
+static size_t next_fncall_to_substring(struct substring *sub,
+				       struct output_buffer *out)
+{
+	size_t ret = 0;
+	char *offset = NULL;
+	struct substring *substr = sub;
+	struct output_buffer *buffer = out;
+
+	if (!sub_start(substr)) {
+		offset = output_buf(buffer) + 1;
+		/* are we in function_decl */
+		if (strstarts(offset, FUNCTION_DECL_CODE)) {
+			substring_move_to_strchr(substr,
+						 offset, '\n');
+			substring_addchr_start(substr);
+			offset = sub_start(substr);
+		} else {
+			offset = output_buf(buffer);
+		}
+	} else {
+		offset = sub_end(substr);
+	}
+
+	/* At the end */
+	if (!offset || !*offset)
+		return ret;
+
+	if (!substring_to_strchr(substr, offset, ']'))
+		return ret;
+
+	/* make it end at the next call */
+	substring_addnchr_end(substr, 3);
+
+	return sub_len(substr);
+}
+
 static char *extract_fnname(struct substring *sub)
 {
 	char *str = NULL;
