@@ -294,6 +294,23 @@ static void dump_decl_output(void *plug_data)
 	}
 }
 
+static char *extract_fnname(struct substring *sub)
+{
+	char *str = NULL;
+	char *ch2 = NULL;
+	char *ch1 = strchr(sub_start(sub), '>');
+
+	if (ch1) {
+		ch1+=2;
+		ch2 = strchr(ch1, '(');
+		if (ch2) {
+			str = xstrndup(ch1, ch2 - ch1);
+		}
+	}
+
+	return str;
+}
+
 /* Returns non 0 on fatal errors */
 static int process_output(struct hash_functions *hashes,
 			  void *plug_data)
