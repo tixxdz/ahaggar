@@ -275,6 +275,25 @@ static int populate_hash(struct hash_functions *hashes)
 	return 0;
 }
 
+/* Dump the "<function_decl> function(...)\n" if any */
+static void dump_decl_output(void *plug_data)
+{
+	char *ch;
+	struct plugin_data *pdata = (struct plugin_data *)plug_data;
+	struct output_buffer *buffer = pdata->buffer;
+	char *offset = output_buf(buffer) + 1;
+
+	if (!strstarts(offset, FUNCTION_DECL_CODE))
+		return;
+
+	ch = strchr(offset, '\n');
+	if (ch) {
+		ch++;
+		write(pdata->fd, output_buf(buffer),
+		      ch - output_buf(buffer));
+	}
+}
+
 /* Returns non 0 on fatal errors */
 static int process_output(struct hash_functions *hashes,
 			  void *plug_data)
