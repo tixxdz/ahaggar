@@ -52,7 +52,6 @@
 #define TARGETS_ARRAY_SIZE(err, warn, report) \
 	(ARRAY_SIZE(err) + ARRAY_SIZE(warn) + ARRAY_SIZE(report))
 
-
 static int __string_eq(const void *, const void *);
 static hashval_t __string_hash(const void *);
 static inline int is_hash_safe(struct target_functions *,
@@ -85,24 +84,43 @@ static struct target_functions reports[] = {
 
 static struct hash_functions ghash[] = {
 	{
+		.id = ERRORS_ID,
 		.tab = NULL,
 		.targets = errors,
 		.targets_size = ARRAY_SIZE(errors),
 		.out_f = __error,
 	},
 	{
+		.id = WARNS_ID,
 		.tab = NULL,
 		.targets = warnings,
 		.targets_size = ARRAY_SIZE(warnings),
 		.out_f = __warning,
 	},
 	{
+		.id = REPORTS_ID,
 		.tab = NULL,
 		.targets = reports,
 		.targets_size = ARRAY_SIZE(reports),
 		.out_f = report,
 	},
 };
+
+static ssize_t output_buffer_write(void *plug_data)
+{
+
+	struct plugin_data *pdata = (struct plugin_data *)plug_data;
+	struct output_buffer *buffer = pdata->buffer;
+
+	return write(pdata->fd, output_buf(buffer), output_strlen(buffer));
+}
+
+static ssize_t substring_write(void *plug_data, struct substring *sub)
+{
+	struct plugin_data *pdata = (struct plugin_data *)plug_data;
+
+	return write(pdata->fd, sub_start(sub), sub_len(sub));
+}
 
 static void __error(__attribute__((unused)) int x,
 		    __attribute__((unused)) const char *str,
@@ -258,20 +276,23 @@ static int populate_hash(struct hash_functions *hashes)
 }
 
 /* Returns non 0 on fatal errors */
-static int handle_output(struct hash_functions *hashes, void *plug_data)
+static int process_output(struct hash_functions *hashes,
+			  void *plug_data)
 {
-	int i;
 	int ret = -1;
+	int print_decl = 0;
+	int patterns_needed = 1;
+	int errors = 0;
+	struct substring *substr;
 	struct target_functions *tag;
 	struct hash_functions *h = hashes;
-	struct plugin_data *pdata = (struct plugin_data *)plug_data;
-	struct output_buffer *buffer = pdata->buffer;
 
 	if (!h || !h->tab)
 		return ret;
 
-	for (i = 0; i < h->targets_size; i++) {
-		tag = &h->targets[i];
+	if (h->id == REPORTS_ID) {
+		print_decl = 1;
+		patterns_needed = 0;
 	}
 
 	return 0;
@@ -302,36 +323,29 @@ int match_function_name(void *data, void *plug_data)
 	return ret;
 }
 
-int match_output(__attribute__((unused)) void *data,
-		 void *plug_data)
+int match_output(__attribute__((unused)) void *data, void *plug_data)
 {
 	int i;
 	int ret = -1;
-	struct plugin_data *pdata = (struct plugin_data *)plug_data;
-	struct output_buffer *buffer = pdata->buffer;
-	char *offset = output_buf(buffer);
 
 	if (!TARGETS_ARRAY_SIZE(errors, warnings, reports)) {
-		write(pdata->fd, output_buf(buffer),
-		      output_strlen(buffer));
+		output_buffer_write(plug_data);
 		return 0;
 	}
 
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
-		if (!ghash[i].targets_size || !ghash[i].tab)
+		if (!ghash[i].targets_size
+		|| !ghash[i].tab || !ghash[i].mcounter)
 			continue;
 
-		if (handle_output(&ghash[i], plug_data)) {
+		if (process_output(&ghash[i], plug_data)) {
 			out_warning("GCC plugins: failed to handle output %s:%d\n",
 				    __FILE__, __LINE__);
 			return ret;
 		}
 
-		/* reset match counter for the next round */
-		ghash[i].mcounter = 0;
+		/* the ghash[i].mcounter should be zeroed now */
 	}
-
-	write(pdata->fd, output_buf(buffer), output_strlen(buffer));
 
 	return 0;
 }
