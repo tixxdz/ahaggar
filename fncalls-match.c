@@ -35,6 +35,7 @@
 #include "coretypes.h"
 #include "tree.h"
 #include "intl.h"
+#include "input.h"
 #include "plugin.h"
 #include "diagnostic.h"
 #include "options.h"
@@ -69,6 +70,9 @@ static void __warning(__attribute__((unused)) int x,
 #define out_report(x, s, fmt, args...) report(x, s, fmt, ##args)
 
 extern const char *progname;
+extern location_t input_location;
+
+static char *tmp_location = NULL;
 
 static struct target_functions errors[] = {
 #include "file-errors.h"
@@ -505,6 +509,9 @@ int fncalls_match_init(void)
 	int i;
 	int ret = -1;
 
+	tmp_location = (char *)xmalloc(PATH_MAX);
+	memset(tmp_location, 0, PATH_MAX);
+
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
 		if (!ghash[i].targets_size)
 			continue;
@@ -533,4 +540,6 @@ void fncalls_match_finish(void)
 		if (ghash[i].tab)
 			fini_hash(&ghash[i]);
 	}
+
+	free(tmp_location);
 }
