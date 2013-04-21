@@ -59,11 +59,9 @@ static inline int is_hash_safe(struct target_functions *,
 			       unsigned int);
 
 static void __error(__attribute__((unused)) int x,
-		    __attribute__((unused)) const char *str,
-		    const char *fmt, ...);
+		    const char *str, const char *fmt, ...);
 static void __warning(__attribute__((unused)) int x,
-		      __attribute__((unused)) const char *str,
-		      const char *fmt, ...);
+		      const char *str, const char *fmt, ...);
 
 #define out_error(fmt, args...) __error(0, NULL, fmt, ##args)
 #define out_warning(fmt, args...) __warning(0, NULL, fmt, ##args)
@@ -127,11 +125,13 @@ static ssize_t substring_write(void *plug_data, struct substring *sub)
 }
 
 static void __error(__attribute__((unused)) int x,
-		    __attribute__((unused)) const char *str,
-		    const char *fmt, ...)
+		    const char *str, const char *fmt, ...)
 {
 	va_list args;
 	diagnostic_info diagnostic;
+
+	if (str)
+		fprintf(stderr, "%s: error:\n", str);
 
 	va_start(args, fmt);
 	diagnostic_set_info(&diagnostic, fmt, &args,
@@ -142,11 +142,13 @@ static void __error(__attribute__((unused)) int x,
 }
 
 static void __warning(__attribute__((unused)) int x,
-		      __attribute__((unused)) const char *str,
-		      const char *fmt, ...)
+		      const char *str, const char *fmt, ...)
 {
 	va_list args;
 	diagnostic_info diagnostic;
+
+	if (str)
+		fprintf(stderr, "%s: warning:\n", str);
 
 	va_start(args, fmt);
 	diagnostic_set_info(&diagnostic, fmt, &args,
