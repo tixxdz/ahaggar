@@ -119,11 +119,11 @@ error:
 	return ret;
 }
 
-void report(int fd, const char *progname, const char *fmt, ...)
+void report(int fd, const char *prefix, const char *fmt, ...)
 {
 	va_list ap;
 
-	write_log(fd, "%s: report: ", progname);
+	write_log(fd, "%s: report: ", prefix);
 	va_start(ap, fmt);
 	write_log(fd, fmt, ap);
 	va_end(ap);
