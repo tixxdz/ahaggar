@@ -121,11 +121,24 @@ error:
 
 void report(int fd, const char *prefix, const char *fmt, ...)
 {
+	ssize_t ret;
 	va_list ap;
+	char *buf;
 
-	write_log(fd, "%s: report: ", prefix);
+	ret = write_log(fd, "%s: report: ", prefix);
+	if (ret < 0)
+		return;
+
 	va_start(ap, fmt);
-	write_log(fd, fmt, ap);
+	ret = vasprintf(&buf, fmt, ap);
 	va_end(ap);
-	write_log(fd, "\n");
+
+	if (ret < 0)
+		return;
+
+	ret = write(fd, buf, ret);
+	free(buf);
+
+	if (ret > 0)
+		write_log(fd, "\n");
 }
