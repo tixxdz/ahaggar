@@ -356,6 +356,28 @@ static char *extract_fnname(struct substring *sub)
 	return str;
 }
 
+static char *extract_location(struct substring *sub, location_t loc,
+			      char *buffer)
+{
+	struct substring *substr = sub;
+	char *buf = buffer;
+
+	buf[0] = '\0';
+
+	if (loc)
+		snprintf(buf, PATH_MAX, "%s", LOCATION_FILE(loc));
+
+	if (substring_move_to_strchr(substr, sub_start(substr), '[')) {
+		substring_addchr_start(substr);
+		if (substring_to_strchr(substr, sub_start(substr), ']')) {
+			substring_addchr_end(substr);
+			substring_strncpy(buf, substr, PATH_MAX);
+		}
+	}
+
+	return buf;
+}
+
 static struct target_functions *match_fncall(htab_t hashtable,
 					     struct substring *sub,
 					     void *plug_data)
