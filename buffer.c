@@ -106,6 +106,18 @@ struct output_buffer *output_expand(struct output_buffer *d,
 	return out;
 }
 
+struct output_buffer *output_local_prepare(struct output_buffer *d)
+{
+	struct output_buffer *out = d;
+
+	if (!out)
+		out = output_init();
+	else
+		output_flush(out);
+
+	return out;
+}
+
 /* returns 0 on success, negative on errors */
 int output_base_char(struct output_buffer *d, const int c)
 {

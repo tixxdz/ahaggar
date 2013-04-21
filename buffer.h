@@ -47,6 +47,9 @@ struct output_buffer *output_reset(struct output_buffer *d);
 void output_flush(struct output_buffer *d);
 struct output_buffer *output_expand(struct output_buffer *d,
 				    unsigned long need);
+
+struct output_buffer *output_local_prepare(struct output_buffer *d);
+
 int output_base_char(struct output_buffer *d, const int c);
 int output_base_printf(struct output_buffer *d, const char *fmt, ...);
 void output_base_indent_to(struct output_buffer *d, const int column);
