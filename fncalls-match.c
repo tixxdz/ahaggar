@@ -135,7 +135,8 @@ static void __error(__attribute__((unused)) int x,
 
 	va_start(args, fmt);
 	diagnostic_set_info(&diagnostic, fmt, &args,
-			    input_location, DK_ERROR);
+			    UNKNOWN_LOCATION, DK_ERROR);
+	diagnostic.option_index = 0;
 
 	report_diagnostic(&diagnostic);
 	va_end(args);
@@ -152,7 +153,7 @@ static void __warning(__attribute__((unused)) int x,
 
 	va_start(args, fmt);
 	diagnostic_set_info(&diagnostic, fmt, &args,
-			    input_location, DK_WARNING);
+			    UNKNOWN_LOCATION, DK_WARNING);
 	diagnostic.option_index = 0;
 
 	report_diagnostic(&diagnostic);
