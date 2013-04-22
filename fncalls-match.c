@@ -541,7 +541,7 @@ static int process_output(struct hash_functions *hashes,
 		}
 
 		if (tag->patterns) {
-			if (process_fncall(h->tab, tag, substr, plug_data))
+			if (process_fncall(h, tag, substr, plug_data))
 				return ret;
 		} else if (!patterns_needed) {
 			if (print_decl)
