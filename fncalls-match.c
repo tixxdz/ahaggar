@@ -250,6 +250,7 @@ static regex_t *init_regexp(const char *pattern)
 	regex_t *expr = (regex_t *)xmalloc(sizeof(regex_t));
 
 	memset(expr, 0, sizeof(regex_t));
+
 	ret=regcomp(expr, pattern, 0);
 	if (ret) {
 		regerror(ret, expr, tmp_buffer, TMPBUF_SIZE);
@@ -344,6 +345,9 @@ static int populate_hash(struct hash_functions *hashes)
 		tag = &h->targets[i];
 
 		if (populate_hash_target(h->tab, tag))
+			return ret;
+
+		if (compile_regexp_match(tag))
 			return ret;
 	}
 
