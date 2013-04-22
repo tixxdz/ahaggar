@@ -656,8 +656,14 @@ void fncalls_match_finish(void)
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
-		if (ghash[i].tab)
-			fini_hash(&ghash[i]);
+		int x;
+		struct hash_functions *h = &ghash[i];
+
+		if (h->tab)
+			fini_hash(h);
+
+		for (x = 0; x < h->targets_size; x++)
+			free_regexp_match(&h->targets[x]);
 	}
 
 	free(tmp_buffer);
