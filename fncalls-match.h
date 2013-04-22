@@ -23,6 +23,8 @@
 #ifndef _FNCALLS_MATCH_H
 #define _FNCALLS_MATCH_H
 
+#include <regex.h>
+
 enum __hash_ids {
 	ERRORS_ID,
 	WARNS_ID,
@@ -33,6 +35,8 @@ struct pattern_match {
 	char *args;
 	char *all;
 	char *msg;
+	regex_t *c_args; /* internal compiled args */
+	regex_t *c_all;  /* internal compiled all */
 };
 
 struct target_functions {
