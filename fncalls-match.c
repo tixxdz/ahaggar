@@ -70,7 +70,7 @@ static void __warning(__attribute__((unused)) int x,
 extern const char *progname;
 extern location_t input_location;
 
-static char *tmp_location = NULL;
+static char *tmp_buffer = NULL;
 
 static struct target_functions errors[] = {
 #include "file-errors.h"
@@ -416,11 +416,10 @@ static int output_fncall_results(struct pattern_match *pattern,
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
 
 	if (pm->msg) {
-		tmp_location = extract_location(substr,
-						input_location,
-						tmp_location);
+		tmp_buffer = extract_location(substr,
+					      input_location, tmp_buffer);
 
-		f(pdata->fd, *tmp_location ? tmp_location : "",
+		f(pdata->fd, *tmp_buffer ? tmp_buffer : "",
 		  "%s", pm->msg);
 	} else {
 		substring_write(plug_data, substr);
@@ -557,8 +556,8 @@ int fncalls_match_init(void)
 	int i;
 	int ret = -1;
 
-	tmp_location = (char *)xmalloc(PATH_MAX);
-	memset(tmp_location, 0, PATH_MAX);
+	tmp_buffer = (char *)xmalloc(PATH_MAX);
+	memset(tmp_buffer, 0, PATH_MAX);
 
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
 		if (!ghash[i].targets_size)
@@ -589,5 +588,5 @@ void fncalls_match_finish(void)
 			fini_hash(&ghash[i]);
 	}
 
-	free(tmp_location);
+	free(tmp_buffer);
 }
