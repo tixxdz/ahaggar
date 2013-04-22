@@ -550,6 +550,38 @@ static int process_fncall(struct hash_functions *hashes,
 			  struct target_functions *fn,
 			  struct substring *sub, void *plug_data)
 {
+	int ret = -1;
+	int msg_needed = 1;
+	struct pattern_match *pm;
+	struct target_functions *f = fn;
+	struct hash_functions *h = hashes;
+	struct substring *substr = sub;
+
+	if (!h || !f || !f->patterns)
+		return ret;
+
+	if (h->id == REPORTS_ID)
+		msg_needed = 0;
+
+	for (pm = f->patterns; pm && pm->args != pm->msg; pm++) {
+		int match = 0;
+		if (msg_needed && !pm->msg)
+			continue;
+
+		if (pm->c_args || pm->c_all) {
+			match = (!regexp_match_cargs(pm->c_args,
+						     substr)
+				||!regexp_match_call(pm->c_all,
+						     substr))
+				? 0 : 1;
+		}
+
+		if (match)
+			continue;
+
+		output_fncall_results(pm, h->out_f, substr, plug_data);
+	}
+
 	return 0;
 }
 
