@@ -50,6 +50,8 @@
 #define SAFE_LOAD_FACTOR 25
 #define MAX_HASH_ENTRIES 10240
 
+#define TMPBUF_SIZE 2048
+
 #define TARGETS_ARRAY_SIZE(err, warn, report) \
 	(ARRAY_SIZE(err) + ARRAY_SIZE(warn) + ARRAY_SIZE(report))
 
@@ -365,13 +367,13 @@ static char *extract_location(struct substring *sub, location_t loc,
 	buf[0] = '\0';
 
 	if (loc)
-		snprintf(buf, PATH_MAX, "%s", LOCATION_FILE(loc));
+		snprintf(buf, TMPBUF_SIZE, "%s", LOCATION_FILE(loc));
 
 	if (substring_move_to_strchr(substr, sub_start(substr), '[')) {
 		substring_addchr_start(substr);
 		if (substring_to_strchr(substr, sub_start(substr), ']')) {
 			substring_addchr_end(substr);
-			substring_strncpy(buf, substr, PATH_MAX);
+			substring_strncpy(buf, substr, TMPBUF_SIZE);
 		}
 	}
 
@@ -556,8 +558,8 @@ int fncalls_match_init(void)
 	int i;
 	int ret = -1;
 
-	tmp_buffer = (char *)xmalloc(PATH_MAX);
-	memset(tmp_buffer, 0, PATH_MAX);
+	tmp_buffer = (char *)xmalloc(TMPBUF_SIZE);
+	memset(tmp_buffer, 0, TMPBUF_SIZE);
 
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
 		if (!ghash[i].targets_size)
