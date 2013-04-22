@@ -405,8 +405,32 @@ static struct target_functions *match_fncall(htab_t hashtable,
 	return fn;
 }
 
+static int output_fncall_results(struct pattern_match *pattern,
+				 void (*f)(int, const char *,
+					   const char *, ...),
+				 struct substring *sub,
+				 void *plug_data)
+{
+	struct pattern_match *pm = pattern;
+	struct substring *substr = sub;
+	struct plugin_data *pdata = (struct plugin_data *)plug_data;
+
+	if (pm->msg) {
+		tmp_location = extract_location(substr,
+						input_location,
+						tmp_location);
+
+		f(pdata->fd, *tmp_location ? tmp_location : "",
+		  "%s", pm->msg);
+	} else {
+		substring_write(plug_data, substr);
+	}
+
+	return 0;
+}
+
 /* Returns non 0 on fatal errors */
-static int process_fncall(htab_t hashtable,
+static int process_fncall(struct hash_functions *hashes,
 			  struct target_functions *fn,
 			  struct substring *sub, void *plug_data)
 {
@@ -446,8 +470,7 @@ static int process_output(struct hash_functions *hashes,
 		}
 
 		if (tag->patterns) {
-			if (process_fncall(h->tab, tag, substr,
-					   plug_data))
+			if (process_fncall(h->tab, tag, substr, plug_data))
 				return ret;
 		} else if (!patterns_needed) {
 			if (print_decl)
