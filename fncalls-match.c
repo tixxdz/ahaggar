@@ -515,6 +515,36 @@ static int regexp_match_call(regex_t *call, struct substring *sub)
 	return regexec(call, tmp_buffer, 0, NULL, 0);
 }
 
+/* Returns 0 if there is a match */
+static int regexp_match_cargs(regex_t *cargs, struct substring *sub)
+{
+	int ret = -1;
+	char *start;
+	char *end;
+	size_t len;
+	struct substring *substr = sub;
+
+	if (!cargs)
+		return ret;
+
+	start = strchr(sub_start(substr), '(');
+	if (!start)
+		return ret;
+
+	end = strrchr(start, ')');
+	if (!end)
+		return ret;
+
+	end+=2;
+	len = ((size_t)(end - start) < TMPBUF_SIZE)
+		? end - start : TMPBUF_SIZE;
+
+	memcpy(tmp_buffer, start, len);
+	tmp_buffer[len - 1] = '\0';
+
+	return regexec(cargs, tmp_buffer, 0, NULL, 0);
+}
+
 /* Returns non 0 on fatal errors */
 static int process_fncall(struct hash_functions *hashes,
 			  struct target_functions *fn,
