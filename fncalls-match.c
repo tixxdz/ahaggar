@@ -500,6 +500,21 @@ static int output_fncall_results(struct pattern_match *pattern,
 	return 0;
 }
 
+/* Returns 0 if there is a match */
+static int regexp_match_call(regex_t *call, struct substring *sub)
+{
+	int ret = -1;
+	struct substring *substr = sub;
+
+	if (!call)
+		return ret;
+
+	if (!substring_strncpy(tmp_buffer, substr, TMPBUF_SIZE))
+		return ret;
+
+	return regexec(call, tmp_buffer, 0, NULL, 0);
+}
+
 /* Returns non 0 on fatal errors */
 static int process_fncall(struct hash_functions *hashes,
 			  struct target_functions *fn,
