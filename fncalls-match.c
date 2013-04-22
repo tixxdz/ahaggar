@@ -244,6 +244,33 @@ static struct target_functions *insert_target(htab_t hashtable,
 	return *slot;
 }
 
+static regex_t *init_regexp(const char *pattern)
+{
+	int ret;
+	regex_t *expr = (regex_t *)xmalloc(sizeof(regex_t));
+
+	memset(expr, 0, sizeof(regex_t));
+	ret=regcomp(expr, pattern, 0);
+	if (ret) {
+		regerror(ret, expr, tmp_buffer, TMPBUF_SIZE);
+		out_warning("GCC plugins: failed to compile regexp: %s\n",
+			    tmp_buffer);
+		free(expr);
+		return NULL;
+	}
+
+	return expr;
+}
+
+static void fini_regexp(regex_t *expr)
+{
+	if (expr) {
+		regfree(expr);
+		free(expr);
+		expr = NULL;
+	}
+}
+
 /* return 0 on success */
 static int populate_hash_target(htab_t hashtable,
 				struct target_functions *fn)
