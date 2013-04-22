@@ -271,6 +271,45 @@ static void fini_regexp(regex_t *expr)
 	}
 }
 
+static int compile_regexp_match(struct target_functions *fn)
+{
+	int ret = -1;
+	struct target_functions *f = fn;
+	struct pattern_match *pm;
+
+	for (pm = f->patterns; pm && pm->args != pm->msg; pm++) {
+		if (pm->args) {
+			pm->c_args = init_regexp(pm->args);
+			if (!pm->c_args)
+				goto error;
+		}
+
+		if (pm->c_all) {
+			pm->c_all = init_regexp(pm->all);
+			if (!pm->c_all)
+				goto error;
+		}
+	}
+
+	return 0;
+
+error:
+	out_error("GCC plugins: failed to compile regexp %s:%d\n",
+		  __FILE__, __LINE__);
+	return ret;
+}
+
+static void free_regexp_match(struct target_functions *fn)
+{
+	struct target_functions *f = fn;
+	struct pattern_match *pm;
+
+	for (pm = f->patterns; pm && pm->args != pm->msg; pm++) {
+		fini_regexp(pm->c_args);
+		fini_regexp(pm->c_all);
+	}
+}
+
 /* return 0 on success */
 static int populate_hash_target(htab_t hashtable,
 				struct target_functions *fn)
