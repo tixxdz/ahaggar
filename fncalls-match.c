@@ -333,7 +333,7 @@ static int populate_hash_target(htab_t hashtable,
 /* returns 0 on success */
 static int populate_hash(struct hash_functions *hashes)
 {
-	int i;
+	unsigned int i;
 	int ret = -1;
 	struct target_functions *tag;
 	struct hash_functions *h = hashes;
@@ -368,8 +368,8 @@ static void dump_decl_output(void *plug_data)
 	ch = strchr(offset, '\n');
 	if (ch) {
 		ch++;
-		write(pdata->fd, output_buf(buffer),
-		      ch - output_buf(buffer));
+		(void)write(pdata->fd, output_buf(buffer),
+			    ch - output_buf(buffer));
 	}
 }
 
@@ -576,10 +576,9 @@ static int process_fncall(struct hash_functions *hashes,
 				? 0 : 1;
 		}
 
-		if (match)
-			continue;
-
-		output_fncall_results(pm, h->out_f, substr, plug_data);
+		if (!match)
+			output_fncall_results(pm, h->out_f,
+					      substr, plug_data);
 	}
 
 	return 0;
@@ -635,9 +634,10 @@ static int process_output(struct hash_functions *hashes,
 }
 
 /* Returns 0 if there is a match */
-int match_function_name(void *data, void *plug_data)
+int match_function_name(void *data,
+			__attribute__((unused)) void *plug_data)
 {
-	int i;
+	unsigned int i;
 	int ret = -1;
 	const char *fnname = (char *)data;
 
@@ -659,9 +659,10 @@ int match_function_name(void *data, void *plug_data)
 	return ret;
 }
 
-int match_output(__attribute__((unused)) void *data, void *plug_data)
+int match_output(__attribute__((unused)) void *data,
+		 void *plug_data)
 {
-	int i;
+	unsigned int i;
 	int ret = -1;
 
 	if (!TARGETS_ARRAY_SIZE(errors, warnings, reports)) {
@@ -702,7 +703,7 @@ void fini_hash(struct hash_functions *hashes)
 
 int fncalls_match_init(void)
 {
-	int i;
+	unsigned int i;
 	int ret = -1;
 
 	tmp_buffer = (char *)xmalloc(TMPBUF_SIZE);
@@ -730,10 +731,10 @@ error:
 
 void fncalls_match_finish(void)
 {
-	int i;
+	unsigned int i;
 
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
-		int x;
+		unsigned int x;
 		struct hash_functions *h = &ghash[i];
 
 		if (h->tab)

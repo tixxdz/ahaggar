@@ -68,7 +68,8 @@ void fini_hash(struct hash_functions *hashes);
 int fncalls_match_init(void);
 void fncalls_match_finish(void);
 
-int match_function_name(void *data, void *plug_data);
+int match_function_name(void *data,
+			__attribute__((unused)) void *plug_data);
 
 /* We just receive the buffer stored in the plug_data */
 int match_output(__attribute__((unused)) void *data,
