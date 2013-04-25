@@ -60,45 +60,45 @@ char *substring_strndup(struct substring *sub, size_t size);
 bool strstarts(const char *str, const char *prefix);
 
 /* Check the next char that is just after the sub->end */
-static bool inline substring_next_strchr(struct substring *sub, int c)
+inline static bool substring_next_strchr(struct substring *sub, int c)
 {
 	char *ch = sub_end(sub) + 1;
 	return (*ch && *ch == c);
 }
 
-static void inline substring_addchr_start(struct substring *sub)
+inline static void substring_addchr_start(struct substring *sub)
 {
 	sub_start(sub)++;
 	sub_len(sub)--;
 }
 
-static void inline substring_addnchr_start(struct substring *sub,
+inline static void substring_addnchr_start(struct substring *sub,
 					   size_t n)
 {
 	sub_start(sub)+=n;
 	sub_len(sub)-=n;
 }
 
-static void inline substring_minuschr_start(struct substring *sub)
+inline static void substring_minuschr_start(struct substring *sub)
 {
 	sub_start(sub)--;
 	sub_len(sub)++;
 }
 
-static void inline substring_addchr_end(struct substring *sub)
+inline static void substring_addchr_end(struct substring *sub)
 {
 	sub_end(sub)++;
 	sub_len(sub)++;
 }
 
-static void inline substring_addnchr_end(struct substring *sub,
+inline static void substring_addnchr_end(struct substring *sub,
 					 size_t n)
 {
 	sub_end(sub)+=n;
 	sub_len(sub)+=n;
 }
 
-static void inline substring_minuschr_end(struct substring *sub)
+inline static void substring_minuschr_end(struct substring *sub)
 {
 	sub_end(sub)--;
 	sub_len(sub)--;
