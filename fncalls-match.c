@@ -364,7 +364,7 @@ static int dump_decl_output(void *plug_data)
 	char *offset = output_buf(buffer) + 1;
 
 	if (!strstarts(offset, FUNCTION_DECL_CODE))
-		return;
+		return ret;
 
 	ch = strchr(offset, '\n');
 	if (ch) {
