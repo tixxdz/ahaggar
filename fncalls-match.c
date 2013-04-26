@@ -355,8 +355,9 @@ static int populate_hash(struct hash_functions *hashes)
 }
 
 /* Dump the "<function_decl> function(...)\n" if any */
-static void dump_decl_output(void *plug_data)
+static int dump_decl_output(void *plug_data)
 {
+	int ret = -1;
 	char *ch;
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
 	struct output_buffer *buffer = pdata->buffer;
@@ -368,9 +369,11 @@ static void dump_decl_output(void *plug_data)
 	ch = strchr(offset, '\n');
 	if (ch) {
 		ch++;
-		(void)write(pdata->fd, output_buf(buffer),
+		ret = write(pdata->fd, output_buf(buffer),
 			    ch - output_buf(buffer));
 	}
+
+	return ret;
 }
 
 /* Save the next function call into the substring
