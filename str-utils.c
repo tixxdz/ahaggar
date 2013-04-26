@@ -143,7 +143,7 @@ size_t substring_strncpy(char *dest, struct substring *src, size_t size)
 char *substring_strdup(struct substring *sub)
 {
 	size_t size = sub_len(sub) + 1;
-	char *str = xmalloc(size);
+	char *str = (char *)xmalloc(size);
 
 	substring_strncpy(str, sub, size);
 	return str;
@@ -157,7 +157,7 @@ char *substring_strndup(struct substring *sub, size_t size)
 	if (len < size)
 		return NULL;
 
-	str = xmalloc(len);
+	str = (char *)xmalloc(len);
 	substring_strncpy(str, sub, len);
 	return str;
 }
