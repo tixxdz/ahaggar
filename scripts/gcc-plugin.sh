@@ -1,7 +1,18 @@
 #!/bin/sh
-#Check gcc plugin support
+#test for gcc plugin support
 
-plugincc=`$1 -x c -shared - -o /dev/null -I\`$3 -print-file-name=plugin\`/include 2>&1 <<EOF
+#needs HOSTCC HOSTCXX CC as arguments
+
+if [ "$#" -ne 3 ] ; then
+	exit 1
+fi
+
+PLUG_PATH="`$3 -print-file-name=plugin 2>&1`/include"
+if [ "$?" -ne 0 ] ; then
+	exit 1
+fi
+
+plugincc=`$1 -x c -shared - -o /dev/null -I$PLUG_PATH 2>&1 <<EOF
 #include "gcc-plugin.h"
 #include "tree.h"
 #include "tm.h"
@@ -12,7 +23,12 @@ plugincc=`$1 -x c -shared - -o /dev/null -I\`$3 -print-file-name=plugin\`/includ
 #warning $1
 #endif
 EOF`
-if [ $? -eq 0 ]; then
-	[[ "$plugincc" =~ "$1" ]] && echo "$1"
-	[[ "$plugincc" =~ "$2" ]] && echo "$2"
+if [ "$?" -ne 0 ] ; then
+	exit 1
+fi
+
+if [[ "$plugincc" =~ "$1" ]] ; then
+	echo "$1"
+elif [[ "$plugincc" =~ "$2" ]] ; then
+	echo "$2"
 fi
