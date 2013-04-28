@@ -56,22 +56,6 @@ HOSTCXXFLAGS += -fno-delete-null-pointer-checks
 HOSTCXXFLAGS += -fpermissive
 endif
 
-ifeq ($(PLUGINCC), $(HOSTCC))
-HOSTLIBS := hostlibs
-HOST_EXTRACFLAGS += -I. -I$(GCCPLUGINS_DIR)/include \
-		    -I$(GCCPLUGINS_DIR)/include/c-family
-HOST_EXTRACFLAGS += -std=gnu99 -ggdb
-HOST_EXTRACFLAGS += $(HOST_DBASEFLAGS)
-PLUGINCCFLAGS := $(HOSTCFLAGS) $(HOST_EXTRACFLAGS)
-else
-HOSTLIBS := hostcxxlibs
-HOST_EXTRACXXFLAGS += -I. -I$(GCCPLUGINS_DIR)/include \
-		      -I$(GCCPLUGINS_DIR)/include/c-family
-HOST_EXTRACXXFLAGS += -std=gnu++98 -ggdb -Wno-unused-parameter
-HOST_EXTRACXXFLAGS += $(HOST_DBASEFLAGS)
-PLUGINCCFLAGS := $(HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS)
-endif
-
 HOST_DBASEFLAGS = -D_FORTIFY_SOURCE=2
 HOST_DBASEFLAGS += -D_GNU_SOURCE
 HOST_DBASEFLAGS += -D_FILE_OFFSET_BITS=64
@@ -105,7 +89,23 @@ AHAGGAR_LIBS = $(LIB_AST) $(LIB_FNCALLS)
 LIBAHAGGAR_XXSHARED = $(obj)/libahaggar_ast.so.0
 LIBAHAGGAR_XXSHARED += $(obj)/libahaggar_fncalls.so.0
 
-clean-files := $(AHAGGAR_OBJS) $(AHAGGAR_LIBS)
+AHAGGAR_CLEAN_BASE = $(AHAGGAR_OBJS) $(AHAGGAR_LIBS)
+
+ifeq ($(PLUGINCC), $(HOSTCC))
+HOSTLIBS := hostlibs
+HOST_EXTRACFLAGS += -I. -I$(GCCPLUGINS_DIR)/include \
+		    -I$(GCCPLUGINS_DIR)/include/c-family
+HOST_EXTRACFLAGS += -std=gnu99 -ggdb
+HOST_EXTRACFLAGS += $(HOST_DBASEFLAGS)
+PLUGINCCFLAGS := $(HOSTCFLAGS) $(HOST_EXTRACFLAGS)
+else
+HOSTLIBS := hostcxxlibs
+HOST_EXTRACXXFLAGS += -I. -I$(GCCPLUGINS_DIR)/include \
+		      -I$(GCCPLUGINS_DIR)/include/c-family
+HOST_EXTRACXXFLAGS += -std=gnu++98 -ggdb -Wno-unused-parameter
+HOST_EXTRACXXFLAGS += $(HOST_DBASEFLAGS)
+PLUGINCCFLAGS := $(HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS)
+endif
 
 ifneq ($(KERNELRELEASE),)
 $(HOSTLIBS)-y := $(AHAGGAR_LIBS)
@@ -117,6 +117,8 @@ always := $($(HOSTLIBS)-y)
 			      ahaggar-uninitialized.o
 libahaggar_ast-objs := $(AHAGGAR_AST_OBJS)
 libahaggar_fncalls-objs := $(AHAGGAR_FNCALLS_OBJS)
+
+clean-files := $(AHAGGAR_CLEAN_BASE)
 
 else
 
@@ -191,10 +193,10 @@ remove-libs:
 
 
 clean:
-	$(RM) $(clean-files) $(AHAGGAR_SHARED)
+	$(RM) $(AHAGGAR_CLEAN_BASE) $(AHAGGAR_SHARED)
 	$(RM) $(LIBAHAGGAR_XXSHARED)
 
 .PHONY: all ahaggar-libs ahaggar-plugins install install-libs \
-	remove-libs remove clean-files clean
+	remove-libs remove clean
 
 endif
