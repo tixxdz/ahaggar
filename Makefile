@@ -154,7 +154,7 @@ all: ahaggar-libs
 install: install-libs
 remove: remove-libs
 
-ahaggar-plugins: $(AHAGGAR_SHARED)
+ahaggar-plugins: $(AHAGGAR_SHARED) $(AHAGGAR_LIBS)
 
 $(SHARED_AST): $(AHAGGAR_AST_OBJS)
 	$(LD_lib) $(LDFLAGS_lib) $(LDFLAGS_shared_ast) \
