@@ -34,9 +34,14 @@ enum __hash_ids {
 struct pattern_match {
 	char *args;
 	char *all;
-	char *msg;
+
+	int (*f_args)(char *);
+	int (*f_all)(char *);
+
 	regex_t *c_args; /* internal compiled args */
 	regex_t *c_all;  /* internal compiled all */
+
+	char *msg;
 };
 
 struct target_functions {
