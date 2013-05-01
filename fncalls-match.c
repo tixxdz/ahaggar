@@ -75,15 +75,15 @@ extern location_t input_location;
 static char *tmp_buffer = NULL;
 
 static struct target_functions errors[] = {
-#include "file-errors.h"
-#include "kfile-errors.h"
+//#include "file-errors.h"
 };
 
 static struct target_functions warnings[] = {
 };
 
 static struct target_functions reports[] = {
-#include "kmalloc-reports.h"
+#include "kfile-errors.h"
+//#include "kmalloc-reports.h"
 };
 
 static struct hash_functions ghash[] = {
@@ -555,6 +555,7 @@ static int process_fncall(struct hash_functions *hashes,
 {
 	int ret = -1;
 	int msg_needed = 1;
+	int print_decl = 0;
 	struct pattern_match *pm;
 	struct target_functions *f = fn;
 	struct hash_functions *h = hashes;
@@ -563,8 +564,10 @@ static int process_fncall(struct hash_functions *hashes,
 	if (!h || !f || !f->patterns)
 		return ret;
 
-	if (h->id == REPORTS_ID)
+	if (h->id == REPORTS_ID) {
 		msg_needed = 0;
+		print_decl = 1;
+	}
 
 	for (pm = f->patterns; pm && pm->args != pm->msg; pm++) {
 		int match = 0;
@@ -579,9 +582,16 @@ static int process_fncall(struct hash_functions *hashes,
 				? 0 : 1;
 		}
 
-		if (!match)
-			output_fncall_results(pm, h->out_f,
-					      substr, plug_data);
+		if (match)
+			continue;
+
+		if (print_decl && !pm->msg) {
+			dump_decl_output(plug_data);
+			print_decl = 0;
+		}
+
+		output_fncall_results(pm, h->out_f,
+				      substr, plug_data);
 	}
 
 	return 0;
