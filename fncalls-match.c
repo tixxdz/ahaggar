@@ -79,11 +79,12 @@ static struct target_functions errors[] = {
 };
 
 static struct target_functions warnings[] = {
+#include "file-warnings.h"
 };
 
 static struct target_functions reports[] = {
-#include "kfile-errors.h"
-//#include "kmalloc-reports.h"
+#include "file-reports.h"
+#include "kmalloc-reports.h"
 };
 
 static struct hash_functions ghash[] = {
@@ -504,22 +505,27 @@ static int output_fncall_results(struct pattern_match *pattern,
 }
 
 /* Returns 0 if there is a match */
-static int regexp_match_call(regex_t *call, struct substring *sub)
+static int regexp_match_call(int (*m_all)(char *strall),
+			     regex_t *call, struct substring *sub)
 {
 	int ret = -1;
 	struct substring *substr = sub;
 
-	if (!call)
-		return ret;
-
 	if (!substring_strncpy(tmp_buffer, substr, TMPBUF_SIZE))
 		return ret;
 
-	return regexec(call, tmp_buffer, 0, NULL, 0);
+	if (m_all)
+		ret = m_all(tmp_buffer);
+
+	if (call && ret)
+		ret = regexec(call, tmp_buffer, 0, NULL, 0);
+
+	return ret;
 }
 
 /* Returns 0 if there is a match */
-static int regexp_match_cargs(regex_t *cargs, struct substring *sub)
+static int regexp_match_cargs(int (*m_args)(char *strarg),
+			      regex_t *cargs, struct substring *sub)
 {
 	int ret = -1;
 	char *start;
@@ -527,7 +533,7 @@ static int regexp_match_cargs(regex_t *cargs, struct substring *sub)
 	size_t len;
 	struct substring *substr = sub;
 
-	if (!cargs)
+	if (!m_args && !cargs)
 		return ret;
 
 	start = strchr(sub_start(substr), '(');
@@ -545,7 +551,13 @@ static int regexp_match_cargs(regex_t *cargs, struct substring *sub)
 	memcpy(tmp_buffer, start, len);
 	tmp_buffer[len - 1] = '\0';
 
-	return regexec(cargs, tmp_buffer, 0, NULL, 0);
+	if (m_args)
+		ret = m_args(tmp_buffer);
+
+	if (cargs && ret)
+		ret = regexec(cargs, tmp_buffer, 0, NULL, 0);
+
+	return ret;
 }
 
 /* Returns non 0 on fatal errors */
@@ -569,18 +581,16 @@ static int process_fncall(struct hash_functions *hashes,
 		print_decl = 1;
 	}
 
-	for (pm = f->patterns; pm && pm->args != pm->msg; pm++) {
-		int match = 0;
+	for (pm = f->patterns; pm && pm->active; pm++) {
+		int match;
 		if (msg_needed && !pm->msg)
 			continue;
 
-		if (pm->c_args || pm->c_all) {
-			match = (!regexp_match_cargs(pm->c_args,
-						     substr)
-				||!regexp_match_call(pm->c_all,
-						     substr))
-				? 0 : 1;
-		}
+		match = (!regexp_match_cargs(pm->match_args,
+					     pm->c_args, substr)
+			||!regexp_match_call(pm->match_all,
+					     pm->c_all, substr))
+			? 0 : 1;
 
 		if (match)
 			continue;
