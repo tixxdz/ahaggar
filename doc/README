@@ -1,0 +1,8 @@
+libahaggar_fncalls
+------------------
+
+main.c.237.fncalls.log: output of Linux kernel init/main.o
+compilation process.
+
+A new version of the init/main.c can be found here:
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/init/main.c
