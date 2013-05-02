@@ -35,13 +35,15 @@ struct pattern_match {
 	char *args;
 	char *all;
 
-	int (*f_args)(char *);
-	int (*f_all)(char *);
+	int (*match_args)(char *);
+	int (*match_all)(char *);
 
 	regex_t *c_args; /* internal compiled args */
 	regex_t *c_all;  /* internal compiled all */
 
 	char *msg;
+
+	int active;
 };
 
 struct target_functions {
