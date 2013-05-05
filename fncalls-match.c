@@ -252,11 +252,11 @@ static regex_t *init_regexp(const char *pattern)
 
 	memset(expr, 0, sizeof(regex_t));
 
-	ret=regcomp(expr, pattern, 0);
+	ret=regcomp(expr, pattern, REG_EXTENDED);
 	if (ret) {
 		regerror(ret, expr, tmp_buffer, TMPBUF_SIZE);
-		out_warning("GCC plugins: failed to compile regexp: %s\n",
-			    tmp_buffer);
+		out_error("GCC plugin: failed to compile regexp: %s",
+			  tmp_buffer);
 		free(expr);
 		return NULL;
 	}
@@ -279,26 +279,21 @@ static int compile_regexp_match(struct target_functions *fn)
 	struct target_functions *f = fn;
 	struct pattern_match *pm;
 
-	for (pm = f->patterns; pm && pm->args != pm->msg; pm++) {
+	for (pm = f->patterns; pm && pm->active; pm++) {
 		if (pm->args) {
 			pm->c_args = init_regexp(pm->args);
 			if (!pm->c_args)
-				goto error;
+				return ret;
 		}
 
 		if (pm->c_all) {
 			pm->c_all = init_regexp(pm->all);
 			if (!pm->c_all)
-				goto error;
+				return ret;
 		}
 	}
 
 	return 0;
-
-error:
-	out_error("GCC plugins: failed to compile regexp %s:%d\n",
-		  __FILE__, __LINE__);
-	return ret;
 }
 
 static void free_regexp_match(struct target_functions *fn)
@@ -306,7 +301,7 @@ static void free_regexp_match(struct target_functions *fn)
 	struct target_functions *f = fn;
 	struct pattern_match *pm;
 
-	for (pm = f->patterns; pm && pm->args != pm->msg; pm++) {
+	for (pm = f->patterns; pm && pm->active; pm++) {
 		fini_regexp(pm->c_args);
 		fini_regexp(pm->c_all);
 	}
@@ -324,7 +319,7 @@ static int populate_hash_target(htab_t hashtable,
 		if (!insert_target(h, f))
 			return ret;
 	} else {
-		out_warning("hashtable duplicate '%s' entry %s:%d\n",
+		out_warning("hashtable duplicate '%s' entry %s:%d",
 			    f->name, __FILE__, __LINE__);
 	}
 
@@ -699,7 +694,7 @@ int match_output(__attribute__((unused)) void *data,
 			continue;
 
 		if (process_output(&ghash[i], plug_data)) {
-			out_warning("GCC plugins: failed to handle output %s:%d\n",
+			out_warning("GCC plugin: failed to handle output %s:%d",
 				    __FILE__, __LINE__);
 			return ret;
 		}
@@ -747,7 +742,7 @@ int fncalls_match_init(void)
 	return 0;
 
 error:
-	out_error("GCC plugins: failed to create hashtable %s:%d\n",
+	out_error("GCC plugin: failed to create hashtable %s:%d",
 		  __FILE__, __LINE__);
 	return ret;
 }
