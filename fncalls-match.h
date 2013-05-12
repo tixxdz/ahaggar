@@ -51,6 +51,8 @@ struct target_functions {
 	struct pattern_match *patterns;
 };
 
+typedef void (*out_report_t)(int, const char *, const char *, ...);
+
 struct hash_functions {
 	int id; /* hash ID */
 
@@ -66,7 +68,7 @@ struct hash_functions {
 	unsigned int mcounter;
 
 	/* output report */
-	void (*out_f)(int, const char *, const char *, ...);
+	out_report_t out_f;
 };
 
 htab_t init_hash(struct hash_functions *hashes);
