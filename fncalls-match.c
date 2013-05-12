@@ -48,7 +48,7 @@
 #include "fncalls-match.h"
 
 #define SAFE_LOAD_FACTOR 25
-#define MAX_HASH_ENTRIES 10240
+#define MAX_HASH_ENTRIES 1024
 
 #define TMPBUF_SIZE 2048
 
@@ -445,7 +445,7 @@ static char *extract_location(struct substring *sub, location_t loc,
 		goto arg_location;
 
 	start++;
-	end = strrchr(start, ']');
+	end = strchr(start, ']');
 	if (!end)
 		goto arg_location;
 
@@ -556,11 +556,11 @@ static int regexp_match_cargs(int (*m_args)(char *strarg),
 	if (!start)
 		return ret;
 
-	end = strrchr(start, ')');
+	/* search for the file:line tag '[' */
+	end = strchr(start, '[');
 	if (!end)
 		return ret;
 
-	end+=2;
 	len = (size_t)(end - start);
 	if (len > TMPBUF_SIZE)
 		len = TMPBUF_SIZE;
