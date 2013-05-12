@@ -86,7 +86,7 @@ static struct target_functions reports[] = {
 //#include "file-warnings.h"
 //#include "file-reports.h"
 //#include "kmalloc-reports.h"
-//#include "const-reports.h"
+#include "const-reports.h"
 };
 
 static struct hash_functions ghash[] = {
@@ -430,24 +430,38 @@ static char *extract_fnname(struct substring *sub)
 }
 
 static char *extract_location(struct substring *sub, location_t loc,
-			      char *buffer)
+			      char *buffer, size_t buflen)
 {
-	struct substring *substr = sub;
+	char *start;
+	char *end;
+	size_t len;
 	char *buf = buffer;
+	struct substring *substr = sub;
 
 	buf[0] = '\0';
 
-	if (loc) {
-		snprintf(buf, TMPBUF_SIZE, "%s", LOCATION_FILE(loc));
+	start = strchr(sub_start(substr), '[');
+	if (!start)
+		goto arg_location;
 
-	} else if (substring_move_to_strchr(substr, sub_start(substr), '[')) {
-		substring_addchr_start(substr);
-		if (substring_to_strchr(substr, sub_start(substr), ']')) {
-			substring_addchr_end(substr);
-			substring_strncpy(buf, substr, TMPBUF_SIZE);
-		}
-	}
+	start++;
+	end = strrchr(start, ']');
+	if (!end)
+		goto arg_location;
 
+	end++;
+	len = (size_t)(end - start);
+	if (len > buflen)
+		len = buflen;
+
+	memcpy(buf, start, len);
+	buf[len - 1] = '\0';
+
+	return buf;
+
+arg_location:
+	if (loc)
+		snprintf(buf, buflen, "%s", LOCATION_FILE(loc));
 	return buf;
 }
 
@@ -498,8 +512,8 @@ static int output_fncall_results(out_report_t out_f,
 	if (!msg)
 		return ret;
 
-	tmp_buffer = extract_location(substr,
-				      input_location, tmp_buffer);
+	tmp_buffer = extract_location(substr, input_location,
+				      tmp_buffer, TMPBUF_SIZE);
 	out_f(pdata->fd,
 	      *tmp_buffer ? tmp_buffer : "", "%s", msg);
 
@@ -547,8 +561,9 @@ static int regexp_match_cargs(int (*m_args)(char *strarg),
 		return ret;
 
 	end+=2;
-	len = ((size_t)(end - start) < TMPBUF_SIZE)
-		? end - start : TMPBUF_SIZE;
+	len = (size_t)(end - start);
+	if (len > TMPBUF_SIZE)
+		len = TMPBUF_SIZE;
 
 	memcpy(tmp_buffer, start, len);
 	tmp_buffer[len - 1] = '\0';
