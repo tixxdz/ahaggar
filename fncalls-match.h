@@ -31,6 +31,12 @@ enum __hash_ids {
 	REPORTS_ID,
 };
 
+enum __match_v {
+	FNCALL_MATCH = 0,
+	FNCALL_NOMATCH,
+	FNCALL_RAW,
+};
+
 struct pattern_match {
 	char *args;
 	char *all;
@@ -42,6 +48,7 @@ struct pattern_match {
 	regex_t *c_all;  /* internal compiled all */
 
 	char *msg;
+	char *msg_nomatch;
 
 	int active;
 };
