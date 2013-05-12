@@ -524,11 +524,27 @@ static int output_fncall_results(out_report_t out_f,
 static int regexp_match_call(int (*m_all)(char *strall),
 			     regex_t *call, struct substring *sub)
 {
+	char *start;
+	char *end;
+	size_t len;
 	int ret = REG_NOMATCH;
 	struct substring *substr = sub;
 
-	if (!substring_strncpy(tmp_buffer, substr, TMPBUF_SIZE))
+	if (!m_all && !call)
 		return ret;
+
+	start = sub_start(substr);
+	end = strchr(start, ']');
+	if (!end)
+		return ret;
+
+	end++;
+	len = (size_t)(end - start);
+	if (len > TMPBUF_SIZE)
+		len = TMPBUF_SIZE;
+
+	memcpy(tmp_buffer, start, len);
+	tmp_buffer[len - 1] = '\0';
 
 	if (m_all)
 		ret = m_all(tmp_buffer);
