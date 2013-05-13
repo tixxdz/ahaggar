@@ -37,20 +37,27 @@ enum __match_v {
 	FNCALL_RAW,
 };
 
+typedef int (*match_func_t)(char *, char *, size_t);
+
 struct pattern_match {
 	char *args;
 	char *all;
 
-	int (*match_args)(char *);
-	int (*match_all)(char *);
-
 	regex_t *c_args; /* internal compiled args */
 	regex_t *c_all;  /* internal compiled all */
+
+	match_func_t match_args_func;
+	match_func_t match_all_func;
 
 	char *msg;
 	char *msg_nomatch;
 
-	int active;
+	/* This will point to a dynamically allocated buffer */
+	char *msg_extra;
+
+	void *__data;
+
+	const int active;
 };
 
 struct target_functions {
