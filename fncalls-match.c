@@ -51,6 +51,7 @@
 #define MAX_HASH_ENTRIES 1024
 
 #define TMPBUF_SIZE 2048
+#define TMPMSG_SIZE 512
 
 #define TARGETS_ARRAY_SIZE(err, warn, report) \
 	(ARRAY_SIZE(err) + ARRAY_SIZE(warn) + ARRAY_SIZE(report))
@@ -73,6 +74,7 @@ extern const char *progname;
 extern location_t input_location;
 
 static char *tmp_buffer = NULL;
+static char *tmp_message = NULL;
 
 static struct target_functions errors[] = {
 //#include "file-errors.h"
@@ -86,7 +88,7 @@ static struct target_functions reports[] = {
 //#include "file-warnings.h"
 //#include "file-reports.h"
 //#include "kmalloc-reports.h"
-#include "const-reports.h"
+//#include "const-reports.h"
 };
 
 static struct hash_functions ghash[] = {
@@ -498,39 +500,43 @@ static int output_fncall_results(out_report_t out_f,
 				 void *plug_data,
 				 int match)
 {
-	char *msg;
+	char *prefix;
 	int ret = -1;
+	char *msg = NULL;
 	struct pattern_match *pm = pattern;
-	struct substring *substr = sub;
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
 
 	if (match == FNCALL_NOMATCH)
 		msg = pm->msg_nomatch;
-	else
-		msg = pm->msg;
+	else if (match == FNCALL_MATCH) {
+		if (pm->msg_extra)
+			msg = pm->msg_extra;
+		else
+			msg = pm->msg;
+	}
 
-	if (!msg)
+	if (!msg || !*msg)
 		return ret;
 
-	tmp_buffer = extract_location(substr, input_location,
-				      tmp_buffer, TMPBUF_SIZE);
-	out_f(pdata->fd,
-	      *tmp_buffer ? tmp_buffer : "", "%s", msg);
+	prefix = extract_location(sub, input_location,
+				  tmp_buffer, TMPBUF_SIZE);
+	out_f(pdata->fd, *prefix ? prefix : "", "%s", msg);
 
 	return 0;
 }
 
 /* Returns 0 if there is a match */
-static int regexp_match_call(int (*m_all)(char *strall),
-			     regex_t *call, struct substring *sub)
+static int regexp_match_call(struct pattern_match *pattern,
+			     struct substring *sub)
 {
 	char *start;
 	char *end;
 	size_t len;
 	int ret = REG_NOMATCH;
+	struct pattern_match *pm = pattern;
 	struct substring *substr = sub;
 
-	if (!m_all && !call)
+	if (!pm->match_all_func && !pm->c_all)
 		return ret;
 
 	start = sub_start(substr);
@@ -546,26 +552,31 @@ static int regexp_match_call(int (*m_all)(char *strall),
 	memcpy(tmp_buffer, start, len);
 	tmp_buffer[len - 1] = '\0';
 
-	if (m_all)
-		ret = m_all(tmp_buffer);
+	if (pm->match_all_func) {
+		pm->msg_extra = tmp_message;
+		ret = pm->match_all_func(tmp_buffer,
+					 pm->msg_extra,
+					 TMPMSG_SIZE);
+	}
 
-	if (call && ret)
-		ret = regexec(call, tmp_buffer, 0, NULL, 0);
+	if (pm->c_all && ret)
+		ret = regexec(pm->c_all, tmp_buffer, 0, NULL, 0);
 
 	return ret;
 }
 
 /* Returns 0 if there is a match */
-static int regexp_match_cargs(int (*m_args)(char *strarg),
-			      regex_t *cargs, struct substring *sub)
+static int regexp_match_cargs(struct pattern_match *pattern,
+			      struct substring *sub)
 {
-	int ret = REG_NOMATCH;
 	char *start;
 	char *end;
 	size_t len;
+	int ret = REG_NOMATCH;
+	struct pattern_match *pm = pattern;
 	struct substring *substr = sub;
 
-	if (!m_args && !cargs)
+	if (!pm->match_args_func && !pm->c_args)
 		return ret;
 
 	start = strchr(sub_start(substr), '(');
@@ -584,11 +595,15 @@ static int regexp_match_cargs(int (*m_args)(char *strarg),
 	memcpy(tmp_buffer, start, len);
 	tmp_buffer[len - 1] = '\0';
 
-	if (m_args)
-		ret = m_args(tmp_buffer);
+	if (pm->match_args_func) {
+		pm->msg_extra = tmp_message;
+		ret = pm->match_args_func(tmp_buffer,
+					  pm->msg_extra,
+					  TMPMSG_SIZE);
+	}
 
-	if (cargs && ret)
-		ret = regexec(cargs, tmp_buffer, 0, NULL, 0);
+	if (pm->c_args && ret)
+		ret = regexec(pm->c_args, tmp_buffer, 0, NULL, 0);
 
 	return ret;
 }
@@ -617,28 +632,31 @@ static int process_fncall(struct hash_functions *hashes,
 	for (pm = f->patterns; pm && pm->active; pm++) {
 		int match;
 		int type_of_call = FNCALL_MATCH;
-		if (!pm->msg && !pm->msg_nomatch) {
+		if (!pm->msg && !pm->msg_nomatch &&
+		(!pm->match_args_func && !pm->match_all_func)) {
 			if (msg_needed)
 				continue;
 			type_of_call = FNCALL_RAW;
 		}
 
-		match = (!regexp_match_cargs(pm->match_args,
-					     pm->c_args, substr)
-			||!regexp_match_call(pm->match_all,
-					     pm->c_all, substr))
+		memset(tmp_buffer, 0, TMPBUF_SIZE);
+		memset(tmp_message, 0, TMPMSG_SIZE);
+
+		match = (!regexp_match_cargs(pm, substr)
+			||!regexp_match_call(pm, substr))
 			? FNCALL_MATCH : FNCALL_NOMATCH;
 
 		if (type_of_call != FNCALL_RAW) {
 			output_fncall_results(h->out_f, pm, substr,
 					      plug_data, match);
-		} else {
+		} else if (match == FNCALL_MATCH) {
 			if (print_decl)
 				dump_decl_output(plug_data);
 
 			print_decl = 0;
 			substring_write(plug_data, substr);
 		}
+
 	}
 
 	return 0;
@@ -767,6 +785,8 @@ int fncalls_match_init(void)
 	int ret = -1;
 
 	tmp_buffer = (char *)xmalloc(TMPBUF_SIZE);
+	tmp_message = (char *)xmalloc(TMPMSG_SIZE);
+
 	memset(tmp_buffer, 0, TMPBUF_SIZE);
 
 	for (i = 0; i < ARRAY_SIZE(ghash); i++) {
@@ -804,5 +824,6 @@ void fncalls_match_finish(void)
 			free_regexp_match(&h->targets[x]);
 	}
 
+	free(tmp_message);
 	free(tmp_buffer);
 }
