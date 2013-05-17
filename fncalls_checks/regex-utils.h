@@ -23,6 +23,8 @@
 #ifndef _REGEX_UTILS_H
 #define _REGEX_UTILS_H
 
+#include <regex.h>
+
 int regcheck(regex_t *regex, char *call, char *pattern,
 	     char *buf, size_t buflen);
 

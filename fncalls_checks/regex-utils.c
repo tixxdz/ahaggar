@@ -36,7 +36,7 @@ static int reginit(regex_t *regex, char *pattern,
 {
 	int ret = 0;
 
-	if (*regex)
+	if (*((char *)regex))
 		return ret;
 
 	ret = regcomp(regex, pattern, REG_EXTENDED);
