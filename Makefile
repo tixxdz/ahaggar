@@ -62,11 +62,16 @@ HOST_DBASEFLAGS += -D_FILE_OFFSET_BITS=64
 
 AHAGGAR_HDRS := $(patsubst %.h,%.h,$(wildcard $(src)/*.h))
 AHAGGAR_SRCS := $(wildcard $(src)/*.c)
-AHAGGAR_OBJS := $(patsubst %.c,%.o,$(wildcard $(obj)/*.c))
+AHAGGAR_OBJS := $(patsubst %.c,%.o,$(wildcard $(src)/*.c))
+
 AHAGGAR_CORE_OBJS = buffer.o log.o str-utils.o
-AHAGGAR_GCC_UTILS_OBJS = gcc-utils.o nodes-utils.o
+AHAGGAR_GCC_UTILS_OBJS = gcc-utils.o gcc-log.o nodes-utils.o
 AHAGGAR_GCC_EXTRA_OBJS = cache-nodes.o print-nodes.o
 AHAGGAR_GCC_OBJS = walk-nodes.o walk-gimple.o
+
+AHAGGAR_FNCALLS_CHECK_OBJS = fncalls_checks/malloc-checks.o
+
+AHAGGAR_OBJS += $(AHAGGAR_FNCALLS_CHECK_OBJS)
 
 AHAGGAR_AST_OBJS := $(AHAGGAR_CORE_OBJS) \
 		    $(AHAGGAR_GCC_UTILS_OBJS) \
@@ -78,6 +83,7 @@ AHAGGAR_FNCALLS_OBJS := $(AHAGGAR_CORE_OBJS) \
 			$(AHAGGAR_GCC_UTILS_OBJS) \
 			print-nodes.o \
 			$(AHAGGAR_GCC_OBJS) \
+			$(AHAGGAR_FNCALLS_CHECK_OBJS) \
 			fncalls-match.o \
 			ahaggar-fncalls.o
 
@@ -170,7 +176,7 @@ $(LIB_AST): $(SHARED_AST)
 $(LIB_FNCALLS): $(SHARED_FNCALLS)
 	$(LN_s) $(SHARED_FNCALLS) $(LIB_FNCALLS)
 
-%.o: $(src)/%.c
+%.o: %.c
 	$(PLUGINCC) $(PLUGINCCFLAGS_lib) -o $@ -c $<
 
 install-libs:
@@ -193,8 +199,8 @@ remove-libs:
 
 
 clean:
-	$(RM) $(AHAGGAR_CLEAN_BASE) $(AHAGGAR_SHARED)
-	$(RM) $(LIBAHAGGAR_XXSHARED)
+	$(RM) $(AHAGGAR_CLEAN_BASE)
+	$(RM) $(AHAGGAR_SHARED) $(LIBAHAGGAR_XXSHARED)
 
 .PHONY: all ahaggar-libs ahaggar-plugins install install-libs \
 	remove-libs remove clean
