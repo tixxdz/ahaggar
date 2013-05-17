@@ -26,7 +26,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdarg.h>
 #include <regex.h>
 
 #include "gcc-plugin.h"
@@ -45,6 +44,7 @@
 #include "buffer.h"
 #include "str-utils.h"
 #include "log.h"
+#include "gcc-log.h"
 #include "fncalls-match.h"
 
 #define SAFE_LOAD_FACTOR 25
@@ -61,15 +61,6 @@ static hashval_t __string_hash(const void *);
 static inline int is_hash_safe(struct target_functions *,
 			       unsigned int);
 
-static void __error(__attribute__((unused)) int x,
-		    const char *str, const char *fmt, ...);
-static void __warning(__attribute__((unused)) int x,
-		      const char *str, const char *fmt, ...);
-
-#define out_error(fmt, args...) __error(0, NULL, fmt, ##args)
-#define out_warning(fmt, args...) __warning(0, NULL, fmt, ##args)
-#define out_report(x, s, fmt, args...) report(x, s, fmt, ##args)
-
 extern const char *progname;
 extern location_t input_location;
 
@@ -77,18 +68,18 @@ static char *tmp_buffer = NULL;
 static char *tmp_message = NULL;
 
 static struct target_functions errors[] = {
-//#include "file-errors.h"
+//#include "fncall_checks/file-errors.h"
 };
 
 static struct target_functions warnings[] = {
-//#include "file-warnings.h"
+//#include "fncall_checks/file-warnings.h"
 };
 
 static struct target_functions reports[] = {
-//#include "file-warnings.h"
-//#include "file-reports.h"
-//#include "kmalloc-reports.h"
-//#include "const-reports.h"
+//#include "fncall_checks/file-warnings.h"
+//#include "fncall_checks/file-reports.h"
+//#include "fncall_checks/kmalloc-reports.h"
+//#include "fncall_checks/const-reports.h"
 };
 
 static struct hash_functions ghash[] = {
@@ -129,42 +120,6 @@ static ssize_t substring_write(void *plug_data, struct substring *sub)
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
 
 	return write(pdata->fd, sub_start(sub), sub_len(sub));
-}
-
-static void __error(__attribute__((unused)) int x,
-		    const char *str, const char *fmt, ...)
-{
-	va_list args;
-	diagnostic_info diagnostic;
-
-	if (str)
-		fprintf(stderr, "%s: error:\n", str);
-
-	va_start(args, fmt);
-	diagnostic_set_info(&diagnostic, fmt, &args,
-			    UNKNOWN_LOCATION, DK_ERROR);
-	diagnostic.option_index = 0;
-
-	report_diagnostic(&diagnostic);
-	va_end(args);
-}
-
-static void __warning(__attribute__((unused)) int x,
-		      const char *str, const char *fmt, ...)
-{
-	va_list args;
-	diagnostic_info diagnostic;
-
-	if (str)
-		fprintf(stderr, "%s: warning:\n", str);
-
-	va_start(args, fmt);
-	diagnostic_set_info(&diagnostic, fmt, &args,
-			    UNKNOWN_LOCATION, DK_WARNING);
-	diagnostic.option_index = 0;
-
-	report_diagnostic(&diagnostic);
-	va_end(args);
 }
 
 static inline int is_hash_safe(struct target_functions *arr,
@@ -500,7 +455,7 @@ static int output_fncall_results(out_report_t out_f,
 				 void *plug_data,
 				 int match)
 {
-	char *prefix;
+	char *location;
 	int ret = -1;
 	char *msg = NULL;
 	struct pattern_match *pm = pattern;
@@ -509,7 +464,7 @@ static int output_fncall_results(out_report_t out_f,
 	if (match == FNCALL_NOMATCH)
 		msg = pm->msg_nomatch;
 	else if (match == FNCALL_MATCH) {
-		if (pm->msg_extra)
+		if (pm->msg_extra && *pm->msg_extra)
 			msg = pm->msg_extra;
 		else
 			msg = pm->msg;
@@ -518,9 +473,9 @@ static int output_fncall_results(out_report_t out_f,
 	if (!msg || !*msg)
 		return ret;
 
-	prefix = extract_location(sub, input_location,
-				  tmp_buffer, TMPBUF_SIZE);
-	out_f(pdata->fd, *prefix ? prefix : "", "%s", msg);
+	location = extract_location(sub, input_location,
+				    tmp_buffer, TMPBUF_SIZE);
+	out_f(pdata->fd, *location ? location : "", "%s", msg);
 
 	return 0;
 }
@@ -555,6 +510,7 @@ static int regexp_match_call(struct pattern_match *pattern,
 	if (pm->match_all_func) {
 		pm->msg_extra = tmp_message;
 		ret = pm->match_all_func(tmp_buffer,
+					 pm->flags,
 					 pm->msg_extra,
 					 TMPMSG_SIZE);
 	}
@@ -598,6 +554,7 @@ static int regexp_match_cargs(struct pattern_match *pattern,
 	if (pm->match_args_func) {
 		pm->msg_extra = tmp_message;
 		ret = pm->match_args_func(tmp_buffer,
+					  pm->flags,
 					  pm->msg_extra,
 					  TMPMSG_SIZE);
 	}
