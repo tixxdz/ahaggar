@@ -60,5 +60,5 @@ int regcheck(regex_t *regex, char *call, char *pattern,
 	if (ret)
 		return ret;
 
-	return REG_MATCH;
+	return 0;
 }
