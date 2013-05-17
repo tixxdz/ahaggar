@@ -45,6 +45,8 @@
 #include "str-utils.h"
 #include "log.h"
 #include "gcc-log.h"
+#include "fncalls_checks/regex-utils.h"
+#include "fncalls_checks/checks.h"
 #include "fncalls-match.h"
 
 #define SAFE_LOAD_FACTOR 25
@@ -68,18 +70,18 @@ static char *tmp_buffer = NULL;
 static char *tmp_message = NULL;
 
 static struct target_functions errors[] = {
-//#include "fncall_checks/file-errors.h"
+//#include "fncalls_checks/file-errors.h"
 };
 
 static struct target_functions warnings[] = {
-//#include "fncall_checks/file-warnings.h"
+//#include "fncalls_checks/file-warnings.h"
 };
 
 static struct target_functions reports[] = {
-//#include "fncall_checks/file-warnings.h"
-//#include "fncall_checks/file-reports.h"
-//#include "fncall_checks/kmalloc-reports.h"
-//#include "fncall_checks/const-reports.h"
+//#include "fncalls_checks/file-warnings.h"
+//#include "fncalls_checks/file-reports.h"
+//#include "fncalls_checks/kmalloc-reports.h"
+#include "fncalls_checks/const-reports.h"
 };
 
 static struct hash_functions ghash[] = {
