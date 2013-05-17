@@ -25,7 +25,7 @@
 
 #include <regex.h>
 
-int regcheck(regex_t *regex, char *call, char *pattern,
+int regmatch(regex_t *regex, char *call, char *pattern,
 	     char *buf, size_t buflen);
 
 #endif /* end of _REGEX_UTILS_H */

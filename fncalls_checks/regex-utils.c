@@ -46,7 +46,7 @@ static int reginit(regex_t *regex, char *pattern,
 	return ret;
 }
 
-int regcheck(regex_t *regex, char *call, char *pattern,
+int regmatch(regex_t *regex, char *call, char *pattern,
 	     char *buf, size_t buflen)
 {
 	int ret = reginit(regex, pattern, buf, buflen);
