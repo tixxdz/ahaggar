@@ -23,6 +23,8 @@
 #ifndef _CHECKS_H
 #define _CHECKS_H
 
+#include "checks-utils.h"
+#include "regex-utils.h"
 #include "malloc-checks.h"
 
 #endif /* end of _CHECKS_H */
