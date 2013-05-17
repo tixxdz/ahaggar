@@ -37,7 +37,8 @@ enum __match_v {
 	FNCALL_RAW,
 };
 
-typedef int (*match_func_t)(char *, char *, size_t);
+typedef int (*match_func_t)(char *call, int flags,
+			    char *buf, size_t buflen);
 
 struct pattern_match {
 	char *args;
@@ -46,6 +47,10 @@ struct pattern_match {
 	regex_t *c_args; /* internal compiled args */
 	regex_t *c_all;  /* internal compiled all */
 
+	/* Flags to be passed to the callback matchers */
+	int flags;
+
+	/* Callback matchers */
 	match_func_t match_args_func;
 	match_func_t match_all_func;
 
@@ -55,7 +60,8 @@ struct pattern_match {
 	/* This will point to a dynamically allocated buffer */
 	char *msg_extra;
 
-	void *__data;
+	void *__data_1;
+	void *__data_2;
 
 	const int active;
 };
