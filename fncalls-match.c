@@ -45,7 +45,6 @@
 #include "str-utils.h"
 #include "log.h"
 #include "gcc-log.h"
-#include "fncalls_checks/regex-utils.h"
 #include "fncalls_checks/checks.h"
 #include "fncalls-match.h"
 
@@ -75,6 +74,7 @@ static struct target_functions errors[] = {
 
 static struct target_functions warnings[] = {
 //#include "fncalls_checks/file-warnings.h"
+#include "fncalls_checks/malloc-warnings.h"
 };
 
 static struct target_functions reports[] = {
@@ -628,7 +628,6 @@ static int process_output(struct hash_functions *hashes,
 	int ret = -1;
 	int print_decl = 0;
 	int patterns_needed = 1;
-	int errors = 0;
 	struct substring *substr;
 	struct target_functions *tag;
 	struct hash_functions *h = hashes;
@@ -643,16 +642,12 @@ static int process_output(struct hash_functions *hashes,
 
 	substr = substring_init();
 
-	for (; h->mcounter; h->mcounter--) {
+	while(h->mcounter) {
 		tag = match_fncall(h->tab, substr, plug_data);
-		if (!tag) {
-			errors++;
-			if (errors < 3)
-				continue;
-			else
-				return ret;
-		}
+		if (!tag)
+			continue;
 
+		h->mcounter--;
 		if (tag->patterns) {
 			if (process_fncall(h, tag, substr, plug_data))
 				return ret;
