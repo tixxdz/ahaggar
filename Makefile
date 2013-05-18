@@ -69,7 +69,8 @@ AHAGGAR_GCC_UTILS_OBJS = gcc-utils.o gcc-log.o nodes-utils.o
 AHAGGAR_GCC_EXTRA_OBJS = cache-nodes.o print-nodes.o
 AHAGGAR_GCC_OBJS = walk-nodes.o walk-gimple.o
 
-AHAGGAR_FNCALLS_CHECK_OBJS = fncalls_checks/regex-utils.o
+AHAGGAR_FNCALLS_CHECK_OBJS = fncalls_checks/checks-utils.o
+AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/regex-utils.o
 AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/malloc-checks.o
 
 AHAGGAR_OBJS += $(AHAGGAR_FNCALLS_CHECK_OBJS)
