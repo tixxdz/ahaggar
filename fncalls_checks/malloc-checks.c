@@ -27,29 +27,28 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <regex.h>
 #include <errno.h>
 
+#include "checks-utils.h"
 #include "regex-utils.h"
 #include "malloc-checks.h"
 
-static regex_t malloc_regex;
-static char *malloc_args_const = "^\\(<integer_cst>\\s.*\\)$";
+static char *malloc_args_const = "<integer_cst> ";
 
 int malloc_chk_allocation_size(char *call, int flags,
 			       char *buf, size_t buflen)
 {
-	int ret;
 	char *ptr;
-	char *s = call;
 	unsigned long int msize;
+	int ret = REG_NOMATCH;
+	char *s = call_start_at_arg(call, 1);
 
-	ret = regmatch(&malloc_regex, s,
-		       malloc_args_const, buf, buflen);
-	if (ret)
+	if (!s)
 		return ret;
 
-	ret = REG_NOMATCH;
+	if (strncmp(s, malloc_args_const, sizeof(malloc_args_const)))
+		return ret;
+
 	ptr = strrchr(s, ' ');
 	if (!ptr)
 		return ret;
