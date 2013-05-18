@@ -17,16 +17,6 @@
 	},
 },
 {
-	.name = "malloc",
-	.patterns = (struct pattern_match []) {
-		{
-		.active = 1,
-		.match_args_func = malloc_chk_allocation_size,
-		},
-		{ NULL },
-	}
-},
-{
 	.name = "free",
 	.patterns = (struct pattern_match []) {
 		{
