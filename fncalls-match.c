@@ -74,6 +74,8 @@ static struct target_functions errors[] = {
 
 static struct target_functions warnings[] = {
 //#include "fncalls_checks/file-warnings.h"
+#include "fncalls_checks/api-warnings.h"
+#include "fncalls_checks/kmalloc-warnings.h"
 #include "fncalls_checks/malloc-warnings.h"
 };
 
@@ -81,7 +83,7 @@ static struct target_functions reports[] = {
 //#include "fncalls_checks/file-warnings.h"
 //#include "fncalls_checks/file-reports.h"
 //#include "fncalls_checks/kmalloc-reports.h"
-#include "fncalls_checks/const-reports.h"
+//#include "fncalls_checks/const-reports.h"
 };
 
 static struct hash_functions ghash[] = {
@@ -601,8 +603,9 @@ static int process_fncall(struct hash_functions *hashes,
 		memset(tmp_buffer, 0, TMPBUF_SIZE);
 		memset(tmp_message, 0, TMPMSG_SIZE);
 
-		match = (!regexp_match_cargs(pm, substr)
-			||!regexp_match_call(pm, substr))
+		match = (pm->force_match
+			|| !regexp_match_cargs(pm, substr)
+			|| !regexp_match_call(pm, substr))
 			? FNCALL_MATCH : FNCALL_NOMATCH;
 
 		if (type_of_call != FNCALL_RAW) {
