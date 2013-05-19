@@ -47,6 +47,9 @@ struct pattern_match {
 	regex_t *c_args; /* internal compiled args */
 	regex_t *c_all;  /* internal compiled all */
 
+	/* Force match */
+	int force_match;
+
 	/* Flags to be passed to the callback matchers */
 	int flags;
 
@@ -61,7 +64,6 @@ struct pattern_match {
 	char *msg_extra;
 
 	void *__data_1;
-	void *__data_2;
 
 	const int active;
 };
