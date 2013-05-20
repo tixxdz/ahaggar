@@ -121,12 +121,14 @@ char *call_start_at_arg(const char *call, int arg_idx)
 			ptr = get_next_arg(&offset);
 		}
 	} else if (arg_idx < 0) {
-		while (arg_idx++) {
+		/* TODO: make it work */
+		/*while (arg_idx++) {
 			ptr = strrchr(ptr, ',');
 			if (!ptr)
 				break;
 			ptr += 2;
-		}
+		}*/
+		return ptr;
 	} else if (arg_idx == 1) {
 		ptr = get_next_arg(&offset);
 	}
