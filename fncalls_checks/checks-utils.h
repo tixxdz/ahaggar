@@ -23,6 +23,10 @@
 #ifndef _CHECKS_UTILS_H
 #define _CHECKS_UTILS_H
 
+char *get_next_arg(char **call_offset);
+
+int get_args_nr(const char *call);
+
 char *call_start_at_arg(const char *call, int arg_idx);
 
 #endif /* end of _CHECKS_UTILS_H */
