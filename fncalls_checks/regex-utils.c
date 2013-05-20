@@ -56,9 +56,5 @@ int regmatch(regex_t *regex, char *call, char *pattern,
 		return ret;
 	}
 
-	ret = regexec(regex, call, 0, NULL, 0);
-	if (ret)
-		return ret;
-
-	return 0;
+	return regexec(regex, call, 0, NULL, 0);
 }
