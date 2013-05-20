@@ -26,5 +26,6 @@
 #include "checks-utils.h"
 #include "regex-utils.h"
 #include "malloc-checks.h"
+#include "file-checks.h"
 
 #endif /* end of _CHECKS_H */
