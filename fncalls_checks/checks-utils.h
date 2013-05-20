@@ -25,6 +25,8 @@
 
 char *get_next_arg(char **call_offset);
 
+char *get_arg_value(const char *arg);
+
 int get_args_nr(const char *call);
 
 char *call_start_at_arg(const char *call, int arg_idx);

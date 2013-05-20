@@ -64,6 +64,43 @@ out:
 	return ptr;
 }
 
+char *get_arg_value(const char *arg)
+{
+	unsigned int subcalls = 0;
+	char *v = NULL;
+	char *ptr = (char *)arg;
+
+	if (!ptr)
+		return v;
+
+	if (*ptr == ')')
+		return v;
+
+	for (; *ptr != '\0'; ptr++) {
+		if (*ptr == '(') {
+			subcalls++;
+		} else if (*ptr == ')') {
+			if (subcalls) {
+				subcalls--;
+			} else {
+				v = ptr;
+				break;
+			}
+		} else if (*ptr == ',' && subcalls == 0) {
+			   v = ptr;
+			   break;
+		}
+	}
+
+	if (!v)
+		return v;
+
+	while (*v != ' ')
+		v--;
+
+	return ++v;
+}
+
 int get_args_nr(const char *call)
 {
 	int nr = 0;
