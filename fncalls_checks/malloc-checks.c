@@ -25,105 +25,35 @@
 #endif
 
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
 
 #include "checks-utils.h"
-#include "regex-utils.h"
+#include "mem-checks.h"
 #include "malloc-checks.h"
 
-static char *malloc_args_const = "<integer_cst> ";
 
 int malloc_chk_allocation_size(char *call, int flags,
 			       char *buf, size_t buflen)
 {
-	char *ptr;
-	unsigned long int msize;
-	int ret = REG_NOMATCH;
-	char *s = call_start_at_arg(call, 1);
+	struct fncall_data fn;
 
-	if (!s)
-		return ret;
-
-	if (strncmp(s, malloc_args_const, sizeof(malloc_args_const)))
-		return ret;
-
-	ptr = strrchr(s, ' ');
-	if (!ptr)
-		return ret;
-
-	errno = 0;
-	msize = strtoul(++ptr, NULL, 0);
-	if (errno)
-		return ret;
-
-	switch (msize) {
-	case 0:
-		snprintf(buf, buflen,
-			 "function 'malloc' argument size is 0");
-		break;
-	case (sizeof(ptr)):
-		snprintf(buf, buflen,
-			 "function 'malloc' argument size equals ptr size %ld",
-			 msize);
-		break;
-	default:
-		break;
-	}
-
-	return 0;
-}
-
-char *kmalloc_to_allocation_size(const char *call, int arg_idx,
-				 int flags)
-{
-	char *ptr = call_start_at_arg(call, arg_idx);
-
-	if (!ptr)
-		return ptr;
-
-	if (strncmp(ptr, malloc_args_const, sizeof(malloc_args_const)))
-		return NULL;
-
-	ptr = strchr(ptr, ',');
-	if (!ptr)
-		return ptr;
-
-	while (*ptr != ' ')
-		ptr--;
-
-	return ptr++;
+	init_fncall_data(&fn, "malloc", call, 1, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
 }
 
 int kmalloc_chk_allocation_size(char *call, int flags,
 			        char *buf, size_t buflen)
 {
-	unsigned long int msize;
-	int ret = REG_NOMATCH;
-	char *ptr = kmalloc_to_allocation_size(call, 1, 0);
+	struct fncall_data fn;
 
-	if (!ptr)
-		return ret;
+	init_fncall_data(&fn, "kmalloc", call, 1, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
+}
 
-	errno = 0;
-	msize = strtoul(ptr, NULL, 0);
-	if (errno)
-		return ret;
+int kzalloc_chk_allocation_size(char *call, int flags,
+			        char *buf, size_t buflen)
+{
+	struct fncall_data fn;
 
-	switch (msize) {
-	case 0:
-		snprintf(buf, buflen,
-			 "function 'kmalloc' argument size is 0");
-		break;
-	case (sizeof(ptr)):
-		snprintf(buf, buflen,
-			 "function 'kmalloc' argument size equals ptr size %ld",
-			 msize);
-		break;
-	default:
-		break;
-	}
-
-	return 0;
+	init_fncall_data(&fn, "kzalloc", call, 1, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
 }

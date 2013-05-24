@@ -26,9 +26,6 @@
 extern int malloc_chk_allocation_size(char *call, int flags,
 				      char *buf, size_t buflen);
 
-extern char *kmalloc_to_allocation_size(const char *call, int arg_idx,
-					int flags);
-
 extern int kmalloc_chk_allocation_size(char *call, int flags,
 				       char *buf, size_t buflen);
 
