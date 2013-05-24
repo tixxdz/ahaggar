@@ -29,4 +29,12 @@
 },
 {
 	.name = "memset",
+	.patterns = (struct pattern_match []) {
+		{
+		.active = 1,
+		.args = "^\\(.*,.*,\\s<integer_cst>\\s.*\\)$",
+		.msg_nomatch = "function 'memset' size_t n argument is not a compile time const"
+		},
+		{ NULL },
+	},
 },
