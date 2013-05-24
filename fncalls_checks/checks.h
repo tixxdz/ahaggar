@@ -25,6 +25,7 @@
 
 #include "checks-utils.h"
 #include "regex-utils.h"
+#include "mem-checks.h"
 #include "malloc-checks.h"
 #include "file-checks.h"
 
