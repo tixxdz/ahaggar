@@ -5,12 +5,12 @@
 		{
 		.active = 1,
 		.match_args_func = open_assumes_file_exists,
-		.msg = "function 'open' assumes file do exist",
+		.msg = "the 'open' function assumes file do exist",
 		},
 		{
 		.active = 1,
 		.match_args_func = open_needs_mode_arg,
-		.msg = "function 'open' needs the mode argument",
+		.msg = "the 'open' function needs the mode argument",
 		},
 		{
 		.active = 1,
@@ -18,6 +18,9 @@
 		},
 		{ NULL },
 	},
+},
+{
+	.name = "umask",
 },
 {
 	.name = "chmod",
