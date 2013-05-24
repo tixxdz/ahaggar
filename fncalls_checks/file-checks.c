@@ -153,7 +153,7 @@ int open_chk_flag_mode(char *call, int flags,
 				buflen - strlen(buf) - 1);
 
 		snprintf(buf + strlen(buf), buflen - strlen(buf),
-			 "%05o", amode);
+			 "%05lo", amode);
 	}
 
 	return 0;
