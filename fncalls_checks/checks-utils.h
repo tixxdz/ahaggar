@@ -23,6 +23,27 @@
 #ifndef _CHECKS_UTILS_H
 #define _CHECKS_UTILS_H
 
+struct fncall_data {
+	const char *fnname;
+	const char *call;
+
+	int arg_idx;
+	int flags;
+
+};
+
+static inline void init_fncall_data(struct fncall_data *fn,
+				    const char *fnname, char *call,
+				    int arg_idx, int flags)
+{
+	if (fn) {
+		fn->fnname = fnname;
+		fn->call = call;
+		fn->arg_idx = arg_idx;
+		fn->flags = flags;
+	}
+}
+
 char *get_next_arg(char **call_offset);
 
 char *get_arg_value(const char *arg);
