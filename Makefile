@@ -71,6 +71,7 @@ AHAGGAR_GCC_OBJS = walk-nodes.o walk-gimple.o
 
 AHAGGAR_FNCALLS_CHECK_OBJS = fncalls_checks/checks-utils.o
 AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/regex-utils.o
+AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/mem-checks.o
 AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/malloc-checks.o
 AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/file-checks.o
 
