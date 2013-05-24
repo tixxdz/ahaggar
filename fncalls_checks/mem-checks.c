@@ -92,7 +92,7 @@ int mem_chk_common_size(struct fncall_data *fc_data,
 	ptr = mem_to_int_cst_size(fn->call, fn->arg_idx, fn->flags);
 	if (!ptr)
 		return ret;
-	
+
 	errno = 0;
 	msize = strtoul(ptr, NULL, 0);
 	if (errno)
