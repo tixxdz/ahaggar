@@ -9,6 +9,16 @@
 	}
 },
 {
+	.name = "memset",
+	.patterns = (struct pattern_match []) {
+		{
+		.active = 1,
+		.match_args_func = memset_chk_size,
+		},
+		{ NULL },
+	}
+},
+{
 	.name = "free",
 	.patterns = (struct pattern_match []) {
 		{
