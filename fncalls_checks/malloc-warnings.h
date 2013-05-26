@@ -3,17 +3,27 @@
 	.patterns = (struct pattern_match []) {
 		{
 		.active = 1,
-		.match_args_func = malloc_chk_allocation_size,
+		.match_args_func = malloc_chk_size,
 		},
 		{ NULL },
 	}
 },
 {
-	.name = "memset",
+	.name = "strndup",
 	.patterns = (struct pattern_match []) {
 		{
 		.active = 1,
-		.match_args_func = memset_chk_size,
+		.match_args_func = strndup_chk_size,
+		},
+		{ NULL },
+	}
+},
+{
+	.name = "strndupa",
+	.patterns = (struct pattern_match []) {
+		{
+		.active = 1,
+		.match_args_func = strndupa_chk_size,
 		},
 		{ NULL },
 	}
