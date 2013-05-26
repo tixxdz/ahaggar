@@ -39,4 +39,16 @@ extern int memset_chk_size(char *call, int flags,
 extern int memcpy_chk_size(char *call, int flags,
 			   char *buf, size_t buflen);
 
+extern int strncpy_chk_size(char *call, int flags,
+			    char *buf, size_t buflen);
+
+extern int strncat_chk_size(char *call, int flags,
+			    char *buf, size_t buflen);
+
+extern int memmove_chk_size(char *call, int flags,
+			    char *buf, size_t buflen);
+
+extern int memcmp_chk_size(char *call, int flags,
+			   char *buf, size_t buflen);
+
 #endif /* end of _MEM_CHECKS_H */

@@ -118,3 +118,39 @@ int memcpy_chk_size(char *call, int flags,
 	init_fncall_data(&fn, "memcpy", call, 3, flags);
 	return mem_chk_common_size(&fn, buf, buflen);
 }
+
+int strncpy_chk_size(char *call, int flags,
+		     char *buf, size_t buflen)
+{
+	struct fncall_data fn;
+
+	init_fncall_data(&fn, "strncpy", call, 3, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
+}
+
+int strncat_chk_size(char *call, int flags,
+		     char *buf, size_t buflen)
+{
+	struct fncall_data fn;
+
+	init_fncall_data(&fn, "strncat", call, 3, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
+}
+
+int memmove_chk_size(char *call, int flags,
+		     char *buf, size_t buflen)
+{
+	struct fncall_data fn;
+
+	init_fncall_data(&fn, "memmove", call, 3, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
+}
+
+int memcmp_chk_size(char *call, int flags,
+		    char *buf, size_t buflen)
+{
+	struct fncall_data fn;
+
+	init_fncall_data(&fn, "memcmp", call, 3, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
+}
