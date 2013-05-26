@@ -3,7 +3,7 @@
 	.patterns = (struct pattern_match []) {
 		{
 		.active = 1,
-		.match_args_func = kmalloc_chk_allocation_size,
+		.match_args_func = kmalloc_chk_size,
 		},
 		{ NULL },
 	}
@@ -13,7 +13,7 @@
 	.patterns = (struct pattern_match []) {
 		{
 		.active = 1,
-		.match_args_func = kzalloc_chk_allocation_size,
+		.match_args_func = kzalloc_chk_size,
 		},
 		{ NULL },
 	}
