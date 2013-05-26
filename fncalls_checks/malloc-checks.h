@@ -23,13 +23,19 @@
 #ifndef _MALLOC_CHECKS_H
 #define _MALLOC_CHECKS_H
 
-extern int malloc_chk_allocation_size(char *call, int flags,
-				      char *buf, size_t buflen);
+extern int malloc_chk_size(char *call, int flags,
+			   char *buf, size_t buflen);
 
-extern int kmalloc_chk_allocation_size(char *call, int flags,
-				       char *buf, size_t buflen);
+extern int kmalloc_chk_size(char *call, int flags,
+			    char *buf, size_t buflen);
 
-extern int kzalloc_chk_allocation_size(char *call, int flags,
-				       char *buf, size_t buflen);
+extern int kzalloc_chk_size(char *call, int flags,
+			    char *buf, size_t buflen);
+
+extern int strndup_chk_size(char *call, int flags,
+			    char *buf, size_t buflen);
+
+extern int strndupa_chk_size(char *call, int flags,
+			     char *buf, size_t buflen);
 
 #endif /* end of _MALLOC_CHECKS_H */

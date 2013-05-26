@@ -31,8 +31,8 @@
 #include "malloc-checks.h"
 
 
-int malloc_chk_allocation_size(char *call, int flags,
-			       char *buf, size_t buflen)
+int malloc_chk_size(char *call, int flags,
+		    char *buf, size_t buflen)
 {
 	struct fncall_data fn;
 
@@ -40,8 +40,8 @@ int malloc_chk_allocation_size(char *call, int flags,
 	return mem_chk_common_size(&fn, buf, buflen);
 }
 
-int kmalloc_chk_allocation_size(char *call, int flags,
-			        char *buf, size_t buflen)
+int kmalloc_chk_size(char *call, int flags,
+		     char *buf, size_t buflen)
 {
 	struct fncall_data fn;
 
@@ -49,11 +49,29 @@ int kmalloc_chk_allocation_size(char *call, int flags,
 	return mem_chk_common_size(&fn, buf, buflen);
 }
 
-int kzalloc_chk_allocation_size(char *call, int flags,
-			        char *buf, size_t buflen)
+int kzalloc_chk_size(char *call, int flags,
+		     char *buf, size_t buflen)
 {
 	struct fncall_data fn;
 
 	init_fncall_data(&fn, "kzalloc", call, 1, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
+}
+
+int strndup_chk_size(char *call, int flags,
+		     char *buf, size_t buflen)
+{
+	struct fncall_data fn;
+
+	init_fncall_data(&fn, "strndup", call, 2, flags);
+	return mem_chk_common_size(&fn, buf, buflen);
+}
+
+int strndupa_chk_size(char *call, int flags,
+		      char *buf, size_t buflen)
+{
+	struct fncall_data fn;
+
+	init_fncall_data(&fn, "strndupa", call, 2, flags);
 	return mem_chk_common_size(&fn, buf, buflen);
 }
