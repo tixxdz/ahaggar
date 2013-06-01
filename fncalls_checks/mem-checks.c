@@ -82,6 +82,7 @@ int mem_chk_common_size(struct fncall_data *fc_data,
 			char *buf, size_t buflen)
 {
 	char *ptr;
+	char *endp;
 	unsigned long int msize;
 	int ret = REG_NOMATCH;
 	struct fncall_data *fn = fc_data;
@@ -94,8 +95,8 @@ int mem_chk_common_size(struct fncall_data *fc_data,
 		return ret;
 
 	errno = 0;
-	msize = strtoul(ptr, NULL, 0);
-	if (errno)
+	msize = strtoul(ptr, &endp, 0);
+	if (errno || ptr == endp)
 		return ret;
 
 	return chk_memory_size(fn->fnname, msize, buf, buflen);
