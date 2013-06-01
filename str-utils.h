@@ -63,7 +63,7 @@ bool strstarts(const char *str, const char *prefix);
 inline static bool substring_next_strchr(struct substring *sub, int c)
 {
 	char *ch = sub_end(sub) + 1;
-	return (*ch && *ch == c);
+	return (*ch == c);
 }
 
 inline static void substring_addchr_start(struct substring *sub)
