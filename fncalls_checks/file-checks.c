@@ -90,6 +90,7 @@ int open_assumes_file_exists(char *call, int flags,
 int open_needs_mode_arg(char *call, int flags,
 			char *buf, size_t buflen)
 {
+	char *endp;
 	char *arg_flag;
 	long int aflag;
 	int ret = REG_NOMATCH;
@@ -102,8 +103,8 @@ int open_needs_mode_arg(char *call, int flags,
 		return ret;
 
 	errno = 0;
-	aflag = strtol(arg_flag, NULL, 0);
-	if (errno)
+	aflag = strtol(arg_flag, &endp, 0);
+	if (errno || arg_flag == endp)
 		return ret;
 
 	if (aflag & O_CREAT)
@@ -115,6 +116,7 @@ int open_needs_mode_arg(char *call, int flags,
 int open_chk_flag_mode(char *call, int flags,
 		       char *buf, size_t buflen)
 {
+	char *endp;
 	char *arg_flag;
 	char *arg_mode;
 	long int aflag;
@@ -124,16 +126,16 @@ int open_chk_flag_mode(char *call, int flags,
 	arg_flag = open_to_int_cst_arg(call, 2, 0);
 	if (arg_flag) {
 		errno = 0;
-		aflag = strtol(arg_flag, NULL, 0);
-		if (errno)
+		aflag = strtol(arg_flag, &endp, 0);
+		if (errno || arg_flag == endp)
 			return ret;
 	}
 
 	arg_mode = open_to_int_cst_arg(call, 3, 0);
 	if (arg_mode) {
 		errno = 0;
-		amode = strtoul(arg_mode, NULL, 0);
-		if (errno)
+		amode = strtoul(arg_mode, &endp, 0);
+		if (errno || arg_mode == endp)
 			return ret;
 	}
 
