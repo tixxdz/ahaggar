@@ -62,7 +62,7 @@ bool is_node_in_main_input(tree node)
 
 bool is_function_decl(tree fn)
 {
-	if (!fn || TREE_CODE(fn) != FUNCTION_DECL || DECL_ARTIFICIAL(fn))
+	if (!fn || TREE_CODE(fn) != FUNCTION_DECL)
 		return false;
 
 	return true;
