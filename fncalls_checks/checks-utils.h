@@ -44,7 +44,7 @@ static inline void init_fncall_data(struct fncall_data *fn,
 	}
 }
 
-char *get_next_arg(char **call_offset);
+char *get_next_arg(const char *call, char **call_offset);
 
 char *get_arg_value(const char *arg);
 

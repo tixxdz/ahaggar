@@ -28,7 +28,7 @@
 
 #include "checks-utils.h"
 
-char *get_next_arg(char **call_offset)
+char *get_next_arg(const char *call, char **call_offset)
 {
 	unsigned int subcalls = 0;
 	char *end = NULL;
@@ -37,7 +37,7 @@ char *get_next_arg(char **call_offset)
 	if (!ptr)
 		return ptr;
 
-	if (*ptr == '(')
+	if (ptr == call)
 		ptr++;
 
 	if (*ptr == ')' || *ptr == '\0') {
@@ -106,7 +106,7 @@ int get_args_nr(const char *call)
 	int nr = 0;
 	char *offset = (char *)call;
 
-	for (; get_next_arg(&offset); nr++);
+	for (; get_next_arg(call, &offset); nr++);
 
 	return nr;
 }
@@ -118,7 +118,7 @@ char *call_start_at_arg(const char *call, int arg_idx)
 
 	if (arg_idx > 0) {
 		while (arg_idx--) {
-			ptr = get_next_arg(&offset);
+			ptr = get_next_arg(call, &offset);
 		}
 	} else if (arg_idx < 0) {
 		/* TODO: make it work */
@@ -130,7 +130,7 @@ char *call_start_at_arg(const char *call, int arg_idx)
 		}*/
 		return ptr;
 	} else if (arg_idx == 1) {
-		ptr = get_next_arg(&offset);
+		ptr = get_next_arg(call, &offset);
 	}
 
 	return ptr;
