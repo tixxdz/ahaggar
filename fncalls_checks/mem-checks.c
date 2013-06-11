@@ -46,7 +46,7 @@ char *mem_to_int_cst_size(const char *call, int arg_idx, int flags)
 	if (!ptr)
 		return ptr;
 
-	if (strncmp(ptr, int_const_tag, sizeof(int_const_tag)))
+	if (strncmp(ptr, int_const_tag, strlen(int_const_tag)))
 		return NULL;
 
 	return get_arg_value(ptr);

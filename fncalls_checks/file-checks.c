@@ -45,7 +45,7 @@ static char *open_to_int_cst_arg(const char *call, int arg_idx, int flags)
 	if (!s)
 		return s;
 
-	if (strncmp(s, open_args_int_cst, sizeof(open_args_int_cst)))
+	if (strncmp(s, open_args_int_cst, strlen(open_args_int_cst)))
 		return NULL;
 
 	return get_arg_value(s);
