@@ -61,4 +61,11 @@ struct plugin_data {
 	char plugin_name[PATH_MAX];
 };
 
+static inline void *ahg_null_walker(__attribute__((unused))void *t,
+				    __attribute__((unused))int *x,
+				    __attribute__((unused))void *d)
+{
+	return NULL;
+}
+
 #endif /* _AHAGGAR_H */
