@@ -67,6 +67,7 @@ out:
 char *get_arg_value(const char *arg)
 {
 	unsigned int subcalls = 0;
+	unsigned int tags = 0;
 	char *v = NULL;
 	char *ptr = (char *)arg;
 
@@ -76,29 +77,38 @@ char *get_arg_value(const char *arg)
 	if (*ptr == ')')
 		return v;
 
-	for (; *ptr != '\0'; ptr++) {
-		if (*ptr == '(') {
+	for (; *ptr != '\0' && !v; ptr++) {
+		switch (*ptr) {
+		case '(':
 			subcalls++;
-		} else if (*ptr == ')') {
+			break;
+		case ')':
 			if (subcalls) {
 				subcalls--;
 			} else {
-				v = ptr;
-				break;
+				return NULL;
 			}
-		} else if (*ptr == ',' && subcalls == 0) {
-			   v = ptr;
-			   break;
+			break;
+		case '<':
+			tags++;
+			break;
+		case '>':
+			if (tags)
+				tags--;
+			break;
+		case ',':
+			if (!subcalls)
+				return NULL;
+		case ' ':
+			break;
+		default:
+			if (!subcalls && !tags)
+				v = ptr;
+			break;
 		}
 	}
 
-	if (!v)
-		return v;
-
-	while (*v != ' ')
-		v--;
-
-	return ++v;
+	return v;
 }
 
 int get_args_nr(const char *call)
