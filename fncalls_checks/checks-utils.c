@@ -49,12 +49,10 @@ char *get_next_arg(const char *call, char **call_offset)
 		if (*end == '(') {
 			subcalls++;
 		} else if (*end == ')') {
-			if (subcalls) {
+			if (subcalls)
 				subcalls--;
-			} else {
-				ptr = NULL;
+			else
 				break;
-			}
 		} else if (*end == ',' && subcalls == 0) {
 			end += 2;
 			break;
