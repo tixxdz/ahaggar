@@ -74,12 +74,17 @@ static struct target_functions errors[] = {
 
 static struct target_functions warnings[] = {
 //#include "fncalls_checks/file-warnings.h"
-#include "fncalls_checks/api-warnings.h"
-#include "fncalls_checks/kmalloc-warnings.h"
-#include "fncalls_checks/malloc-warnings.h"
+//#include "fncalls_checks/api-warnings.h"
+//#include "fncalls_checks/kmalloc-warnings.h"
+#include "fncalls_checks/kformat-warnings.h"
+//#include "fncalls_checks/malloc-warnings.h"
+//#include "fncalls_checks/mem-warnings.h"
+//#include "fncalls_checks/file-warnings.h"
+//#include "fncalls_checks/builtins-warnings.h"
 };
 
 static struct target_functions reports[] = {
+//#include "fncalls_checks/kformat-warnings.h"
 //#include "fncalls_checks/file-warnings.h"
 //#include "fncalls_checks/file-reports.h"
 //#include "fncalls_checks/kmalloc-reports.h"
@@ -401,7 +406,7 @@ static char *extract_location(struct substring *sub, location_t loc,
 
 	buf[0] = '\0';
 
-	start = strchr(sub_start(substr), '[');
+	start = strrchr(sub_start(substr), '[');
 	if (!start)
 		goto arg_location;
 
