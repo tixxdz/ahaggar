@@ -67,15 +67,20 @@ AHAGGAR_OBJS := $(patsubst %.c,%.o,$(wildcard $(src)/*.c))
 AHAGGAR_CORE_OBJS = buffer.o log.o str-utils.o
 AHAGGAR_GCC_UTILS_OBJS = gcc-utils.o gcc-log.o nodes-utils.o
 AHAGGAR_GCC_EXTRA_OBJS = cache-nodes.o print-nodes.o
-AHAGGAR_GCC_OBJS = walk-nodes.o walk-gimple.o
+AHAGGAR_GCC_WALK_OBJS = walk-nodes.o walk-gimple.o
 
 AHAGGAR_FNCALLS_CHECK_OBJS = fncalls_checks/checks-utils.o
 AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/regex-utils.o
 AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/mem-checks.o
 AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/malloc-checks.o
 AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/file-checks.o
+AHAGGAR_FNCALLS_CHECK_OBJS += fncalls_checks/builtins-checks.o
+
+AHAGGAR_XINSTRMNT_EXTRA_OBJS = xinstrument_calls/xinstrument-utils.o
+AHAGGAR_XINSTRMNT_EXTRA_OBJS += xinstrument_calls/compiletime-size.o
 
 AHAGGAR_OBJS += $(AHAGGAR_FNCALLS_CHECK_OBJS)
+AHAGGAR_OBJS += $(AHAGGAR_XINSTRMNT_EXTRA_OBJS)
 
 AHAGGAR_AST_OBJS := $(AHAGGAR_CORE_OBJS) \
 		    $(AHAGGAR_GCC_UTILS_OBJS) \
@@ -86,18 +91,26 @@ AHAGGAR_AST_OBJS := $(AHAGGAR_CORE_OBJS) \
 AHAGGAR_FNCALLS_OBJS := $(AHAGGAR_CORE_OBJS) \
 			$(AHAGGAR_GCC_UTILS_OBJS) \
 			print-nodes.o \
-			$(AHAGGAR_GCC_OBJS) \
+			$(AHAGGAR_GCC_WALK_OBJS) \
 			$(AHAGGAR_FNCALLS_CHECK_OBJS) \
 			fncalls-match.o \
 			ahaggar-fncalls.o
+
+AHAGGAR_XINSTRMNT_OBJS := $(AHAGGAR_CORE_OBJS) \
+			  $(AHAGGAR_GCC_UTILS_OBJS) \
+			  $(AHAGGAR_GCC_EXTRA_OBJS) \
+			  $(AHAGGAR_XINSTRMNT_EXTRA_OBJS) \
+			  ahaggar-xinstrument.o
 
 #LIB_OPEN_RACER = libahaggar_open_racer.so
 #LIB_UNINITIALIZED =
 LIB_AST = libahaggar_ast.so
 LIB_FNCALLS = libahaggar_fncalls.so
-AHAGGAR_LIBS = $(LIB_AST) $(LIB_FNCALLS)
+LIB_XINSTRMNT = libahaggar_xinstrument.so
+AHAGGAR_LIBS = $(LIB_AST) $(LIB_FNCALLS) $(LIB_XINSTRMNT)
 LIBAHAGGAR_XXSHARED = $(obj)/libahaggar_ast.so.0
 LIBAHAGGAR_XXSHARED += $(obj)/libahaggar_fncalls.so.0
+LIBAHAGGAR_XXSHARED += $(obj)/libahaggar_xinstrument.so.0
 
 AHAGGAR_CLEAN_BASE = $(AHAGGAR_OBJS) $(AHAGGAR_LIBS)
 
@@ -127,6 +140,7 @@ always := $($(HOSTLIBS)-y)
 			      ahaggar-uninitialized.o
 libahaggar_ast-objs := $(AHAGGAR_AST_OBJS)
 libahaggar_fncalls-objs := $(AHAGGAR_FNCALLS_OBJS)
+libahaggar_xinstrument-objs := $(AHAGGAR_XINSTRMNT_OBJS)
 
 clean-files := $(AHAGGAR_CLEAN_BASE)
 
@@ -148,8 +162,10 @@ INSTALL = install -c
 
 SHARED_AST = libahaggar_ast.so.0
 SHARED_FNCALLS = libahaggar_fncalls.so.0
+SHARED_XINSTRMNT = libahaggar_xinstrument.so.0
 AHAGGAR_SHARED := $(SHARED_AST)
 AHAGGAR_SHARED += $(SHARED_FNCALLS)
+AHAGGAR_SHARED += $(SHARED_XINSTRMNT)
 
 PLUGINCCFLAGS_lib = $(PLUGINCCFLAGS) -fpic
 
@@ -157,6 +173,7 @@ LDLIBS_lib =
 LDFLAGS_shared = --shared
 LDFLAGS_shared_ast = -Wl,--soname,$(SHARED_AST)
 LDFLAGS_shared_fncalls = -Wl,--soname,$(SHARED_FNCALLS)
+LDFLAGS_shared_xinstrument = -Wl,--soname,$(SHARED_XINSTRMNT)
 LDFLAGS_lib = $(LDFLAGS_shared)
 
 
@@ -174,11 +191,18 @@ $(SHARED_FNCALLS): $(AHAGGAR_FNCALLS_OBJS)
 	$(LD_lib) $(LDFLAGS_lib) $(LDFLAGS_shared_fncalls) \
 	$(AHAGGAR_FNCALLS_OBJS) $(LDLIBS_lib) -o $(SHARED_FNCALLS)
 
+$(SHARED_XINSTRMNT): $(AHAGGAR_XINSTRMNT_OBJS)
+	$(LD_lib) $(LDFLAGS_lib) $(LDFLAGS_shared_xinstrument) \
+	$(AHAGGAR_XINSTRMNT_OBJS) $(LDLIBS_lib) -o $(SHARED_XINSTRMNT)
+
 $(LIB_AST): $(SHARED_AST)
 	$(LN_s) $(SHARED_AST) $(LIB_AST)
 
 $(LIB_FNCALLS): $(SHARED_FNCALLS)
 	$(LN_s) $(SHARED_FNCALLS) $(LIB_FNCALLS)
+
+$(LIB_XINSTRMNT): $(SHARED_XINSTRMNT)
+	$(LN_s) $(SHARED_XINSTRMNT) $(LIB_XINSTRMNT)
 
 %.o: %.c
 	$(PLUGINCC) $(PLUGINCCFLAGS_lib) -o $@ -c $<
@@ -198,8 +222,10 @@ install-libs:
 remove-libs:
 	$(RM) $(DESTDIR)$(DEVEL_LIBDIR)/$(LIB_AST)
 	$(RM) $(DESTDIR)$(DEVEL_LIBDIR)/$(LIB_FNCALLS)
+	$(RM) $(DESTDIR)$(DEVEL_LIBDIR)/$(LIB_XINSTRMNT)
 	$(RM) $(DESTDIR)$(SHARED_LIBDIR)/$(SHARED_FNCALLS)
 	$(RM) $(DESTDIR)$(SHARED_LIBDIR)/$(SHARED_AST)
+	$(RM) $(DESTDIR)$(SHARED_LIBDIR)/$(SHARED_XINSTRMNT)
 
 
 clean:
