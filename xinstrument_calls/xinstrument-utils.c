@@ -87,7 +87,7 @@ int gxinstrument_target(struct target_call *tcall,
 	if (!call)
 		return ret;
 
-	gxinsert_call(gxinsert, gs, call, tc->mode); 
+	gxinsert_call(gxinsert, gs, call, tc->mode);
 
 	return 0;
 }
