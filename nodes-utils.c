@@ -172,10 +172,30 @@ char *__get_tcc_type(tree t, int flags)
 	} else if (code == VECTOR_TYPE) {
 		output_printf(adata, "vector");
 	} else if (code == INTEGER_TYPE) {
-		output_printf(adata, "%s",
-			      TYPE_UNSIGNED(t) ? "unsigned" : "signed");
 		if (TYPE_IS_SIZETYPE(t))
 			output_printf(adata, " sizetype");
+
+		output_printf(adata, "%s",
+			      TYPE_UNSIGNED(t) ? "unsigned" : "signed");
+
+		if (TYPE_PRECISION(t) == CHAR_TYPE_SIZE)
+			output_printf(adata, " char");
+		else if (TYPE_PRECISION(t) == SHORT_TYPE_SIZE)
+			output_printf(adata, " short");
+		else if (TYPE_PRECISION(t) == INT_TYPE_SIZE)
+			output_printf(adata, " int");
+		else if (TYPE_PRECISION(t) == LONG_TYPE_SIZE)
+			output_printf(adata, " long");
+		else if (TYPE_PRECISION(t) == LONG_LONG_TYPE_SIZE)
+			output_printf(adata, " long long");
+		else if (TYPE_PRECISION(t) >= CHAR_TYPE_SIZE
+		&& exact_log2(TYPE_PRECISION(t)) != -1) {
+			output_printf(adata, " int%d_t",
+				      TYPE_PRECISION(t));
+		} else {
+			output_printf(adata, ":unnamed%d",
+				      TYPE_PRECISION(t));
+		}
 
 	} else if (code == COMPLEX_TYPE) {
 		output_printf(adata, "__complex__");
