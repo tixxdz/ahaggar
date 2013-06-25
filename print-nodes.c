@@ -48,7 +48,7 @@
 
 void output_node_addr(struct output_buffer *d, tree node, int flags)
 {
-	if (flags & TDF_STMTADDR)
+	if (flags & TDF_ADDRESS || flags & TDF_STMTADDR)
 		output_printf(d, "<@%p> ", (void *)node);
 }
 
@@ -62,11 +62,13 @@ void __output_expr_code(struct output_buffer *d, tree expr)
 	output_printf(d, "%s", __get_expr_code(expr));
 }
 
-void output_expr_code(struct output_buffer *d, tree node)
+void output_expr_code(struct output_buffer *d, tree node, int flags)
 {
-	output_char(d, '<');
-	__output_expr_code(d, node);
-	output_printf(d, "> ");
+	if (flags & TDF_VERBOSE) {
+		output_char(d, '<');
+		__output_expr_code(d, node);
+		output_printf(d, "> ");
+	}
 }
 
 void output_location(struct output_buffer *d, tree t)
