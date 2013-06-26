@@ -1,3 +1,23 @@
+Note: some files are not yet public, so this code does not compile.
+
+
+libahaggar_ast
+--------------
+
+A library do dump the AST (Abstract Syntax Tree)
+
+
+Output example:
+Library version:
+commit 08c6d003ecacb9996682e3b17e95c03a3d388893
+
+Used on Linux next-20130624
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/init/main.c
+
+Output file:  main.c.000.ahaggar_ast.log
+
+
+
 libahaggar_fncalls
 ------------------
 
