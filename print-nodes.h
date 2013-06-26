@@ -27,6 +27,8 @@ void output_node_addr(struct output_buffer *d, tree node, int flags);
 void output_node_index(struct output_buffer *d, unsigned int index);
 void __output_expr_code(struct output_buffer *d, tree expr);
 void output_expr_code(struct output_buffer *d, tree node, int flags);
+void output_var_parm_decl_code(struct output_buffer *d,
+			       tree node, int flags);
 void output_location(struct output_buffer *d, tree t);
 void output_decl_name(struct output_buffer *d, tree decl, int flags);
 void output_function_name(struct output_buffer *d, tree fn, int flags);

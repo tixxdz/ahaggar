@@ -71,6 +71,14 @@ void output_expr_code(struct output_buffer *d, tree node, int flags)
 	}
 }
 
+void output_var_parm_decl_code(struct output_buffer *d,
+			       tree node, int flags)
+{
+	if (node && (TREE_CODE(node) == VAR_DECL
+	|| TREE_CODE(node) == PARM_DECL))
+		output_expr_code(d, node, flags);
+}
+
 void output_location(struct output_buffer *d, tree t)
 {
 	output_printf(d, "%s", __get_location(t));
