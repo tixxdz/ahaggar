@@ -39,13 +39,16 @@
 
 int walk_statement_iterator(tree node, void *data);
 int walk_function_decl_args(tree fn, void *data);
+int walk_array_domain(tree node, void *data);
 int walk_declaration_node(tree node, void *data);
 int walk_number_types_node(tree node, void *data);
 int walk_pointer_reference_node(tree node, void *data);
 int walk_record_union_node(tree node, void *data);
 int walk_modify_init_expr_node(tree node, void *data);
+int walk_cond_expr_node(tree node, void *data, int indent);
 int walk_return_expr_node(tree node, void *data);
 int walk_unary_logic_expr_node(tree node, void *data);
+int walk_binary_arith_logic_node(tree node, void *data);
 int walk_component_ref_node(tree node, void *data);
 
 #endif /* _WALK_NODES_H */
