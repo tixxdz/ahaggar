@@ -1,0 +1,7 @@
+drivers/input/touchscreen/cyttsp_core.c:135: warning:
+drivers/input/touchscreen/cyttsp_core.c: In function ‘cyttsp_exit_bl_mode’:
+cc1: warning: function '__compiletime_size_overflow' detected an overflow 8 < 11 [enabled by default]
+
+<function_decl> cyttsp_exit_bl_mode(struct cyttsp * ts) [drivers/input/touchscreen/cyttsp_core.c:128]
+  <@0x7f15e5e24e40> memcpy(<addr_expr> , <component_ref> <ssa_name> <var_decl> <unnamed>_5->bl_keys, <integer_cst> 11ul) [drivers/input/touchscreen/cyttsp_core.c:135]
+    <@0x7f15e5f3e260> __compiletime_size_overflow(<integer_cst> 8ul, <integer_cst> 11ul) [drivers/input/touchscreen/cyttsp_core.c:135]
