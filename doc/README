@@ -1,6 +1,10 @@
 Note: some files are not yet public, so this code does not compile.
 
 
+The Ahaggar framework:
+======================
+
+
 libahaggar_ast
 --------------
 
@@ -18,6 +22,7 @@ Output file:  main.c.000.ahaggar_ast.log
 
 
 
+
 libahaggar_fncalls
 ------------------
 
@@ -26,3 +31,17 @@ compilation process.
 
 A new version of the init/main.c can be found here:
 https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/init/main.c
+
+
+
+
+libahaggar_xinstrument
+----------------------
+
+A library to perform instrumentation
+
+
+
+A combination of libahaggar_xinstrument + libahaggar_fncalls detected
+a stack overflow on Cypress TrueTouch screen driver:
+Cypress_TrueTouch_stack_overflow_compiletime.log
