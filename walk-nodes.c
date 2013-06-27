@@ -374,6 +374,86 @@ int walk_cond_expr_node(tree node, void *data, int indent)
 	return 0;
 }
 
+int walk_switch_expr_node(tree node, void *data, int indent)
+{
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	output_indent_to_newline(buffer, indent);
+	output_printf(buffer, "switch (");
+	base_cp_tree_walker(&(SWITCH_COND(node)),
+			    tree_walker, data);
+	output_char(buffer, ')');
+
+	if (pdata->flags & TDF_SLIM)
+		return 0;
+
+	output_printf(buffer, " {");
+
+	if (SWITCH_BODY(node)) {
+		base_cp_tree_walker(&(SWITCH_BODY(node)),
+				    tree_walker, data);
+	} else {
+		size_t i;
+		tree vec = SWITCH_LABELS(node);
+		size_t n = TREE_VEC_LENGTH(vec);
+
+		for (i = 0; i < n; ++i) {
+			tree elt = TREE_VEC_ELT(vec, i);
+			if (elt) {
+				base_cp_tree_walker(&(SWITCH_BODY(node)),
+						    tree_walker, data);
+				output_printf(buffer, " goto ");
+				base_cp_tree_walker(&(CASE_LABEL (elt)),
+						    tree_walker, data);
+			} else {
+				output_printf(buffer,
+					      "case ???: goto ???;");
+			}
+		}
+	}
+
+	output_indent_to_newline(buffer, indent);
+	output_char(buffer, '}');
+
+	return 0;
+}
+
+int walk_case_label_expr_node(tree node, void *data)
+{
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	if (CASE_LOW(node) && CASE_HIGH(node)) {
+		output_printf(buffer, "case ");
+		base_cp_tree_walker(&(CASE_LOW(node)),
+				    tree_walker, data);
+		output_printf(buffer, " ... ");
+		base_cp_tree_walker(&(CASE_LOW(node)),
+				    tree_walker, data);
+	} else if (CASE_LOW(node)) {
+		output_printf(buffer, "case ");
+		base_cp_tree_walker(&(CASE_LOW(node)),
+				    tree_walker, data);
+	} else {
+		output_printf(buffer, "default");
+	}
+
+	output_char(buffer, ':');
+
+	return 0;
+}
+
 int walk_return_expr_node(tree node, void *data)
 {
 	tree expr;
