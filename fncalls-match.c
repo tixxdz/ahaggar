@@ -33,6 +33,7 @@
 #include "system.h"
 #include "coretypes.h"
 #include "tree.h"
+#include "tree-pass.h"
 #include "intl.h"
 #include "input.h"
 #include "plugin.h"
@@ -76,11 +77,11 @@ static struct target_functions warnings[] = {
 //#include "fncalls_checks/file-warnings.h"
 //#include "fncalls_checks/api-warnings.h"
 //#include "fncalls_checks/kmalloc-warnings.h"
-#include "fncalls_checks/kformat-warnings.h"
+//#include "fncalls_checks/kformat-warnings.h"
 //#include "fncalls_checks/malloc-warnings.h"
 //#include "fncalls_checks/mem-warnings.h"
 //#include "fncalls_checks/file-warnings.h"
-//#include "fncalls_checks/builtins-warnings.h"
+#include "fncalls_checks/builtins-warnings.h"
 };
 
 static struct target_functions reports[] = {
@@ -88,7 +89,7 @@ static struct target_functions reports[] = {
 //#include "fncalls_checks/file-warnings.h"
 //#include "fncalls_checks/file-reports.h"
 //#include "fncalls_checks/kmalloc-reports.h"
-//#include "fncalls_checks/const-reports.h"
+#include "fncalls_checks/const-reports.h"
 };
 
 static struct hash_functions ghash[] = {
@@ -375,21 +376,24 @@ static size_t next_fncall_to_substring(struct substring *sub,
 	/* make it end at the next call */
 	substring_addnchr_end(substr, 3);
 
+	/* At the end */
 	return sub_len(substr);
 }
 
-static char *extract_fnname(struct substring *sub)
+static char *extract_fnname(struct substring *sub, int flags)
 {
 	char *str = NULL;
+	char *ch1 = NULL;
 	char *ch2 = NULL;
-	char *ch1 = strchr(sub_start(sub), '>');
 
-	if (ch1) {
-		ch1+=2;
-		ch2 = strchr(ch1, '(');
-		if (ch2) {
+	ch2 = strchr(sub_start(sub), '(');
+	if (ch2) {
+		ch1 = ch2;
+		while (*ch1 && *ch1 !=  ' ')
+			ch1--;
+
+		if (*++ch1)
 			str = xstrndup(ch1, ch2 - ch1);
-		}
 	}
 
 	return str;
@@ -444,7 +448,7 @@ static struct target_functions *match_fncall(htab_t hashtable,
 	if (!next_fncall_to_substring(substr, buffer))
 		return fn;
 
-	fnname = extract_fnname(substr);
+	fnname = extract_fnname(substr, pdata->flags);
 	if (!fnname)
 		return fn;
 
@@ -650,12 +654,11 @@ static int process_output(struct hash_functions *hashes,
 
 	substr = substring_init();
 
-	while(h->mcounter) {
+	for (; h->mcounter; h->mcounter--) {
 		tag = match_fncall(h->tab, substr, plug_data);
 		if (!tag)
 			continue;
 
-		h->mcounter--;
 		if (tag->patterns) {
 			if (process_fncall(h, tag, substr, plug_data))
 				return ret;
@@ -720,7 +723,6 @@ int match_output(__attribute__((unused)) void *data,
 				    __FILE__, __LINE__);
 			return ret;
 		}
-
 		/* the ghash[i].mcounter should be zeroed now */
 	}
 
