@@ -348,7 +348,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case BOOLEAN_TYPE:
 		walk_number_types_node(node, ast);
 		*walk_subtrees = 0;
-		break;	
+		break;
 
 	case STATEMENT_LIST:
 		/* output_indent_to_newline(buffer,
@@ -591,7 +591,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		walk_switch_expr_node(node, ast,
 				      (walker_depth + 1) * INDENT);
 		output_char(buffer, ')');
-		*walk_subtrees = 0;	
+		*walk_subtrees = 0;
 		break;
 
 	case CASE_LABEL_EXPR:
