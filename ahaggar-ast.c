@@ -330,6 +330,10 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	case LANG_TYPE:
+		*walk_subtrees = 0;
+		break;
+
 	/*
 	case TREE_LIST:
 		break;
@@ -376,12 +380,37 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	/*
+	case REAL_CST:
+		break;
+	*/
+
+	case FIXED_CST: {
+		char str[100];
+		fixed_to_decimal(str,
+				 TREE_FIXED_CST_PTR(node),
+				 sizeof(str));
+		output_printf(buffer, "%s", str);
+		*walk_subtrees = 0;
+		break;
+	}
+
+	/*
+	case COMPLEX_CST:
+		break;
+	*/
+
 	case STRING_CST:
 		output_node_addr(buffer, node, ast->flags);
 		output_expr_code(buffer, node, ast->flags);
 		output_string_cst(buffer, node);
 		*walk_subtrees = 0;
 		break;
+
+	/*
+	case VECTOR_CST:
+		break;
+	*/
 
 	case DECL_EXPR:
 		output_indent_to_newline(buffer,
@@ -521,6 +550,14 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case OFFSET_TYPE:
 		*walk_subtrees = 0;
 		break;
+
+	/*
+	case MEM_REF:
+		break;
+
+	case TARGET_MEM_REF:
+		break;
+	*/
 
 	case ARRAY_TYPE:
 		walk_array_node(node, ast);
