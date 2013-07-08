@@ -38,6 +38,7 @@
 #endif
 
 int walk_statement_iterator(tree node, void *data);
+int walk_tree_vector_node(tree node, void *data);
 int walk_function_decl_args(tree fn, void *data);
 int walk_array_domain(tree node, void *data);
 int walk_array_node(tree node, void *data);

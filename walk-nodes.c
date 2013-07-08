@@ -60,6 +60,33 @@ int walk_statement_iterator(tree node, void *data)
 	return 0;
 }
 
+int walk_tree_vector_node(tree node, void *data)
+{
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	if (TREE_VEC_LENGTH(node) > 0) {
+		size_t i;
+		size_t len = TREE_VEC_LENGTH(node);
+		for (i = 0; i < len - 1; i++) {
+			base_cp_tree_walker(&(TREE_VEC_ELT(node, i)),
+					    tree_walker, data);
+			output_printf(buffer, ", ");
+		}
+
+		base_cp_tree_walker(&(TREE_VEC_ELT(node, len - 1)),
+				    tree_walker, data);
+	}
+
+	return ret;
+}
+
 int walk_function_decl_args(tree fn, void *data)
 {
 	int ret = -1;
