@@ -518,6 +518,10 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	case OFFSET_TYPE:
+		*walk_subtrees = 0;
+		break;
+
 	case ARRAY_TYPE:
 		walk_array_node(node, ast);
 		*walk_subtrees = 0;
