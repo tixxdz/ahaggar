@@ -119,6 +119,29 @@ int walk_array_domain(tree node, void *data)
 	return ret;
 }
 
+int walk_array_node(tree node, void *data)
+{
+	tree tmp;
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	for (tmp = TREE_TYPE(node); TREE_CODE(tmp) == ARRAY_TYPE;
+	tmp = TREE_TYPE(tmp));
+
+	base_cp_tree_walker(&tmp, tree_walker, data);
+
+	for (tmp = node; TREE_CODE(tmp) == ARRAY_TYPE;
+	tmp = TREE_TYPE(tmp))
+		walk_array_domain(TYPE_DOMAIN(tmp), data);
+
+	return 0;
+}
+
 int walk_declaration_node(tree node, void *data)
 {
 	int ret = -1;
