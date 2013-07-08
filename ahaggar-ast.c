@@ -334,9 +334,17 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case TREE_LIST:
 		break;
 
+	case TREE_BINFO:
+		break;
+
 	case TREE_VEC:
 		break;
 	*/
+
+	case TREE_VEC:
+		walk_tree_vector_node(node, ast);
+		*walk_subtrees = 0;
+		break;
 
 	case VOID_TYPE:
 	case INTEGER_TYPE:
