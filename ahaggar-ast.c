@@ -468,6 +468,36 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 	}
 
+	/*
+	 * case ARRAY_REF:
+	 * case ARRAY_RANGE_REF:
+	 *	break;
+	 */
+
+	/*
+	 * case CONSTRUCTOR:
+	 *	break;
+	 * case COMPOUND_EXPR:
+	 *	break;
+	 */
+
+	/*
+	 * case TARGET_EXPR:
+	 *	*walk_subtrees = 0;
+	 *	break;
+	 */
+
+	case MODIFY_EXPR:
+	case INIT_EXPR:
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_printf(buffer, "%s(", tree_code_name[code]);
+		walk_modify_init_expr_node(node, data);
+		output_char(buffer, ')');
+		print_location++;
+		*walk_subtrees = 0;
+		break;
+
 	case ADDR_EXPR: {
 		tree op0 = TREE_OPERAND(node, 0);
 		if (TREE_CODE(op0) != STRING_CST
@@ -500,23 +530,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 	}
-
-	case MODIFY_EXPR:
-	case INIT_EXPR:
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_printf(buffer, "%s(", tree_code_name[code]);
-		walk_modify_init_expr_node(node, data);
-		output_char(buffer, ')');
-		print_location++;
-		*walk_subtrees = 0;
-		break;
-
-	/*
-	 * case TARGET_EXPR:
-	 *	*walk_subtrees = 0;
-	 *	break;
-	 */
 
 	case COND_EXPR:
 		output_indent_to_newline(buffer,
