@@ -419,16 +419,20 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
-	case COND_EXPR:
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_printf(buffer, "%s(", tree_code_name[code]);
-		walk_cond_expr_node(node, ast,
-				    (walker_depth + 1) * INDENT);
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_char(buffer, ')');
-		print_location++;
+	case FUNCTION_DECL:
+	case CONST_DECL:
+		output_expr_code(buffer, node, ast->flags);
+		output_function_name(buffer, node, ast->flags);
+		*walk_subtrees = 0;
+		break;
+
+	case RESULT_DECL:
+		output_printf(buffer, "<retval>");
+		*walk_subtrees = 0;
+		break;
+
+	case TYPE_DECL:
+		walk_type_declaration_node(node, ast);
 		*walk_subtrees = 0;
 		break;
 
@@ -486,34 +490,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 	}
 
-	case RESULT_DECL:
-		output_printf(buffer, "<retval>");
-		*walk_subtrees = 0;
-		break;
-
-	case FUNCTION_DECL:
-	case CONST_DECL:
-		output_expr_code(buffer, node, ast->flags);
-		output_function_name(buffer, node, ast->flags);
-		*walk_subtrees = 0;
-		break;
-
-	case TYPE_DECL:
-		if (DECL_IS_BUILTIN(node))
-			break;
-
-		if (DECL_NAME(node))
-			output_decl_name(buffer, node, ast->flags);
-
-		if (TYPE_NAME(TREE_TYPE(node)) != node) {
-			output_printf(buffer, "%s ",
-				      __get_class_or_enum(node));
-			base_cp_tree_walker(&(TREE_TYPE(node)),
-					    tree_walker, data);
-		}
-		*walk_subtrees = 0;
-		break;
-
 	case MODIFY_EXPR:
 	case INIT_EXPR:
 		output_indent_to_newline(buffer,
@@ -530,6 +506,19 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	 *	*walk_subtrees = 0;
 	 *	break;
 	 */
+
+	case COND_EXPR:
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_printf(buffer, "%s(", tree_code_name[code]);
+		walk_cond_expr_node(node, ast,
+				    (walker_depth + 1) * INDENT);
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_char(buffer, ')');
+		print_location++;
+		*walk_subtrees = 0;
+		break;
 
 	case AGGR_INIT_EXPR:
 	case CALL_EXPR:
