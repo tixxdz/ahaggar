@@ -491,6 +491,11 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	}
 
 	/*
+	 * case BIT_FIELD_REF:
+	 *	break;
+	 */
+
+	/*
 	 * case ARRAY_REF:
 	 * case ARRAY_RANGE_REF:
 	 *	break;
@@ -516,6 +521,19 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	case COND_EXPR:
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_printf(buffer, "%s(", tree_code_name[code]);
+		walk_cond_expr_node(node, ast,
+				    (walker_depth + 1) * INDENT);
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_char(buffer, ')');
+		print_location++;
+		*walk_subtrees = 0;
+		break;
+
 	case MODIFY_EXPR:
 	case INIT_EXPR:
 		output_indent_to_newline(buffer,
@@ -526,6 +544,32 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		print_location++;
 		*walk_subtrees = 0;
 		break;
+
+	/*
+	 * case BIND_EXPR:
+	 *	break;
+	 */
+
+	case AGGR_INIT_EXPR:
+	case CALL_EXPR:
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		if (!ahg_ast_call_aggr_init(node, ast))
+			print_location++;
+
+		*walk_subtrees = 0;
+		break;
+
+	case WITH_CLEANUP_EXPR:
+		*walk_subtrees = 0;
+		break;
+
+	/*
+	 * case CLEANUP_POINT_EXPR:
+	 *	break;
+	 * case PLACEHOLDER_EXPR:
+	 *	break;
+	 */
 
 	case ADDR_EXPR: {
 		tree op0 = TREE_OPERAND(node, 0);
@@ -559,45 +603,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 	}
-
-	case COND_EXPR:
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_printf(buffer, "%s(", tree_code_name[code]);
-		walk_cond_expr_node(node, ast,
-				    (walker_depth + 1) * INDENT);
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_char(buffer, ')');
-		print_location++;
-		*walk_subtrees = 0;
-		break;
-
-	/*
-	 * case BIND_EXPR:
-	 *	break;
-	 */
-
-	case AGGR_INIT_EXPR:
-	case CALL_EXPR:
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		if (!ahg_ast_call_aggr_init(node, ast))
-			print_location++;
-
-		*walk_subtrees = 0;
-		break;
-
-	case WITH_CLEANUP_EXPR:
-		*walk_subtrees = 0;
-		break;
-
-	/*
-	 * case CLEANUP_POINT_EXPR:
-	 *	break;
-	 * case PLACEHOLDER_EXPR:
-	 *	break;
-	 */
 
 	/* Binary arithmetic */
 	case WIDEN_SUM_EXPR:
