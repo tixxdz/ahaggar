@@ -569,7 +569,7 @@ int walk_return_expr_node(tree node, void *data)
 	if (!node)
 		return ret;
 
-	output_printf(buffer, "return ");
+	/* output_printf(buffer, "return "); */
 	expr = TREE_OPERAND(node, 0);
 
 	/* output_node_addr(buffer, expr, pdata->flags); */
@@ -718,4 +718,50 @@ int walk_component_ref_node(tree node, void *data)
 			    tree_walker, data);
 
 	return 0;
+}
+
+int walk_array_ref_node(tree node, void *data)
+{
+	tree op0;
+	tree op1;
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	op0 = TREE_OPERAND(node, 0);
+	if (op_prio(op0) < op_prio(node)) {
+		output_char(buffer, '(');
+		base_cp_tree_walker(&op0, tree_walker, data);
+		output_char(buffer, ')');
+	} else {
+		base_cp_tree_walker(&op0, tree_walker, data);
+	}
+
+	op1 = TREE_OPERAND(node, 1);
+	output_char(buffer, '[');
+	base_cp_tree_walker(&op1, tree_walker, data);
+
+	if (TREE_CODE(node) == ARRAY_RANGE_REF)
+		output_printf(buffer, " ...");
+
+	output_char(buffer, ']');
+
+	op0 = array_ref_low_bound(node);
+	op1 = array_ref_element_size(node);
+
+	if (!integer_zerop(op0)
+	|| TREE_OPERAND(node, 2) || TREE_OPERAND(node, 3)) {
+		output_printf(buffer, "{lb: ");
+		base_cp_tree_walker(&op0, tree_walker, data);
+		output_printf(buffer, " sz: ");
+		base_cp_tree_walker(&op1, tree_walker, data);
+		output_char(buffer, '}');
+	}
+
+	return ret;
 }
