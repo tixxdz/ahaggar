@@ -330,10 +330,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
-	case LANG_TYPE:
-		*walk_subtrees = 0;
-		break;
-
 	/*
 	case TREE_LIST:
 		break;
@@ -359,6 +355,39 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case ENUMERAL_TYPE:
 	case BOOLEAN_TYPE:
 		walk_number_types_node(node, ast);
+		*walk_subtrees = 0;
+		break;
+
+	case POINTER_TYPE:
+	case REFERENCE_TYPE:
+		walk_pointer_reference_node(node, ast);
+		*walk_subtrees = 0;
+		break;
+
+	case OFFSET_TYPE:
+		*walk_subtrees = 0;
+		break;
+
+	/*
+	 * case MEM_REF:
+	 *	break;
+	 * case TARGET_MEM_REF:
+	 *	break;
+	 */
+
+	case ARRAY_TYPE:
+		walk_array_node(node, ast);
+		*walk_subtrees = 0;
+		break;
+
+	case RECORD_TYPE:
+	case UNION_TYPE:
+	case QUAL_UNION_TYPE:
+		walk_record_union_node(node, ast);
+		*walk_subtrees = 0;
+		break;
+
+	case LANG_TYPE:
 		*walk_subtrees = 0;
 		break;
 
@@ -417,13 +446,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case METHOD_TYPE:
 		break;
 	*/
-
-	case DECL_EXPR:
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		walk_declaration_node(DECL_EXPR_DECL(node), ast);
-		*walk_subtrees = 0;
-		break;
 
 	case FUNCTION_DECL:
 	case CONST_DECL:
@@ -487,6 +509,13 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	 *	break;
 	 */
 
+	case DECL_EXPR:
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		walk_declaration_node(DECL_EXPR_DECL(node), ast);
+		*walk_subtrees = 0;
+		break;
+
 	case MODIFY_EXPR:
 	case INIT_EXPR:
 		output_indent_to_newline(buffer,
@@ -544,6 +573,11 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	/*
+	 * case BIND_EXPR:
+	 *	break;
+	 */
+
 	case AGGR_INIT_EXPR:
 	case CALL_EXPR:
 		output_indent_to_newline(buffer,
@@ -554,35 +588,16 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
-	case POINTER_TYPE:
-	case REFERENCE_TYPE:
-		walk_pointer_reference_node(node, ast);
-		*walk_subtrees = 0;
-		break;
-
-	case OFFSET_TYPE:
+	case WITH_CLEANUP_EXPR:
 		*walk_subtrees = 0;
 		break;
 
 	/*
-	case MEM_REF:
-		break;
-
-	case TARGET_MEM_REF:
-		break;
-	*/
-
-	case ARRAY_TYPE:
-		walk_array_node(node, ast);
-		*walk_subtrees = 0;
-		break;
-
-	case RECORD_TYPE:
-	case UNION_TYPE:
-	case QUAL_UNION_TYPE:
-		walk_record_union_node(node, ast);
-		*walk_subtrees = 0;
-		break;
+	 * case CLEANUP_POINT_EXPR:
+	 *	break;
+	 * case PLACEHOLDER_EXPR:
+	 *	break;
+	 */
 
 	/* Binary arithmetic */
 	case WIDEN_SUM_EXPR:
