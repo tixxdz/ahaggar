@@ -412,6 +412,12 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 	*/
 
+	/*
+	case FUNCTION_TYPE:
+	case METHOD_TYPE:
+		break;
+	*/
+
 	case DECL_EXPR:
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
@@ -423,6 +429,11 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case CONST_DECL:
 		output_expr_code(buffer, node, ast->flags);
 		output_function_name(buffer, node, ast->flags);
+		*walk_subtrees = 0;
+		break;
+
+	case LABEL_DECL:
+		walk_label_declaration_node(node, ast);
 		*walk_subtrees = 0;
 		break;
 
