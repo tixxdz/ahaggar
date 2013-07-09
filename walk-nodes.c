@@ -236,6 +236,33 @@ int walk_declaration_node(tree node, void *data)
 	return 0;
 }
 
+int walk_type_declaration_node(tree node, void *data)
+{
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	if (DECL_IS_BUILTIN(node))
+		return ret;
+
+	if (DECL_NAME(node))
+		output_decl_name(buffer, node, pdata->flags);
+
+	if (TYPE_NAME(TREE_TYPE(node)) != node) {
+		output_printf(buffer, "%s ",
+			      __get_class_or_enum(node));
+		base_cp_tree_walker(&(TREE_TYPE(node)),
+				    tree_walker, data);
+	}
+
+	return ret;
+}
+
 int walk_number_types_node(tree node, void *data)
 {
 	int ret = -1;
