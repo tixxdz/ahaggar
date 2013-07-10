@@ -705,22 +705,14 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_char(buffer, '(');
 		base_cp_tree_walker(&(COND_EXPR_COND(node)),
 				    tree_walker, data);
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
 		output_char(buffer, ')');
 		*walk_subtrees = 0;
 		break;
 
 	case SWITCH_EXPR:
 		is_expr = true;
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_expr_code(buffer, node, ast->flags);
-		output_char(buffer, '(');
-		walk_switch_expr_node(node, ast);
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_char(buffer, ')');
+		ahg_ast_node_walker(node, ast,
+				    walk_switch_expr_node);
 		is_expr = false;
 		print_location = true;
 		*walk_subtrees = 0;
