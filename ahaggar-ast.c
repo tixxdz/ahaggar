@@ -693,12 +693,17 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 
 	case SWITCH_EXPR:
+		is_expr = true;
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
 		output_expr_code(buffer, node, ast->flags);
 		output_char(buffer, '(');
 		walk_switch_expr_node(node, ast);
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
 		output_char(buffer, ')');
+		is_expr = false;
+		print_location = true;
 		*walk_subtrees = 0;
 		break;
 
