@@ -413,6 +413,25 @@ int walk_modify_init_expr_node(tree node, void *data)
 	return 0;
 }
 
+int walk_target_expr_node(tree node, void *data)
+{
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	base_cp_tree_walker(&(TARGET_EXPR_SLOT(node)),
+			    tree_walker, data);
+	output_printf(buffer, ", ");
+	base_cp_tree_walker(&(TARGET_EXPR_INITIAL(node)),
+			    tree_walker, data);
+
+	return ret;
+}
+
 int walk_cond_expr_node(tree node, void *data)
 {
 	int indent;
