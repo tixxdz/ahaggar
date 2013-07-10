@@ -447,7 +447,8 @@ int walk_cond_expr_node(tree node, void *data, int indent)
 			}
 		} else if (!(pdata->flags & TDF_SLIM)) {
 			if (COND_EXPR_THEN(node)) {
-				output_printf(buffer, " {");
+				output_indent_to_newline(buffer, indent);
+				output_char(buffer, '{');
 				base_cp_tree_walker(&(COND_EXPR_THEN(node)),
 						    tree_walker, data);
 				output_indent_to_newline(buffer, indent);
