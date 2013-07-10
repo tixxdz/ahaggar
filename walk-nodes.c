@@ -152,7 +152,6 @@ int walk_array_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -267,7 +266,6 @@ int walk_label_declaration_node(tree node, void *data)
 {
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
-	walk_tree_fn tree_walker = pdata->tree_walker;
 	struct output_buffer *buffer = pdata->buffer;
 
 	if (!node)
