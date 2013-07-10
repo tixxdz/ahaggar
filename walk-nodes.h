@@ -52,6 +52,7 @@ int walk_modify_init_expr_node(tree node, void *data);
 int walk_cond_expr_node(tree node, void *data, int indent);
 int walk_switch_expr_node(tree node, void *data, int indent);
 int walk_case_label_expr_node(tree node, void *data);
+int walk_goto_expr_node(tree node, void *data);
 int walk_return_expr_node(tree node, void *data);
 int walk_unary_logic_expr_node(tree node, void *data);
 int walk_binary_arith_logic_node(tree node, void *data);

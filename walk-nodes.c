@@ -559,6 +559,35 @@ int walk_case_label_expr_node(tree node, void *data)
 	return 0;
 }
 
+int walk_goto_expr_node(tree node, void *data)
+{
+	tree op0;
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	op0 = GOTO_DESTINATION(node);
+	if (TREE_CODE(op0) != SSA_NAME) {
+	/* && DECL_P(op0) && DECL_NAME(op0)) { */
+		const char *name = __get_decl_name(op0, pdata->flags);
+		if (strcmp(name, "break") == 0
+		|| strcmp (name, "continue") == 0) {
+			output_printf(buffer, name);
+			return ret;
+		}
+	}
+
+	output_printf(buffer, "goto ");
+	base_cp_tree_walker(&op0, tree_walker, data);
+
+	return ret;
+}
+
 int walk_return_expr_node(tree node, void *data)
 {
 	tree expr;
