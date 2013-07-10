@@ -497,7 +497,6 @@ int walk_cond_expr_node(tree node, void *data)
 int walk_switch_expr_node(tree node, void *data)
 {
 	int indent;
-	int indent_level;
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
@@ -506,8 +505,7 @@ int walk_switch_expr_node(tree node, void *data)
 	if (!node)
 		return ret;
 
-	indent_level = *pdata->indent_level;
-	indent = indent_level * INDENT;
+	indent = (*pdata->indent_level + 1) * INDENT;
 
 	output_indent_to_newline(buffer, indent);
 	output_printf(buffer, "switch (");
