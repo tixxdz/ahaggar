@@ -453,7 +453,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case LABEL_DECL:
 		if (!is_expr) {
 			output_indent_to_newline(buffer,
-						walker_depth * INDENT);
+						 walker_depth * INDENT);
 			output_expr_code(buffer, node, ast->flags);
 			walk_label_declaration_node(node, ast);
 			print_location = true;
@@ -533,8 +533,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 					 walker_depth * INDENT);
 		output_expr_code(buffer, node, ast->flags);
 		output_char(buffer, '(');
-		walk_cond_expr_node(node, ast,
-				    (walker_depth + 1) * INDENT);
+		walk_cond_expr_node(node, ast);
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
 		output_char(buffer, ')');
@@ -698,8 +697,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 					 walker_depth * INDENT);
 		output_expr_code(buffer, node, ast->flags);
 		output_char(buffer, '(');
-		walk_switch_expr_node(node, ast,
-				      (walker_depth + 1) * INDENT);
+		walk_switch_expr_node(node, ast);
 		output_char(buffer, ')');
 		*walk_subtrees = 0;
 		break;
@@ -870,6 +868,7 @@ static struct plugin_data *ast_init(struct plugin_name_args *plugin_info)
 	strncpy(l_ast->plugin_name, plugin_info->base_name,
 		sizeof(l_ast->plugin_name) - 1);
 
+	l_ast->indent_level = &walker_depth;
 	l_ast->flags = TDF_TREE | TDF_VERBOSE | TDF_VERBOSE;
 	l_ast->buffer = output_init();
 	l_ast->tree_walker = (walk_tree_fn)ahg_ast_tree_walker;
