@@ -121,8 +121,7 @@ static void ahg_ast_walk_call_args(tree node, void *data)
 		return;
 
 	FOR_EACH_CALL_EXPR_ARG(arg, iter, op0) {
-		cp_walk_tree_without_duplicates(&arg,
-						tree_walker, data);
+		base_cp_tree_walker(&arg, tree_walker, data);
 		if (more_call_expr_args_p(&iter))
 			output_printf(buffer, ", ");
 	}
@@ -181,22 +180,21 @@ again:
 
 	case COND_EXPR:
 		output_char(buffer, '(');
-		cp_walk_tree_without_duplicates(&(TREE_OPERAND(op0, 0)),
-						tree_walker, data);
+		base_cp_tree_walker(&(TREE_OPERAND(op0, 0)),
+				    tree_walker, data);
 		output_printf(buffer, ") ? ");
-		cp_walk_tree_without_duplicates(&(TREE_OPERAND(op0, 1)),
-						tree_walker, data);
+		base_cp_tree_walker(&(TREE_OPERAND(op0, 1)),
+				    tree_walker, data);
 		output_printf(buffer, " : ");
-		cp_walk_tree_without_duplicates(&(TREE_OPERAND(op0, 2)),
-						tree_walker, data);
+		base_cp_tree_walker(&(TREE_OPERAND(op0, 2)),
+				    tree_walker, data);
 		break;
 
 	case ARRAY_REF:
 		if (TREE_CODE(TREE_OPERAND(op0, 0)) == VAR_DECL)
 			goto again;
 		else
-			cp_walk_tree_without_duplicates(&op0,
-						tree_walker, data);
+			base_cp_tree_walker(&op0, tree_walker, data);
 		break;
 
 	case MEM_REF:
@@ -207,8 +205,7 @@ again:
 	case COMPONENT_REF:
 	case SSA_NAME:
 	case OBJ_TYPE_REF:
-		cp_walk_tree_without_duplicates(&op0,
-						tree_walker, data);
+		base_cp_tree_walker(&op0, tree_walker, data);
 		break;
 
 	default:
@@ -222,8 +219,7 @@ again:
 	op0 = CALL_EXPR_STATIC_CHAIN(node);
 	if (op0) {
 		output_printf(buffer, "[static-chain: ");
-		cp_walk_tree_without_duplicates(&op0,
-						tree_walker, data);
+		base_cp_tree_walker(&op0, tree_walker, data);
 		output_printf(buffer, "] ");
 	}
 
@@ -243,8 +239,7 @@ static void ahg_ast_walk_body(tree body, void *data)
 	tree body_chain = BIND_EXPR_BODY(body);
 	walk_tree_fn tree_walker = ((struct plugin_data *)data)->tree_walker;
 
-	cp_walk_tree_without_duplicates(&body_chain,
-					tree_walker, data);
+	base_cp_tree_walker(&body_chain, tree_walker, data);
 }
 
 static int ahg_ast_analyze_body(tree fndecl, void *data)
@@ -458,6 +453,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case LABEL_DECL:
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
+		output_expr_code(buffer, node, ast->flags);
 		walk_label_declaration_node(node, ast);
 		*walk_subtrees = 0;
 		break;
