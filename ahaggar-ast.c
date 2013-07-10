@@ -60,12 +60,15 @@ int plugin_is_GPL_compatible;
 
 static unsigned int walker_depth;
 
+static struct plugin_data *ast;
+
 static void ahaggar_ast_main(void *, void *);
 static int ahg_ast_checker(void *, void *);
 static int ahg_ast_output_dump(void *, void *);
-static tree ahg_ast_tree_walker(tree *, int *, void *);
 
-static struct plugin_data *ast;
+static int ahg_ast_node_walker(tree , void *, walk_tree_nodes);
+
+static tree ahg_ast_tree_walker(tree *, int *, void *);
 
 static struct plugin_info ahaggar_ast_info = {
 	.version = "20120620",
@@ -297,6 +300,28 @@ static int ahg_ast_function(tree node, void *data)
 	return 0;
 }
 
+static int ahg_ast_node_walker(tree node, void *data,
+			       walk_tree_nodes walk_node)
+{
+	int ret = -1;
+	struct plugin_data *ast = (struct plugin_data *)data;
+	struct output_buffer *buffer = ast->buffer;
+
+	if (!node)
+		return ret;
+
+	output_indent_to_newline(buffer,
+				 *ast->indent_level * INDENT);
+	output_expr_code(buffer, node, ast->flags);
+	output_char(buffer, '(');
+	ret = walk_node(node, ast);
+	output_indent_to_newline(buffer,
+				 *ast->indent_level * INDENT);
+	output_char(buffer, ')');
+
+	return ret;
+}
+
 static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 				void *data)
 {
@@ -331,9 +356,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 
 	case TREE_BINFO:
-		break;
-
-	case TREE_VEC:
 		break;
 	*/
 
@@ -514,12 +536,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	 *	break;
 	 */
 
-	/*
-	 * case TARGET_EXPR:
-	 *	*walk_subtrees = 0;
-	 *	break;
-	 */
-
 	case DECL_EXPR:
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
@@ -527,16 +543,19 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	case TARGET_EXPR:
+		is_expr = true;
+		ahg_ast_node_walker(node, ast,
+				    walk_target_expr_node);
+		is_expr = false;
+		print_location = true;
+		*walk_subtrees = 0;
+		break;
+
 	case COND_EXPR:
 		is_expr = true;
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_expr_code(buffer, node, ast->flags);
-		output_char(buffer, '(');
-		walk_cond_expr_node(node, ast);
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_char(buffer, ')');
+		ahg_ast_node_walker(node, ast,
+				    walk_cond_expr_node);
 		is_expr = false;
 		print_location = true;
 		*walk_subtrees = 0;
@@ -549,7 +568,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 					 walker_depth * INDENT);
 		output_expr_code(buffer, node, ast->flags);
 		output_char(buffer, '(');
-		walk_modify_init_expr_node(node, data);
+		walk_modify_init_expr_node(node, ast);
 		output_char(buffer, ')');
 		is_expr = false;
 		print_location = true;
@@ -781,12 +800,14 @@ static int ahg_ast_checker(void *node, void *plug_data)
 
 static int ahg_ast_output_dump(void *data, void *plug_data)
 {
+	ssize_t ret;
 	struct plugin_data *ast = (struct plugin_data *)plug_data;
 	struct output_buffer *buffer = ast->buffer;
 
-	write(ast->fd, output_buf(buffer), output_strlen(buffer));
+	ret = write(ast->fd, output_buf(buffer),
+		    output_strlen(buffer));
 
-	return 0;
+	return (ret >= 0) ? 0 : -1;
 }
 
 static void start_unit(void *gcc_data, void *user_data)
