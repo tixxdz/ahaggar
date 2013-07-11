@@ -709,10 +709,14 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
-	/*
-	 * case LOOP_EXPR:
-	 *	break;
-	 */
+	case LOOP_EXPR:
+		is_expr = true;
+		ahg_ast_node_walker(node, ast,
+				    walk_loop_expr_node);
+		is_expr = false;
+		print_location = true;
+		*walk_subtrees = 0;
+		break;
 
 	case EXIT_EXPR:
 		output_indent_to_newline(buffer,
