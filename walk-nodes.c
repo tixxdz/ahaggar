@@ -623,6 +623,39 @@ int walk_label_expr_node(tree node, void *data)
 	return ret;
 }
 
+int walk_loop_expr_node(tree node, void *data)
+{
+	int indent;
+	int indent_level;
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	indent_level = *pdata->indent_level;
+	indent = (indent_level + 1) * INDENT;
+	if (!(pdata->flags & TDF_SLIM)) {
+		output_indent_to_newline(buffer, indent);
+		output_printf(buffer, "while (1)");
+		output_indent_to_newline(buffer, indent);
+		output_char(buffer, '{');
+		++*pdata->indent_level;
+		base_cp_tree_walker(&(LOOP_EXPR_BODY(node)),
+				    tree_walker, data);
+		--*pdata->indent_level;
+		output_indent_to_newline(buffer, indent);
+		output_char(buffer, '}');
+	}
+
+	*pdata->indent_level = indent_level;
+
+	return ret;
+}
+
 int walk_goto_expr_node(tree node, void *data)
 {
 	tree op0;
