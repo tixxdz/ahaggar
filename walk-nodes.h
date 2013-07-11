@@ -55,6 +55,7 @@ int walk_target_expr_node(tree node, void *data);
 int walk_cond_expr_node(tree node, void *data);
 int walk_switch_expr_node(tree node, void *data);
 int walk_case_label_expr_node(tree node, void *data);
+int walk_label_expr_node(tree node, void *data);
 int walk_goto_expr_node(tree node, void *data);
 int walk_return_expr_node(tree node, void *data);
 int walk_unary_logic_expr_node(tree node, void *data);
