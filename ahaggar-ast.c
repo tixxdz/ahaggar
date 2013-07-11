@@ -698,9 +698,18 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	case LABEL_EXPR:
+		is_expr = true;
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_expr_code(buffer, node, ast->flags);
+		walk_label_expr_node(node, ast);
+		is_expr = false;
+		print_location = true;
+		*walk_subtrees = 0;
+		break;
+
 	/*
-	 * case LABEL_EXPR:
-	 *	break;
 	 * case LOOP_EXPR:
 	 *	break;
 	 */
