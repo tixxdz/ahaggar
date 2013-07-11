@@ -698,6 +698,13 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	/*
+	 * case LABEL_EXPR:
+	 *	break;
+	 * case LOOP_EXPR:
+	 *	break;
+	 */
+
 	case EXIT_EXPR:
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
@@ -748,6 +755,15 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		print_location = true;
 		*walk_subtrees = 0;
 		break;
+
+	/*
+	 * case ASM_EXPR:
+	 *	break;
+	 * case SSA_NAME:
+	 *	break;
+	 * case BLOCK:
+	 *	break;
+	 */
 
 	default:
 		/*
