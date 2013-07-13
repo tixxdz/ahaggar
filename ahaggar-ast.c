@@ -670,6 +670,22 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
+	/*
+	 * case ADDR_SPACE_CONVERT_EXPR:
+	 * case FIXED_CONVERT_EXPR:
+	 * case FIX_TRUNC_EXPR:
+	 * case FLOAT_EXPR:
+	 * CASE_CONVERT:
+	 *	break;
+	 */
+
+	/*
+	 * case VIEW_CONVERT_EXPR:
+	 *	break;
+	 * case PAREN_EXPR:
+	 *	break;
+	 */
+
 	/* Binary arithmetic */
 	case WIDEN_SUM_EXPR:
 	case WIDEN_MULT_EXPR:
