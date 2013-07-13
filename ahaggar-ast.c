@@ -422,6 +422,11 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	case INTEGER_CST:
 		output_node_addr(buffer, node, ast->flags);
+
+		if (TREE_CODE(TREE_TYPE(node)) == POINTER_TYPE)
+			output_expr_code(buffer,
+					 TREE_TYPE(node),
+					 ast->flags);
 		output_expr_code(buffer, node, ast->flags);
 		output_int_cst(buffer, node);
 		*walk_subtrees = 0;
@@ -640,6 +645,25 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 	}
+
+	/*
+	 * case POSTDECREMENT_EXPR:
+	 * case POSTINCREMENT_EXPR:
+	 *	break;
+	 */
+
+	/*
+	 * case MIN_EXPR:
+	 *	break;
+	 * case MAX_EXPR:
+	 *	break;
+	 * case ABS_EXPR:
+	 *	break;
+	 */
+
+	case RANGE_EXPR:
+		*walk_subtrees = 0;
+		break;
 
 	/* Binary arithmetic */
 	case WIDEN_SUM_EXPR:
