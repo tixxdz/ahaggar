@@ -919,3 +919,37 @@ int walk_array_ref_node(tree node, void *data)
 
 	return ret;
 }
+
+int walk_asm_expr_node(tree node, void *data)
+{
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	output_printf(buffer, "__asm__");
+
+	if (ASM_VOLATILE_P(node))
+		output_printf(buffer, " __volatile__");
+
+	output_char(buffer, '(');
+	base_cp_tree_walker(&(ASM_STRING(node)), tree_walker, data);
+	output_char(buffer, ':');
+	base_cp_tree_walker(&(ASM_OUTPUTS(node)), tree_walker, data);
+	output_char(buffer, ':');
+	base_cp_tree_walker(&(ASM_INPUTS(node)), tree_walker, data);
+
+	if (ASM_CLOBBERS(node)) {
+		output_char(buffer, ':');
+		base_cp_tree_walker(&(ASM_CLOBBERS(node)),
+				    tree_walker, data);
+	}
+
+	output_char(buffer, ')');
+
+	return ret;
+}
