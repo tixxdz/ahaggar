@@ -60,6 +60,7 @@ int walk_loop_expr_node(tree node, void *data);
 int walk_goto_expr_node(tree node, void *data);
 int walk_return_expr_node(tree node, void *data);
 int walk_unary_logic_expr_node(tree node, void *data);
+int walk_post_inc_dec_expr_node(tree node, void *data);
 int walk_binary_arith_logic_node(tree node, void *data);
 int walk_component_ref_node(tree node, void *data);
 int walk_array_ref_node(tree node, void *data);

@@ -754,6 +754,33 @@ int walk_unary_logic_expr_node(tree node, void *data)
 	return 0;
 }
 
+int walk_post_inc_dec_expr_node(tree node, void *data)
+{
+	tree op0;
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	op0 = TREE_OPERAND(node, 0);
+
+	if (op_prio(op0) < op_prio(node)) {
+		output_char(buffer, '(');
+		base_cp_tree_walker(&op0, tree_walker, data);
+		output_char(buffer, ')');
+	} else {
+		base_cp_tree_walker(&op0, tree_walker, data);
+	}
+
+	output_printf(buffer, "%s", op_symbol(node));
+
+	return ret;
+}
+
 /* Note: the symbol is hidden, better call:
  * op_symbol_code() before this function */
 int walk_binary_arith_logic_node(tree node, void *data)
