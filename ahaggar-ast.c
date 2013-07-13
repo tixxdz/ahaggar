@@ -646,11 +646,16 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 	}
 
-	/*
-	 * case POSTDECREMENT_EXPR:
-	 * case POSTINCREMENT_EXPR:
-	 *	break;
-	 */
+	case POSTDECREMENT_EXPR:
+	case POSTINCREMENT_EXPR:
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_expr_code(buffer, node, ast->flags);
+		output_char(buffer, '(');
+		walk_post_inc_dec_expr_node(node, ast);
+		output_char(buffer, ')');
+		*walk_subtrees = 0;
+		break;
 
 	/*
 	 * case MIN_EXPR:
