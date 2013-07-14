@@ -516,7 +516,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case COMPONENT_REF: {
 		tree op0 = TREE_OPERAND(node, 0);
 		output_expr_code(buffer, node, ast->flags);
-		output_var_parm_decl_code(buffer, op0, ast->flags);
+		/* output_var_parm_decl_code(buffer, op0, ast->flags); */
 		walk_component_ref_node(node, ast);
 		*walk_subtrees = 0;
 		break;
@@ -544,6 +544,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case DECL_EXPR:
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
+		output_expr_code(buffer, node, ast->flags);
 		walk_declaration_node(DECL_EXPR_DECL(node), ast);
 		*walk_subtrees = 0;
 		break;
@@ -582,6 +583,8 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	/*
 	 * case BIND_EXPR:
+	 *	walk_bind_expr_node(node, ast);
+	 *	*walk_subtrees = 0;
 	 *	break;
 	 */
 
@@ -618,8 +621,8 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		&& TREE_CODE(op0) != FUNCTION_DECL)
 			symbol_prefix = op_symbol(node);
 
+		output_expr_code(buffer, node, ast->flags);
 		/*
-		 * output_expr_code(buffer, node, ast->flags);
 		 * output_expr_code(buffer, op0, ast->flags);
 		 */
 		walk_unary_logic_expr_node(node, ast);
@@ -634,11 +637,11 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case PREINCREMENT_EXPR:
 	case INDIRECT_REF: {
 		/* tree op0 = TREE_OPERAND(node, 0); */
+		symbol_prefix = op_symbol(node);
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
 		output_expr_code(buffer, node, ast->flags);
 		output_char(buffer, '(');
-		symbol_prefix = op_symbol(node);
 		/* output_expr_code(buffer, op0, ast->flags); */
 		walk_unary_logic_expr_node(node, ast);
 		output_char(buffer, ')');
