@@ -964,7 +964,7 @@ static struct plugin_data *ast_init(struct plugin_name_args *plugin_info)
 		sizeof(l_ast->plugin_name) - 1);
 
 	l_ast->indent_level = &walker_depth;
-	l_ast->flags = TDF_TREE | TDF_VERBOSE | TDF_VERBOSE;
+	l_ast->flags = TDF_TREE | TDF_VERBOSE;
 	l_ast->buffer = output_init();
 	l_ast->tree_walker = (walk_tree_fn)ahg_ast_tree_walker;
 	l_ast->checker = ahg_ast_checker;
