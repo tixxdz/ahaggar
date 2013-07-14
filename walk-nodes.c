@@ -411,6 +411,52 @@ int walk_modify_init_expr_node(tree node, void *data)
 	return 0;
 }
 
+int walk_bind_expr_node(tree node, void *data)
+{
+	int indent;
+	int indent_level;
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	ret = 0;
+	indent_level = *pdata->indent_level;
+	indent = (indent_level + 1) * INDENT;
+
+	output_indent_to_newline(buffer, indent_level * INDENT);
+	output_char(buffer, '{');
+
+	if (!(pdata->flags & TDF_SLIM)) {
+		if (BIND_EXPR_VARS(node)) {
+			tree op0 = BIND_EXPR_VARS(node);
+			output_indent_to_newline(buffer, indent);
+			for (; op0; op0 = DECL_CHAIN(op0)) {
+				++*pdata->indent_level;
+				walk_declaration_node(op0, pdata);
+				--*pdata->indent_level;
+				output_indent_to_newline(buffer, indent);
+			}
+		}
+
+		output_indent_to_newline(buffer, indent + INDENT);
+		++*pdata->indent_level;
+		base_cp_tree_walker(&(BIND_EXPR_BODY(node)),
+				    tree_walker, data);
+		--*pdata->indent_level;
+	}
+
+	output_indent_to_newline(buffer, indent_level * INDENT);
+	output_char(buffer, '}');
+
+	*pdata->indent_level = indent_level;
+
+	return ret;
+}
+
 int walk_target_expr_node(tree node, void *data)
 {
 	int ret = -1;

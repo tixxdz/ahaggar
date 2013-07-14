@@ -51,6 +51,7 @@ int walk_number_types_node(tree node, void *data);
 int walk_pointer_reference_node(tree node, void *data);
 int walk_record_union_node(tree node, void *data);
 int walk_modify_init_expr_node(tree node, void *data);
+int walk_bind_expr_node(tree node, void *data);
 int walk_target_expr_node(tree node, void *data);
 int walk_cond_expr_node(tree node, void *data);
 int walk_switch_expr_node(tree node, void *data);
