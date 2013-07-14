@@ -65,11 +65,11 @@ int chk_memory_size(const char *fnname,
 		snprintf(buf, buflen,
 			 "function '%s' argument size is 0",
 			 fnname);
-	} else if (size < sizeof(char *)) {
+	} else if (size < __SIZEOF_POINTER__) {
 		snprintf(buf, buflen,
 			 "function '%s' argument size equals %ld",
 			 fnname, size);
-	} else if (size == sizeof(char *)) {
+	} else if (size == __SIZEOF_POINTER__) {
 		snprintf(buf, buflen,
 			 "function '%s' argument size equals ptr size %ld",
 			 fnname, size);
