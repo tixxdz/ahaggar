@@ -13,9 +13,9 @@ A library do dump the AST (Abstract Syntax Tree)
 
 Output example:
 Library version:
-commit 08c6d003ecacb9996682e3b17e95c03a3d388893
+commit 9d462584cd480528a0c79
 
-Used on Linux next-20130624
+Used on Linux next-20130709
 https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/init/main.c
 
 Output file:  main.c.000.ahaggar_ast.log
