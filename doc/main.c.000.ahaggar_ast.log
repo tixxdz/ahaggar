@@ -5,8 +5,8 @@
   <return_expr> (<integer_cst> 1) [init/main.c:152]
 
 <function_decl> obsolete_checksetup(char * line) [init/main.c:163]
-  <decl_expr> const struct obs_kernel_param* <var_decl> p
-  <decl_expr> int  <var_decl> had_early_param = <integer_cst> 0
+  <decl_expr> const struct obs_kernel_param* <var_decl> p [init/main.c:165]
+  <decl_expr> int  <var_decl> had_early_param = <integer_cst> 0 [init/main.c:166]
   <modify_expr> (<var_decl> p = <addr_expr> <var_decl> &__setup_start) [init/main.c:168]
   <label_expr> <label_decl> <D.45226> [init/main.c:190]
   <call_expr> strlen(<component_ref> <var_decl> p->str) [init/main.c:170]<integer_cst> 32u<integer_cst> 4u
@@ -58,7 +58,7 @@
       ) [init/main.c:172]
     }
   ) [init/main.c:171]
-  <postincrement_expr> (<var_decl> p++ )
+  <postincrement_expr> (<var_decl> p++ ) [init/main.c:186]
   <cond_expr> (
     if (
     <lt_expr> (<var_decl> p < <addr_expr> <var_decl> &__setup_end))
@@ -78,7 +78,7 @@
   <return_expr> (<integer_cst> 0) [init/main.c:209]
 
 <function_decl> loglevel(char * str) [init/main.c:215]
-  <decl_expr> int  <var_decl> newlevel
+  <decl_expr> int  <var_decl> newlevel [init/main.c:217]
   <cond_expr> (
     if (
     <ne_expr> (
@@ -121,7 +121,7 @@
                 <pointer_plus_expr> (<parm_decl> val + <integer_cst> 18446744073709551615u), <parm_decl> val, 
                 <plus_expr> (
                   <call_expr> strlen(<parm_decl> val) + <integer_cst> 1u)) [init/main.c:243]
-              <postdecrement_expr> (<parm_decl> val-- )
+              <postdecrement_expr> (<parm_decl> val-- ) [init/main.c:244]
             }
             else {<string_cst> "1:\tud2\n.pu..."<addr_expr> <string_cst> "init/main...."<integer_cst> 246<integer_cst> 12ul
               <call_expr> __builtin_unreachable() [init/main.c:246]
@@ -167,7 +167,7 @@
     if (
     <ne_expr> (<parm_decl> val != <pointer_type> <integer_cst> 0))
     {<integer_cst> 32u<integer_cst> 4u
-      <decl_expr> unsigned int  <var_decl> i
+      <decl_expr> unsigned int  <var_decl> i [init/main.c:272]
       <modify_expr> (<var_decl> i = <integer_cst> 0u) [init/main.c:273]
       <goto_expr> goto <label_decl> <D.45263> [init/main.c:273]
       <label_expr> <label_decl> <D.45262> [init/main.c:294]
@@ -188,7 +188,7 @@
           <goto_expr> goto <label_decl> <D.45261> [init/main.c:279]
         }
       ) [init/main.c:278]
-      <postincrement_expr> (<var_decl> i++ )
+      <postincrement_expr> (<var_decl> i++ ) [init/main.c:273]
       <label_expr> <label_decl> <D.45263> [init/main.c:294]
       <cond_expr> (
         if (
@@ -201,7 +201,7 @@
       <modify_expr> (<array_ref> <var_decl> envp_init[<var_decl> i] = <parm_decl> param) [init/main.c:281]
     }
     else {<integer_cst> 32u<integer_cst> 4u
-      <decl_expr> unsigned int  <var_decl> i
+      <decl_expr> unsigned int  <var_decl> i [init/main.c:284]
       <modify_expr> (<var_decl> i = <integer_cst> 0u) [init/main.c:285]
       <goto_expr> goto <label_decl> <D.45266> [init/main.c:285]
       <label_expr> <label_decl> <D.45265> [init/main.c:294]
@@ -213,7 +213,7 @@
           <modify_expr> (<var_decl> panic_param = <parm_decl> param) [init/main.c:288]
         }
       ) [init/main.c:286]
-      <postincrement_expr> (<var_decl> i++ )
+      <postincrement_expr> (<var_decl> i++ ) [init/main.c:285]
       <label_expr> <label_decl> <D.45266> [init/main.c:294]
       <cond_expr> (
         if (
@@ -229,13 +229,13 @@
   <return_expr> (<integer_cst> 0) [init/main.c:293]
 
 <function_decl> init_setup(char * str) [init/main.c:296]
-  <decl_expr> unsigned int  <var_decl> i
+  <decl_expr> unsigned int  <var_decl> i [init/main.c:298]
   <modify_expr> (<var_decl> execute_command = <parm_decl> str) [init/main.c:300]
   <modify_expr> (<var_decl> i = <integer_cst> 1u) [init/main.c:307]
   <goto_expr> goto <label_decl> <D.45273> [init/main.c:307]
   <label_expr> <label_decl> <D.45272> [init/main.c:310]
   <modify_expr> (<array_ref> <var_decl> argv_init[<var_decl> i] = <pointer_type> <integer_cst> 0) [init/main.c:308]
-  <postincrement_expr> (<var_decl> i++ )
+  <postincrement_expr> (<var_decl> i++ ) [init/main.c:307]
   <label_expr> <label_decl> <D.45273> [init/main.c:310]
   <cond_expr> (
     if (
@@ -248,13 +248,13 @@
   <return_expr> (<integer_cst> 1) [init/main.c:309]
 
 <function_decl> rdinit_setup(char * str) [init/main.c:313]
-  <decl_expr> unsigned int  <var_decl> i
+  <decl_expr> unsigned int  <var_decl> i [init/main.c:315]
   <modify_expr> (<var_decl> ramdisk_execute_command = <parm_decl> str) [init/main.c:317]
   <modify_expr> (<var_decl> i = <integer_cst> 1u) [init/main.c:319]
   <goto_expr> goto <label_decl> <D.45282> [init/main.c:319]
   <label_expr> <label_decl> <D.45281> [init/main.c:322]
   <modify_expr> (<array_ref> <var_decl> argv_init[<var_decl> i] = <pointer_type> <integer_cst> 0) [init/main.c:320]
-  <postincrement_expr> (<var_decl> i++ )
+  <postincrement_expr> (<var_decl> i++ ) [init/main.c:319]
   <label_expr> <label_decl> <D.45282> [init/main.c:322]
   <cond_expr> (
     if (
@@ -279,7 +279,7 @@
   <call_expr> strcpy(<var_decl> static_command_line, <parm_decl> command_line) [init/main.c:351]
 
 <function_decl> rest_init() [init/main.c:365]
-  <decl_expr> int  <var_decl> pid
+  <decl_expr> int  <var_decl> pid [init/main.c:367]
   <call_expr> rcu_scheduler_starting() [init/main.c:369]
   <call_expr> kernel_thread(<addr_expr> <function_decl> kernel_init, <pointer_type> <integer_cst> 0, <integer_cst> 2560ul) [init/main.c:375]
   <call_expr> numa_default_policy() [init/main.c:376]
@@ -296,7 +296,7 @@
   <call_expr> cpu_startup_entry(<integer_cst> 1u) [init/main.c:390]
 
 <function_decl> do_early_param(char * param, char * val, const char * unused) [init/main.c:394]
-  <decl_expr> const struct obs_kernel_param* <var_decl> p
+  <decl_expr> const struct obs_kernel_param* <var_decl> p [init/main.c:396]
   <modify_expr> (<var_decl> p = <addr_expr> <var_decl> &__setup_start) [init/main.c:398]
   <goto_expr> goto <label_decl> <D.45302> [init/main.c:398]
   <label_expr> <label_decl> <D.45301> [init/main.c:409]
@@ -322,7 +322,7 @@
       ) [init/main.c:403]
     }
   ) [init/main.c:399]
-  <postincrement_expr> (<var_decl> p++ )
+  <postincrement_expr> (<var_decl> p++ ) [init/main.c:398]
   <label_expr> <label_decl> <D.45302> [init/main.c:409]
   <cond_expr> (
     if (
@@ -338,8 +338,8 @@
   <call_expr> parse_args(<addr_expr> <string_cst> "early opti...", <parm_decl> cmdline, <pointer_type> <integer_cst> 0, <integer_cst> 0u, <integer_cst> 0, <integer_cst> 0, <addr_expr> <function_decl> do_early_param) [init/main.c:413]
 
 <function_decl> parse_early_param() [init/main.c:417]
-  <decl_expr> static int  <var_decl> done = <integer_cst> 0
-  <decl_expr> static char  <var_decl> tmp_cmdline[2048]
+  <decl_expr> static int  <var_decl> done = <integer_cst> 0 [init/main.c:419]
+  <decl_expr> static char  <var_decl> tmp_cmdline[2048] [init/main.c:420]
   <cond_expr> (
     if (
     <ne_expr> (<var_decl> done != <integer_cst> 0))
@@ -354,14 +354,14 @@
 <function_decl> boot_cpu_init() [init/main.c:435]
   <decl_expr> int  <var_decl> cpu = 
     <target_expr> (<var_decl> <unnamed>, <integer_cst> 32u<integer_cst> 4u
-      <decl_expr> int  <var_decl> pscr_ret__<pointer_type> <integer_cst> 0<integer_cst> 64u<integer_cst> 8u
-      <decl_expr> const void * <var_decl> __vpp_verify = <pointer_type> <integer_cst> 0<var_decl> __vpp_verify
+      <decl_expr> int  <var_decl> pscr_ret__ [init/main.c:437]<pointer_type> <integer_cst> 0<integer_cst> 64u<integer_cst> 8u
+      <decl_expr> const void * <var_decl> __vpp_verify = <pointer_type> <integer_cst> 0 [init/main.c:437]<var_decl> __vpp_verify
       <switch_expr> (
         switch (<integer_cst> 4ul) {
         case <integer_cst> 1ul:
         <modify_expr> (<var_decl> pscr_ret__ = 
           <target_expr> (<var_decl> <unnamed>, <integer_cst> 32u<integer_cst> 4u
-            <decl_expr> int  <var_decl> pfo_ret__
+            <decl_expr> int  <var_decl> pfo_ret__ [init/main.c:437]
             <switch_expr> (
               switch (<integer_cst> 4ul) {
               case <integer_cst> 1ul:<string_cst> "movb %%gs:..."<var_decl> pfo_ret__<var_decl> cpu_number
@@ -383,7 +383,7 @@
         case <integer_cst> 2ul:
         <modify_expr> (<var_decl> pscr_ret__ = 
           <target_expr> (<var_decl> <unnamed>, <integer_cst> 32u<integer_cst> 4u
-            <decl_expr> int  <var_decl> pfo_ret__
+            <decl_expr> int  <var_decl> pfo_ret__ [init/main.c:437]
             <switch_expr> (
               switch (<integer_cst> 4ul) {
               case <integer_cst> 1ul:<string_cst> "movb %%gs:..."<var_decl> pfo_ret__<var_decl> cpu_number
@@ -405,7 +405,7 @@
         case <integer_cst> 4ul:
         <modify_expr> (<var_decl> pscr_ret__ = 
           <target_expr> (<var_decl> <unnamed>, <integer_cst> 32u<integer_cst> 4u
-            <decl_expr> int  <var_decl> pfo_ret__
+            <decl_expr> int  <var_decl> pfo_ret__ [init/main.c:437]
             <switch_expr> (
               switch (<integer_cst> 4ul) {
               case <integer_cst> 1ul:<string_cst> "movb %%gs:..."<var_decl> pfo_ret__<var_decl> cpu_number
@@ -427,7 +427,7 @@
         case <integer_cst> 8ul:
         <modify_expr> (<var_decl> pscr_ret__ = 
           <target_expr> (<var_decl> <unnamed>, <integer_cst> 32u<integer_cst> 4u
-            <decl_expr> int  <var_decl> pfo_ret__
+            <decl_expr> int  <var_decl> pfo_ret__ [init/main.c:437]
             <switch_expr> (
               switch (<integer_cst> 4ul) {
               case <integer_cst> 1ul:<string_cst> "movb %%gs:..."<var_decl> pfo_ret__<var_decl> cpu_number
@@ -453,7 +453,7 @@
       ) [init/main.c:437]
       <label_expr> <label_decl> <D.45327> [init/main.c:437]
       <modify_expr> (<var_decl> <unnamed> = <var_decl> pscr_ret__) [init/main.c:437]
-    ) [init/main.c:437]
+    ) [init/main.c:437] [init/main.c:437]
   <call_expr> set_cpu_online(<var_decl> cpu, <integer_cst> 1) [init/main.c:439]
   <call_expr> set_cpu_active(<var_decl> cpu, <integer_cst> 1) [init/main.c:440]
   <call_expr> set_cpu_present(<var_decl> cpu, <integer_cst> 1) [init/main.c:441]
@@ -471,7 +471,7 @@
   <call_expr> vmalloc_init() [init/main.c:469]
 
 <function_decl> start_kernel() [init/main.c:472]
-  <decl_expr> char * <var_decl> command_line
+  <decl_expr> char * <var_decl> command_line [init/main.c:474]
   <call_expr> lockdep_init() [init/main.c:481]
   <call_expr> smp_setup_processor_id() [init/main.c:482]
   <call_expr> debug_objects_early_init() [init/main.c:483]
@@ -514,10 +514,10 @@
       <target_expr> (<var_decl> <unnamed>, 
         <eq_expr> (
           <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-            <decl_expr> long unsigned int  <var_decl> _flags
+            <decl_expr> long unsigned int  <var_decl> _flags [init/main.c:543]
             <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-              <decl_expr> long unsigned int  <var_decl> __dummy
-              <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+              <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:543]
+              <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:543]<integer_cst> 0
               <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:543]
             ) [init/main.c:543]
             <modify_expr> (<var_decl> _flags = 
@@ -525,8 +525,8 @@
             <modify_expr> (<var_decl> <unnamed> = 
               <target_expr> (<var_decl> <unnamed>, 
                 <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-                  <decl_expr> long unsigned int  <var_decl> __dummy
-                  <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+                  <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:543]
+                  <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:543]<integer_cst> 0
                   <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:543]
                 ) [init/main.c:543]
                 <modify_expr> (<var_decl> <unnamed> = 
@@ -536,10 +536,10 @@
         <decl_expr> int  <var_decl> __ret_warn_on = 
           <eq_expr> (
             <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-              <decl_expr> long unsigned int  <var_decl> _flags
+              <decl_expr> long unsigned int  <var_decl> _flags [init/main.c:543]
               <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-                <decl_expr> long unsigned int  <var_decl> __dummy
-                <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+                <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:543]
+                <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:543]<integer_cst> 0
                 <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:543]
               ) [init/main.c:543]
               <modify_expr> (<var_decl> _flags = 
@@ -547,14 +547,14 @@
               <modify_expr> (<var_decl> <unnamed> = 
                 <target_expr> (<var_decl> <unnamed>, 
                   <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-                    <decl_expr> long unsigned int  <var_decl> __dummy
-                    <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+                    <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:543]
+                    <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:543]<integer_cst> 0
                     <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:543]
                   ) [init/main.c:543]
                   <modify_expr> (<var_decl> <unnamed> = 
                     <call_expr> arch_irqs_disabled_flags(<var_decl> _flags)) [init/main.c:543]
                 ) [init/main.c:543]) [init/main.c:543]
-            ) [init/main.c:543] == <integer_cst> 0)
+            ) [init/main.c:543] == <integer_cst> 0) [init/main.c:543]
         <cond_expr> (
           if (
           <ne_expr> (
@@ -592,10 +592,10 @@
   <target_expr> (<var_decl> <unnamed>, 
     <eq_expr> (
       <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-        <decl_expr> long unsigned int  <var_decl> _flags
+        <decl_expr> long unsigned int  <var_decl> _flags [init/main.c:562]
         <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-          <decl_expr> long unsigned int  <var_decl> __dummy
-          <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+          <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:562]
+          <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:562]<integer_cst> 0
           <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:562]
         ) [init/main.c:562]
         <modify_expr> (<var_decl> _flags = 
@@ -603,8 +603,8 @@
         <modify_expr> (<var_decl> <unnamed> = 
           <target_expr> (<var_decl> <unnamed>, 
             <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-              <decl_expr> long unsigned int  <var_decl> __dummy
-              <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+              <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:562]
+              <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:562]<integer_cst> 0
               <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:562]
             ) [init/main.c:562]
             <modify_expr> (<var_decl> <unnamed> = 
@@ -614,10 +614,10 @@
     <decl_expr> int  <var_decl> __ret_warn_on = 
       <eq_expr> (
         <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-          <decl_expr> long unsigned int  <var_decl> _flags
+          <decl_expr> long unsigned int  <var_decl> _flags [init/main.c:562]
           <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-            <decl_expr> long unsigned int  <var_decl> __dummy
-            <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+            <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:562]
+            <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:562]<integer_cst> 0
             <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:562]
           ) [init/main.c:562]
           <modify_expr> (<var_decl> _flags = 
@@ -625,14 +625,14 @@
           <modify_expr> (<var_decl> <unnamed> = 
             <target_expr> (<var_decl> <unnamed>, 
               <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-                <decl_expr> long unsigned int  <var_decl> __dummy
-                <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+                <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:562]
+                <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:562]<integer_cst> 0
                 <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:562]
               ) [init/main.c:562]
               <modify_expr> (<var_decl> <unnamed> = 
                 <call_expr> arch_irqs_disabled_flags(<var_decl> _flags)) [init/main.c:562]
             ) [init/main.c:562]) [init/main.c:562]
-        ) [init/main.c:562] == <integer_cst> 0)
+        ) [init/main.c:562] == <integer_cst> 0) [init/main.c:562]
     <cond_expr> (
       if (
       <ne_expr> (
@@ -740,11 +740,11 @@
   <call_expr> rest_init() [init/main.c:643]
 
 <function_decl> do_ctors() [init/main.c:647]
-  <decl_expr> void (*ctor_fn_t)(null)* <var_decl> fn = <addr_expr> <var_decl> &__ctors_start
+  <decl_expr> void (*ctor_fn_t)(null)* <var_decl> fn = <addr_expr> <var_decl> &__ctors_start [init/main.c:650]
   <goto_expr> goto <label_decl> <D.45401> [init/main.c:652]
   <label_expr> <label_decl> <D.45400> [init/main.c:655]
    [init/main.c:653]
-  <postincrement_expr> (<var_decl> fn++ )
+  <postincrement_expr> (<var_decl> fn++ ) [init/main.c:652]
   <label_expr> <label_decl> <D.45401> [init/main.c:655]
   <cond_expr> (
     if (
@@ -759,13 +759,13 @@
   <return_expr> (<addr_expr> <var_decl> &initcall_debug) [init/main.c:658]
 
 <function_decl> do_one_initcall_debug(int (*initcall_t)(null) fn) [init/main.c:660]
-  <decl_expr> static const char  <var_decl> __func__[22] = <string_cst> "do_one_ini..."
-  <decl_expr> uninon ktime_t <var_decl> calltime
-  <decl_expr> uninon ktime_t <var_decl> delta
-  <decl_expr> uninon ktime_t <var_decl> rettime
-  <decl_expr> long long unsigned int  <var_decl> duration
-  <decl_expr> int  <var_decl> ret<addr_expr> <string_cst> "main"<addr_expr> <var_decl> &__func__<addr_expr> <string_cst> "init/main...."<addr_expr> <string_cst> "calling  %..."<integer_cst> 666u<integer_cst> 1u<integer_cst> 320u<integer_cst> 40u
-  <decl_expr> static struct _ddebug <var_decl> descriptor = <addr_expr> <string_cst> "main"<addr_expr> <var_decl> &__func__<addr_expr> <string_cst> "init/main...."<addr_expr> <string_cst> "calling  %..."<integer_cst> 666u<integer_cst> 1u
+  <decl_expr> static const char  <var_decl> __func__[22] = <string_cst> "do_one_ini..." [init/main.c:666]
+  <decl_expr> uninon ktime_t <var_decl> calltime [init/main.c:662]
+  <decl_expr> uninon ktime_t <var_decl> delta [init/main.c:662]
+  <decl_expr> uninon ktime_t <var_decl> rettime [init/main.c:662]
+  <decl_expr> long long unsigned int  <var_decl> duration [init/main.c:663]
+  <decl_expr> int  <var_decl> ret [init/main.c:664]<addr_expr> <string_cst> "main"<addr_expr> <var_decl> &__func__<addr_expr> <string_cst> "init/main...."<addr_expr> <string_cst> "calling  %..."<integer_cst> 666u<integer_cst> 1u<integer_cst> 320u<integer_cst> 40u
+  <decl_expr> static struct _ddebug <var_decl> descriptor = <addr_expr> <string_cst> "main"<addr_expr> <var_decl> &__func__<addr_expr> <string_cst> "init/main...."<addr_expr> <string_cst> "calling  %..."<integer_cst> 666u<integer_cst> 1u [init/main.c:666]
   <cond_expr> (
     if (
     <ne_expr> (
@@ -786,10 +786,10 @@
     <call_expr> ktime_get()) [init/main.c:669]
   <modify_expr> (<var_decl> delta = 
     <decl_expr> uninon ktime_t <var_decl> <unnamed> = 
-      <minus_expr> (<component_ref> <var_decl> rettime.tv64 - <component_ref> <var_decl> calltime.tv64)) [init/main.c:670]
+      <minus_expr> (<component_ref> <var_decl> rettime.tv64 - <component_ref> <var_decl> calltime.tv64) [init/main.c:670]) [init/main.c:670]
   <modify_expr> (<var_decl> duration = 
     <rshift_expr> (<component_ref> <var_decl> delta.tv64 >> <integer_cst> 10)) [init/main.c:671]<addr_expr> <string_cst> "main"<addr_expr> <var_decl> &__func__<addr_expr> <string_cst> "init/main...."<addr_expr> <string_cst> "initcall %..."<integer_cst> 673u<integer_cst> 1u<integer_cst> 320u<integer_cst> 40u
-  <decl_expr> static struct _ddebug <var_decl> descriptor = <addr_expr> <string_cst> "main"<addr_expr> <var_decl> &__func__<addr_expr> <string_cst> "init/main...."<addr_expr> <string_cst> "initcall %..."<integer_cst> 673u<integer_cst> 1u
+  <decl_expr> static struct _ddebug <var_decl> descriptor = <addr_expr> <string_cst> "main"<addr_expr> <var_decl> &__func__<addr_expr> <string_cst> "init/main...."<addr_expr> <string_cst> "initcall %..."<integer_cst> 673u<integer_cst> 1u [init/main.c:672]
   <cond_expr> (
     if (
     <ne_expr> (
@@ -804,9 +804,9 @@
 
 <function_decl> do_one_initcall(int (*initcall_t)(null) fn) [init/main.c:678]
   <decl_expr> int  <var_decl> count = <component_ref> 
-      <call_expr> current_thread_info() [init/main.c:680]->preempt_count
-  <decl_expr> int  <var_decl> ret
-  <decl_expr> char  <var_decl> msgbuf[64]
+      <call_expr> current_thread_info()->preempt_count [init/main.c:680]
+  <decl_expr> int  <var_decl> ret [init/main.c:681]
+  <decl_expr> char  <var_decl> msgbuf[64] [init/main.c:682]
   <cond_expr> (
     if (<var_decl> initcall_debug)
     {
@@ -833,10 +833,10 @@
     if (
     <ne_expr> (
       <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-        <decl_expr> long unsigned int  <var_decl> _flags
+        <decl_expr> long unsigned int  <var_decl> _flags [init/main.c:695]
         <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-          <decl_expr> long unsigned int  <var_decl> __dummy
-          <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+          <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:695]
+          <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:695]<integer_cst> 0
           <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:695]
         ) [init/main.c:695]
         <modify_expr> (<var_decl> _flags = 
@@ -844,8 +844,8 @@
         <modify_expr> (<var_decl> <unnamed> = 
           <target_expr> (<var_decl> <unnamed>, 
             <target_expr> (<var_decl> <unnamed>, <integer_cst> 64u<integer_cst> 8u
-              <decl_expr> long unsigned int  <var_decl> __dummy
-              <decl_expr> long unsigned int  <var_decl> __dummy2<integer_cst> 0
+              <decl_expr> long unsigned int  <var_decl> __dummy [init/main.c:695]
+              <decl_expr> long unsigned int  <var_decl> __dummy2 [init/main.c:695]<integer_cst> 0
               <modify_expr> (<var_decl> <unnamed> = <integer_cst> 1) [init/main.c:695]
             ) [init/main.c:695]
             <modify_expr> (<var_decl> <unnamed> = 
@@ -861,7 +861,7 @@
   <target_expr> (<var_decl> <unnamed>, 
     <ne_expr> (<array_ref> <var_decl> msgbuf[<integer_cst> 0] != <integer_cst> 0)<integer_cst> 32u<integer_cst> 4u
     <decl_expr> int  <var_decl> __ret_warn_on = 
-      <ne_expr> (<array_ref> <var_decl> msgbuf[<integer_cst> 0] != <integer_cst> 0)
+      <ne_expr> (<array_ref> <var_decl> msgbuf[<integer_cst> 0] != <integer_cst> 0) [init/main.c:699]
     <cond_expr> (
       if (
       <ne_expr> (
@@ -878,7 +878,7 @@
   <return_expr> (<var_decl> ret) [init/main.c:701]
 
 <function_decl> do_initcall_level(int  level) [init/main.c:740]
-  <decl_expr> int (*initcall_t)(null)* <var_decl> fn
+  <decl_expr> int (*initcall_t)(null)* <var_decl> fn [init/main.c:743]
   <call_expr> strcpy(<var_decl> static_command_line, <var_decl> saved_command_line) [init/main.c:745]
   <call_expr> parse_args(<array_ref> <var_decl> initcall_level_names[<parm_decl> level], <var_decl> static_command_line, <addr_expr> <var_decl> &__start___param, 
     <exact_div_expr> ((
@@ -888,7 +888,7 @@
   <label_expr> <label_decl> <D.45463> [init/main.c:754]
   <call_expr> do_one_initcall(
     <indirect_ref> (<var_decl> *fn)) [init/main.c:753]
-  <postincrement_expr> (<var_decl> fn++ )
+  <postincrement_expr> (<var_decl> fn++ ) [init/main.c:752]
   <label_expr> <label_decl> <D.45464> [init/main.c:754]
   <cond_expr> (
     if (
@@ -901,12 +901,12 @@
   <label_expr> <label_decl> <D.45465> [init/main.c:754]
 
 <function_decl> do_initcalls() [init/main.c:756]
-  <decl_expr> int  <var_decl> level
+  <decl_expr> int  <var_decl> level [init/main.c:758]
   <modify_expr> (<var_decl> level = <integer_cst> 0) [init/main.c:760]
   <goto_expr> goto <label_decl> <D.45476> [init/main.c:760]
   <label_expr> <label_decl> <D.45475> [init/main.c:762]
   <call_expr> do_initcall_level(<var_decl> level) [init/main.c:761]
-  <postincrement_expr> (<var_decl> level++ )
+  <postincrement_expr> (<var_decl> level++ ) [init/main.c:760]
   <label_expr> <label_decl> <D.45476> [init/main.c:762]
   <cond_expr> (
     if (
@@ -928,13 +928,13 @@
   <call_expr> do_initcalls() [init/main.c:780]
 
 <function_decl> do_pre_smp_initcalls() [init/main.c:783]
-  <decl_expr> int (*initcall_t)(null)* <var_decl> fn
+  <decl_expr> int (*initcall_t)(null)* <var_decl> fn [init/main.c:785]
   <modify_expr> (<var_decl> fn = <addr_expr> <var_decl> &__initcall_start) [init/main.c:787]
   <goto_expr> goto <label_decl> <D.45486> [init/main.c:787]
   <label_expr> <label_decl> <D.45485> [init/main.c:789]
   <call_expr> do_one_initcall(
     <indirect_ref> (<var_decl> *fn)) [init/main.c:788]
-  <postincrement_expr> (<var_decl> fn++ )
+  <postincrement_expr> (<var_decl> fn++ ) [init/main.c:787]
   <label_expr> <label_decl> <D.45486> [init/main.c:789]
   <cond_expr> (
     if (
