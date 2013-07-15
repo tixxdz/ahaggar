@@ -780,7 +780,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 					 walker_depth * INDENT);
 		output_expr_code(buffer, node, ast->flags);
 		output_char(buffer, '(');
-		base_cp_tree_walker(&(COND_EXPR_COND(node)),
+		base_cp_tree_walker(&(TREE_OPERAND(node, 0)),
 				    tree_walker, data);
 		output_char(buffer, ')');
 		is_expr = false;
