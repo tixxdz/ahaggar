@@ -15,8 +15,9 @@ from pahaggar.input import Input
 
 class Fncalls(Input):
 
-    def __init__(self, finput):
+    def __init__(self, finput, callback, *args, **kwargs):
         Input.__init__(self, finput)
+        self.set_callback(callback, *args, **kwargs)
         self.nr_files = 0
 
     def set_input_files(self, finput):
@@ -35,8 +36,7 @@ class Fncalls(Input):
     def nr_processed_files(self):
         return self.nr_files
 
-    def run(self, callback, *args, **kwargs):
-        self.set_callback(callback, *args, **kwargs)
+    def run(self):
         ret = self.process_input(self.callback,
                                  self.args, self.kwargs)
         self.nr_files = ret
