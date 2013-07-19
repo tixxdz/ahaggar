@@ -33,9 +33,6 @@ class Fncalls(Input):
         self.set_callback(callback, *args, **kwargs)
         self.nr_files = 0
 
-    def nr_processed_files(self):
-        return self.nr_files
-
     def run(self):
         ret = self.process_input(self.callback,
                                  self.args, self.kwargs)

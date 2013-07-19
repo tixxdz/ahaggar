@@ -29,6 +29,7 @@ class Input():
     def __init__(self, finput):
         fs = self.parse_input_files(finput)
         self.files = set(fs)
+        self.nr_files = 0
 
     def set_input(self, finput):
         fs = self.parse_input_files(finput)
@@ -37,8 +38,10 @@ class Input():
     def get_input(self):
         return self.files
 
+    def nr_processed_files(self):
+        return self.nr_files
+
     def process_input(self, callback, *args, **kwargs):
-        nr_files = 0
         for f in self.files:
             if f == "-":
                 ret = callback(sys.stdin, *args, **kwargs)
@@ -51,9 +54,12 @@ class Input():
                 ret = callback(input, *args, **kwargs)
                 input.close()
 
-            nr_files += 1
+            self.nr_files += 1
 
-        return nr_files
+        return self.nr_files
+
+    def readlines_input(self, input):
+        return input.readlines()
 
     __process_input = process_input
 
