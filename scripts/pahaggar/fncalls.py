@@ -29,7 +29,7 @@ class Fncalls(Input):
         self.kwargs = kwargs
 
     def reset(self, finput, callback, *args, **kwargs):
-        Input.set_input(self, finput)
+        self.set_input(self, finput)
         self.set_callback(callback, *args, **kwargs)
         self.nr_files = 0
 
@@ -45,6 +45,42 @@ class Fncalls(Input):
             return -1
 
         return 0
+
+    def standarize_calls(self, calls):
+        subcall = ""
+        new_function = False
+        func_decl = "<function_decl>"
+        self.calls = []
+        subfncalls = []
+        for c in calls:
+            if not new_function:
+                if c.find(func_decl, 0, len(func_decl)) != -1:
+                    new_function = True
+                else:
+                    continue
+            elif c == "\n":
+                self.calls.append(list(subfncalls))
+                subfncalls = []
+                new_function = False
+                continue
+
+            if self.next_is_subcall(c):
+                subcall = subcall + c
+                continue
+
+            if subcall != "":
+                subfncalls.append(subcall + c)
+                subcall = ""
+            else:
+                subfncalls.append(c)
+
+        return self.calls
+
+    def next_is_subcall(self, call):
+        if call.rfind("]", len(call) - 2, len(call)) == -1:
+            return True
+
+        return False
 
     __run = run
 
