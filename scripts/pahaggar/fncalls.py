@@ -12,11 +12,28 @@
 #
 
 from pahaggar.input import Input
+from pahaggar.parser import Parser
 
-class Fncalls(Input):
+class FncallsParser(Parser):
+
+    def __init__(self):
+        Parser.__init__(self)
+
+    def get_fnname(self, call):
+        return self.extract_fnname(call)
+
+    def next_is_subcall(self, call):
+        if call.rfind("]\n", len(call) - 2, len(call)) == -1:
+            return True
+
+        return False
+
+
+class Fncalls(Input, FncallsParser):
 
     def __init__(self, finput, callback, *args, **kwargs):
         Input.__init__(self, finput)
+        FncallsParser.__init__(self)
         self.set_callback(callback, *args, **kwargs)
         self.nr_files = 0
 
@@ -51,7 +68,7 @@ class Fncalls(Input):
         subfncalls = []
         for c in calls:
             if not new_function:
-                if c.find(func_decl, 0, len(func_decl)) != -1:
+                if c.startswith(func_decl, 0, len(func_decl)):
                     new_function = True
                 else:
                     continue
@@ -72,12 +89,6 @@ class Fncalls(Input):
                 subfncalls.append(c)
 
         return self.calls
-
-    def next_is_subcall(self, call):
-        if call.rfind("]", len(call) - 2, len(call)) == -1:
-            return True
-
-        return False
 
     __run = run
 
