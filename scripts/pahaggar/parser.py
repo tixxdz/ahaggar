@@ -16,10 +16,17 @@ import re
 class Parser():
 
     def __init__(self):
-        self.regfnname = re.compile('^\s+<.*?>\s(.+?)\(')
+        self.regfnname = re.compile(r"^\s+<.*?>\s(.+?)\(")
+        self.reglocation = re.compile(r".*(\[.*?:\d+\])\n$")
 
     def extract_fnname(self, call):
         s = self.regfnname.search(call)
+        if s:
+            return s.group(1)
+        return None
+
+    def extract_location(self, call):
+        s = self.reglocation.search(call)
         if s:
             return s.group(1)
         return None
