@@ -63,11 +63,9 @@ class FnCompileParser(object):
     def set_compiled_functions(self, module, function):
         if function == ALL_COMPILED_FUNCTIONS:
             funcs = self.get_all_compiled_functions(module)
-            #if len(funcs) > 0:
-                #self.update(for c, func in funcs.items())
-            #    self._obj.modules[module] = 1
-            #self._obj[str(c)] = (func for c, func in funcs.items())
-            self._obj.modules[module] = 1
+            if len(funcs) > 0:
+                self._obj.__dict__.update(dict(funcs))
+                self._obj.modules[module] = 1
         else:
             code = self.get_compiled_function(module, function)
             if code:
