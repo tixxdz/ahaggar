@@ -37,7 +37,7 @@ class FnCompileParser(object):
                             if v == 1)
 
     def get_all_compiled_functions(self, module):
-        results = [] 
+        results = []
         for key in dir(module):
             try:
                 value = getattr(module, key)
