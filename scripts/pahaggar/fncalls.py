@@ -14,6 +14,7 @@
 from pahaggar.input import Input
 from pahaggar.parser import Parser
 from pahaggar.fncalls_compile import FncallsCompile
+from pahaggar.fncalls_compile import ALL_COMPILED_FUNCTIONS
 
 class FncallsParser(Parser):
 
@@ -103,10 +104,9 @@ class Fncalls(Input, FncallsParser):
 
     def run(self):
         err = -1
-        if self.args[0] != '*':
+        if self.args[0] != ALL_COMPILED_FUNCTIONS:
             nr_calls = 0
             for c in self.args:
-                print c
                 if self.is_compiled_call(c):
                     nr_calls += 1
 
