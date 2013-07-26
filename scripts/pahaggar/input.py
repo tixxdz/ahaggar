@@ -22,7 +22,7 @@ class Input():
             if f == "-" or os.path.isfile(f):
                 fs.append(f)
             else:
-                print "Warning skipping %s, not a regular file" % f
+                print "Warning skipping %s not a regular file" % f
 
         return fs
 
