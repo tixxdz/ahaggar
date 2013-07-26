@@ -13,11 +13,17 @@
 
 from pahaggar.input import Input
 from pahaggar.parser import Parser
+from pahaggar.fncalls_compile import FncallsCompile
 
 class FncallsParser(Parser):
 
-    def __init__(self):
+    def __init__(self, selected_calls):
+        self.calls = []
         Parser.__init__(self)
+        self.compiled = FncallsCompile(selected_calls)
+
+    def is_compiled_call(self, call):
+        return self.compiled.is_compiled_call(call)
 
     def get_fnname(self, call):
         return self.extract_fnname(call)
@@ -28,43 +34,10 @@ class FncallsParser(Parser):
 
         return False
 
-
-class Fncalls(Input, FncallsParser):
-
-    def __init__(self, finput, callback, *args, **kwargs):
-        Input.__init__(self, finput)
-        FncallsParser.__init__(self)
-        self.set_callback(callback, *args, **kwargs)
-        self.nr_files = 0
-
-    def set_input_files(self, finput):
-        self.set_input(self, finput)
-
-    def set_callback(self, callback, *args, **kwargs):
-	self.callback = callback
-        self.args = args
-        self.kwargs = kwargs
-
-    def reset(self, finput, callback, *args, **kwargs):
-        self.set_input(self, finput)
-        self.set_callback(callback, *args, **kwargs)
-        self.nr_files = 0
-
-    def run(self):
-        ret = self.process_input(self.callback,
-                                 self.args, self.kwargs)
-        self.nr_files = ret
-
-        if self.nr_files == 0:
-            return -1
-
-        return 0
-
-    def standarize_calls(self, calls):
+    def parse_input_calls(self, calls):
         subcall = ""
         new_function = False
         func_decl = "<function_decl>"
-        self.calls = []
         subfncalls = []
         for c in calls:
             if not new_function:
@@ -89,6 +62,65 @@ class Fncalls(Input, FncallsParser):
                 subfncalls.append(c)
 
         return self.calls
+
+    def get_current_calls(self):
+        return self.calls
+
+    def read_input_calls(self, input):
+        lines = []
+        self.calls = []
+        for line in input:
+            lines.append(line)
+
+            if line == "\n":
+                self.parse_input_calls(lines)
+                lines = []
+
+        return self.get_current_calls()
+
+
+class Fncalls(Input, FncallsParser):
+
+    def __init__(self, finput, callback, args, kwargs):
+        Input.__init__(self, finput)
+        FncallsParser.__init__(self, args)
+        self.set_callback(callback, args, kwargs)
+        self.nr_files = 0
+
+    def set_input_files(self, finput):
+        self.set_input(self, finput)
+
+    def set_callback(self, callback, args, kwargs):
+        self.callback = callback
+        self.args = args
+        self.kwargs = kwargs
+        return True
+
+    def reset(self, finput, callback, args, kwargs):
+        self.set_input(self, finput)
+        self.set_callback(callback, args, kwargs)
+        self.nr_files = 0
+
+    def run(self):
+        err = -1
+        if self.args[0] != '*':
+            nr_calls = 0
+            for c in self.args:
+                print c
+                if self.is_compiled_call(c):
+                    nr_calls += 1
+
+            if nr_calls == 0:
+                return err
+
+        ret = self.process_input(self.callback,
+                                 self.args, self.kwargs)
+        self.nr_files = ret
+
+        if self.nr_files == 0:
+            return err
+
+        return 0
 
     __run = run
 
