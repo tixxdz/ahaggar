@@ -14,11 +14,12 @@
 import inspect
 import importlib
 
+ALL_COMPILED_FUNCTIONS = '*'
+EXPORTS_DICT = "COMPILED_EXPORTS"
+
 COMPILED_MODULES = (
                     'pahaggar.compiletime_overflow',
                    )
-
-ALL_COMPILED_FUNCTIONS = '*'
 
 
 class FnCompileParser(object):
@@ -36,49 +37,48 @@ class FnCompileParser(object):
                             for k, v in self._obj.modules.items()
                             if v == 1)
 
-    def get_all_compiled_functions(self, module):
-        results = []
-        for key in dir(module):
-            try:
-                value = getattr(module, key)
-            except AttributeError:
-                continue
-
-            if inspect.isfunction(value):
-                results.append((key, value))
-
-        return results
-
-    def get_compiled_function(self, module, function):
+    def get_compiled_exports(self, module):
         try:
-            value = getattr(module, str(function))
+            exports = getattr(module, EXPORTS_DICT)
         except AttributeError:
             return None
 
-        if inspect.isfunction(value):
+        return exports
+
+    def get_all_compiled_functions(self, exports):
+        return [(k, v) for k, v in exports.iteritems()
+                if inspect.isfunction(v)]
+
+    def get_compiled_function(self, exports, function):
+        value = exports.get(str(function))
+        if value and inspect.isfunction(value):
             return value
 
         return None
 
-    def set_compiled_functions(self, module, function):
+    def set_compiled_functions(self, module, exports, function):
         if function == ALL_COMPILED_FUNCTIONS:
-            funcs = self.get_all_compiled_functions(module)
+            funcs = self.get_all_compiled_functions(exports)
             if len(funcs) > 0:
                 self._obj.__dict__.update(dict(funcs))
                 self._obj.modules[module] = 1
         else:
-            code = self.get_compiled_function(module, function)
+            code = self.get_compiled_function(exports, function)
             if code:
                 self._obj[str(function)] = code
                 self._obj.modules[module] = 1
 
     def parse_compiled_functions(self, selected_calls):
-        for c in selected_calls:
+        for call in selected_calls:
             for m in self._obj.modules.keys():
                 if not inspect.ismodule(m):
                     continue
 
-                self.set_compiled_functions(m, c)
+                exports = self.get_compiled_exports(m)
+                if not exports:
+                    continue
+
+                self.set_compiled_functions(m, exports, call)
 
 
 class FncallsCompile():
