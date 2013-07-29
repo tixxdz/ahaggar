@@ -30,13 +30,17 @@ class Input():
         fs = self.parse_input_files(finput)
         self.files = set(fs)
         self.nr_files = 0
+        self.current_input = ""
 
     def set_input(self, finput):
         fs = self.parse_input_files(finput)
         self.files = set(fs)
 
-    def get_input(self):
+    def get_input_files(self):
         return self.files
+
+    def get_current_input(self):
+        return self.current_input
 
     def nr_processed_files(self):
         return self.nr_files
@@ -44,15 +48,20 @@ class Input():
     def process_input(self, callback, *args, **kwargs):
         for f in self.files:
             if f == "-":
+                self.current_input = "sys.stdin"
                 ret = callback(sys.stdin, *args, **kwargs)
+                self.current_input = ""
             else:
                 try:
                     input = open(f, "r")
                 except:
                     print "Input error: failed to open %s" % f
                     continue
+
+                self.current_input = f
                 ret = callback(input, *args, **kwargs)
                 input.close()
+                self.current_input = ""
 
             self.nr_files += 1
 
