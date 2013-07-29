@@ -20,6 +20,7 @@ class FncallsParser(Parser):
 
     def __init__(self, selected_calls):
         self.calls = []
+        self.cache = {}
         Parser.__init__(self)
         self.compiled = FncallsCompile(selected_calls)
 
@@ -28,6 +29,12 @@ class FncallsParser(Parser):
 
     def get_fnname(self, call):
         return self.extract_fnname(call)
+
+    def get_call_args(self, call, nr_args):
+        return super(FncallsParser, self).get_call_args(call, nr_args)
+
+    def get_call_args_nr(self, call):
+        return super(FncallsParser, self).get_call_args_nr(call)
 
     def next_is_subcall(self, call):
         if call.rfind("]\n", len(call) - 2, len(call)) == -1:
