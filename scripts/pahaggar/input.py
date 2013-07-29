@@ -14,7 +14,7 @@
 import sys
 import os
 
-class Input():
+class Input(object):
 
     def parse_input_files(self, finput):
         fs = []
