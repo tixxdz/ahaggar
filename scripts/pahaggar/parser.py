@@ -13,7 +13,7 @@
 
 import re
 
-class Parser():
+class Parser(object):
 
     def __init__(self):
         self.regfnname = re.compile(r"^\s+<.*?>\s(.+?)\(")
