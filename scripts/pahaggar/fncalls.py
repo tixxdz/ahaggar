@@ -21,6 +21,8 @@ class FncallsParser(Parser):
     def __init__(self, selected_calls):
         self.calls = []
         self.cache = {}
+        self.current_fnflow = ()
+        self.current_fnflow_idx = 0
         Parser.__init__(self)
         self.compiled = FncallsCompile(selected_calls)
 
@@ -86,6 +88,15 @@ class FncallsParser(Parser):
 
         return self.get_current_calls()
 
+    def set_current_fnflow(self, fncalls):
+        self.current_fnflow_idx = 0
+        self.current_fnflow = fncalls
+
+    def get_current_fnflow(self):
+        return (self.current_fnflow, self.current_fnflow_idx)
+
+    def set_current_fnflow_idx(self, idx):
+        self.current_fnflow_idx = idx
 
 class Fncalls(Input, FncallsParser):
 
