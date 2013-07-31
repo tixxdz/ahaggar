@@ -16,7 +16,7 @@ import re
 class Parser(object):
 
     def __init__(self):
-        self.regfnname = re.compile(r"^\s+<.*?>\s(.+?)\(")
+        self.regfnname = re.compile(r"^\s+<.*?>\s(\w+?)\(")
         self.reglocation = re.compile(r".*(\[.*?:\d+\])\n$")
 
     def get_next_arg(self, args, offset):
