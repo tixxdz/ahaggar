@@ -11,6 +11,8 @@
 # of the License.
 #
 
+import re
+
 from pahaggar.input import Input
 from pahaggar.parser import Parser
 from pahaggar.fncalls_compile import FncallsCompile
@@ -23,6 +25,7 @@ class FncallsParser(Parser):
         self.cache = {}
         self.current_fnflow = ()
         self.current_fnflow_idx = 0
+        self.regsubcall = re.compile(r"^\s+<@0x[a-f0-9]+>\s(\w+?)\(")
         Parser.__init__(self)
         self.compiled = FncallsCompile(selected_calls)
 
@@ -30,13 +33,19 @@ class FncallsParser(Parser):
         return self.compiled.is_compiled_call(call)
 
     def get_fnname(self, call):
-        return self.extract_fnname(call)
+        s = self.regsubcall.search(call)
+        if s:
+            return s.group(1)
+        return None
 
     def get_call_args(self, call, nr_args):
         return super(FncallsParser, self).get_call_args(call, nr_args)
 
     def get_call_args_nr(self, call):
         return super(FncallsParser, self).get_call_args_nr(call)
+
+    def arg_is_subcall(self, arg):
+        return self.get_fnname
 
     def next_is_subcall(self, call):
         if call.rfind("]\n", len(call) - 2, len(call)) == -1:
