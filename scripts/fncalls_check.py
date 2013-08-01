@@ -32,9 +32,8 @@ class Check():
                                args, None)
 
     def check_fncalls(self, fncalls):
+        output = ()
         global lmatch_nr
-
-        self.fncalls.set_current_fnflow(fncalls)
 
         idx = 0
         # fncalls[0] is function declaration:
@@ -50,8 +49,13 @@ class Check():
             location = self.fncalls.extract_location(c)
 
             lmatch_nr += 1
-            self.fncalls.compiled[name](self.fncalls,
-                                        largs, location)
+            ret = self.fncalls.compiled[name](self.fncalls,
+                                              largs, location)
+            if ret:
+                output.append(ret)
+
+        return output
+
 
     def process_fncalls(self, input, args, kwargs):
         global lmatch_nr
@@ -64,7 +68,10 @@ class Check():
             return ret
 
         for calls in fncalls:
-            self.check_fncalls(calls)
+            self.fncalls.set_current_fnflow(calls)
+            output = self.check_fncalls(calls)
+            for out in output:
+                print "\n".join(filter(lambda x: x and x != "", out))
 
         return 0
 
