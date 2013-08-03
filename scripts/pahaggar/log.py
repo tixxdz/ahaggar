@@ -23,21 +23,21 @@ def error(prefix, location, context, msg):
         prefix = ""
 
     out = "{0:s}{1:s}: error: {2:s}".format(prefix, location, msg)
-    return (output_context(location, context, out))
+    return (output_context(location, context), out)
 
 def warning(prefix, location, context, msg):
     if not prefix:
         prefix = ""
 
     out = "{0:s}{1:s}: warning: {2:s}".format(prefix, location, msg)
-    return (output_context(location, context, out))
+    return (output_context(location, context), out)
 
 def report(prefix, location, context,  msg):
     if not prefix:
         prefix = ""
 
     out = "{0:s}{1:s}: report: {2:s}".format(prefix, location, msg)
-    return (output_context(location, context, out))
+    return (output_context(location, context), out)
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
