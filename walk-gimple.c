@@ -158,11 +158,12 @@ int walk_gimple_binary_rhs(gimple gs, void *data)
 	case VEC_PACK_FIX_TRUNC_EXPR:
 	case VEC_WIDEN_LSHIFT_HI_EXPR:
 	case VEC_WIDEN_LSHIFT_LO_EXPR:
-		output_printf(buffer, " <");
+		output_printf(buffer, "<%s> (",
+			      tree_code_name[rhs_code]);
 		base_cp_tree_walker(&rhs1, tree_walker, data);
 		output_printf(buffer, ", ");
 		base_cp_tree_walker(&rhs2, tree_walker, data);
-		output_char(buffer, '>');
+		output_char(buffer, ')');
 		break;
 
 	default:
@@ -215,13 +216,14 @@ int walk_gimple_ternary_rhs(gimple gs, void *data)
 	switch (rhs_code) {
 	case WIDEN_MULT_PLUS_EXPR:
 	case WIDEN_MULT_MINUS_EXPR:
-		output_printf(buffer, " <");
+		output_printf(buffer, "<%s> (",
+			      tree_code_name[rhs_code]);
 		base_cp_tree_walker(&rhs1, tree_walker, data);
 		output_printf(buffer, ", ");
 		base_cp_tree_walker(&rhs2, tree_walker, data);
 		output_printf(buffer, ", ");
 		base_cp_tree_walker(&rhs3, tree_walker, data);
-		output_char(buffer, '>');
+		output_char(buffer, ')');
 		break;
 
 	case FMA_EXPR:
