@@ -15,59 +15,54 @@ import os
 
 DEFTREE = "DEFTREECODE"
 
-
-class TreeParser(object):
-
-    def __init__(self, object):
-        self._obj = object
-        self.tree_code_idx = 0
-        self.tree_code_class_idx = 0
-
-    def parse_treecode(self, line):
-	s = line.find('(')
-        if s == -1:
-            return False
-
-        args = map(str.strip, line[s+1:len(line)-1].split(','))
-        if len(args) != 4:
-            return False
-
-        globals()[args[0]] = self.tree_code_idx
-        self._obj[str(args[0])] = "<" + args[1] + ">"
-
-        self.tree_code_idx += 1
-        self.tree_code_class_idx += 1
-
-        return True
-
-    def parse_tree_def(self, tfile):
-        try:
-            os.path.isfile(tfile)
-            input = open(tfile, "r")
-        except:
-            print "Failed: on '%s' gcc tree.def file" % tfile
-            return -1
-
-        map(self.parse_treecode,
-            filter(lambda x: x.startswith(DEFTREE, 0, len(DEFTREE)),
-                   input.readlines()))
-
-        input.close()
-
-        return 0
+TREE = ()
+tree_code_idx = 0
 
 
-class Tree(object):
+def parse_treecode(line):
+    global tree_code_idx
 
-    def __init__(self, tree_file):
-        tparser = TreeParser(self)
-        tparser.parse_tree_def(tree_file)
+    s = line.find('(')
+    if s == -1:
+        return ""
 
-    def __setitem__(self, key, value):
-        self.__dict__[key] = value
+    args = map(str.strip, line[s+1:len(line)-1].split(','))
+    if len(args) != 4:
+        return ""
 
-    def __getitem__(self, key):
-        return self.__dict__[key]
+    globals()[args[0]] = tree_code_idx
+    print args[0]
+
+    tree_code_idx += 1
+    return "<" + args[1][1:len(args[1])-1] + ">"
+
+
+def read_treecode(input):
+    tree = filter(lambda x: x.startswith(DEFTREE, 0, len(DEFTREE)),
+                  input.readlines())
+
+    return filter(lambda x: x and x != "",
+                  map(parse_treecode, tree))
+
+
+def parse_tree_def(input_file):
+    global TREE
+    err = -1
+    try:
+        os.path.isfile(input_file)
+        input = open(input_file, "r")
+    except:
+        print "Error: reading '%s' tree.def file" % input_file
+        return err
+
+    TREE = list(read_treecode(input))
+    input.close()
+
+    if len(TREE) == 0:
+        print "Error: parsing '%s' tree.def file" % input_file
+        return err
+
+    return 0
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
