@@ -13,9 +13,12 @@
 
 import re
 
+from pahaggar.gcc_nodes import GCCNodes
+
 class Parser(object):
 
     def __init__(self):
+        self.gccnodes = GCCNodes()
         self.regfnname = re.compile(r"^\s+<.*?>\s(\w+?)\(")
         self.reglocation = re.compile(r".*(\[.*?:\d+\])\n$")
 
