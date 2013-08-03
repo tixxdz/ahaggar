@@ -24,22 +24,22 @@ class GCCLog():
             prefix = ""
 
         out = "{0:s}{1:s}: error: {2:s}".format(prefix, location, msg)
-        return (self.output_context(location, context, out)
+        return (self.output_context(location, context, out))
 
-    def warning(self, location, context, prefix, msg):
+    def warning(self, prefix, location, context, msg):
         if not prefix:
             prefix = ""
 
         out = "{0:s}{1:s}: warning: {2:s}".format(prefix, location, msg)
-        return (self.output_context(location, context, out)
+        return (self.output_context(location, context, out))
 
 
-    def report(self, location, context, prefix, msg):
+    def report(self, prefix, location, context,  msg):
         if not prefix:
             prefix = ""
 
         out = "{0:s}{1:s}: report: {2:s}".format(prefix, location, msg)
-        return (self.output_context(location, context, out)
+        return (self.output_context(location, context, out))
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
