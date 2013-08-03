@@ -11,35 +11,33 @@
 # of the License.
 #
 
-class GCCLog():
 
-    def output_context(self, location, context):
-        s = location.find(':')
-        if s != -1 and context:
-            return "{0:s}: In {1:s}:".format(location[0:s], context)
-        return None
+def output_context(self, location, context):
+    s = location.find(':')
+    if s != -1 and context:
+        return "{0:s}: In {1:s}:".format(location[0:s], context)
+    return None
 
-    def error(self, prefix, location, context, msg):
-        if not prefix:
-            prefix = ""
+def error(self, prefix, location, context, msg):
+    if not prefix:
+        prefix = ""
 
-        out = "{0:s}{1:s}: error: {2:s}".format(prefix, location, msg)
-        return (self.output_context(location, context, out))
+    out = "{0:s}{1:s}: error: {2:s}".format(prefix, location, msg)
+    return (self.output_context(location, context, out))
 
-    def warning(self, prefix, location, context, msg):
-        if not prefix:
-            prefix = ""
+def warning(self, prefix, location, context, msg):
+    if not prefix:
+        prefix = ""
 
-        out = "{0:s}{1:s}: warning: {2:s}".format(prefix, location, msg)
-        return (self.output_context(location, context, out))
+    out = "{0:s}{1:s}: warning: {2:s}".format(prefix, location, msg)
+    return (self.output_context(location, context, out))
 
+def report(self, prefix, location, context,  msg):
+    if not prefix:
+        prefix = ""
 
-    def report(self, prefix, location, context,  msg):
-        if not prefix:
-            prefix = ""
-
-        out = "{0:s}{1:s}: report: {2:s}".format(prefix, location, msg)
-        return (self.output_context(location, context, out))
+    out = "{0:s}{1:s}: report: {2:s}".format(prefix, location, msg)
+    return (self.output_context(location, context, out))
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
