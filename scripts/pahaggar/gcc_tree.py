@@ -31,7 +31,6 @@ def parse_treecode(line):
         return ""
 
     globals()[args[0]] = tree_code_idx
-    print args[0]
 
     tree_code_idx += 1
     return "<" + args[1][1:len(args[1])-1] + ">"
