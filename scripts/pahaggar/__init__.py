@@ -13,7 +13,16 @@
 # of the License.
 #
 
+
+import sys
+import pahaggar.gcc_tree
+
 __version__ = '20130110'
 version = __version__
+
+ret = gcc_tree.parse_tree_def("pahaggar/tree.def")
+if ret == -1:
+    print "Error: failed to initialize pahaggar modules"
+    sys.exit(ret)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
