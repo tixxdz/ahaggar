@@ -81,7 +81,7 @@ class FnCompileParser(object):
                 self.set_compiled_functions(m, exports, call)
 
 
-class FncallsCompile():
+class FncallsCompile(object):
 
     def __init__(self, selected_calls):
         cparser = FnCompileParser(self)
