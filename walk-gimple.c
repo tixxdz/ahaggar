@@ -282,7 +282,8 @@ int walk_gimple_phi(gimple phi, void *data)
 
 	lhs = gimple_phi_result(phi);
 	base_cp_tree_walker(&lhs, tree_walker, data);
-	output_printf(buffer, " = PHI(");
+	output_printf(buffer, " = <%s> (",
+		      gimple_code_name[gimple_code(phi)]);
 
 	for (i = 0; i < gimple_phi_num_args(phi); i++) {
 		tree rhs = gimple_phi_arg_def(phi, i);
