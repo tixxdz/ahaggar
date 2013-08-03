@@ -15,7 +15,7 @@ import os
 
 DEFTREE = "DEFTREECODE"
 
-TREE = ()
+TREE = []
 tree_code_idx = 0
 
 
