@@ -134,7 +134,7 @@ class Fncalls(Input, FncallsParser):
         if self.args[0] != ALL_COMPILED_FUNCTIONS:
             nr_calls = 0
             for c in self.args:
-                if self.is_compiled_call(c):
+                if super(Fncalls, self).is_compiled_call(c):
                     nr_calls += 1
 
             if nr_calls == 0:
