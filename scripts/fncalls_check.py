@@ -32,7 +32,7 @@ class Check():
                                args, None)
 
     def check_fncalls(self, fncalls):
-        output = ()
+        output = []
         global lmatch_nr
 
         idx = 0
