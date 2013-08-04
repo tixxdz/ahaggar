@@ -15,7 +15,7 @@ import os
 
 DEFTREE = "DEFTREECODE"
 
-TREE = []
+TREE = {}
 tree_code_idx = 0
 
 
@@ -24,29 +24,30 @@ def parse_treecode(line):
 
     s = line.find('(')
     if s == -1:
-        return ""
+        return None
 
     args = map(str.strip, line[s+1:len(line)-1].split(','))
     if len(args) != 4:
-        return ""
+        return None
 
     globals()[args[0]] = tree_code_idx
 
     tree_code_idx += 1
-    return "<" + args[1][1:len(args[1])-1] + ">"
+    return ("<" + args[1][1:len(args[1])-1] + ">", globals()[args[0]])
 
 
 def read_treecode(input):
     tree = filter(lambda x: x.startswith(DEFTREE, 0, len(DEFTREE)),
                   input.readlines())
 
-    return filter(lambda x: x and x != "",
-                  map(parse_treecode, tree))
+    return filter(lambda x: x, map(parse_treecode, tree))
 
 
 def parse_tree_def(input_file):
     global TREE
+    global tree_code_idx
     err = -1
+
     try:
         os.path.isfile(input_file)
         input = open(input_file, "r")
@@ -54,7 +55,7 @@ def parse_tree_def(input_file):
         print "Error: reading '%s' tree.def file" % input_file
         return err
 
-    TREE = list(read_treecode(input))
+    TREE = dict(read_treecode(input))
     input.close()
 
     if len(TREE) == 0:
