@@ -12,8 +12,7 @@
 #
 
 import re
-
-from pahaggar.gcc_nodes import GCCNodes
+import pahaggar.gcc
 
 class Parser(object):
 
