@@ -17,9 +17,15 @@ import pahaggar.gcc
 class Parser(object):
 
     def __init__(self):
-        self.gccnodes = GCCNodes()
         self.regfnname = re.compile(r"^\s+<.*?>\s(\w+?)\(")
         self.reglocation = re.compile(r".*\[(.*?:\d+)\]\n$")
+        self.regfndecl = re.compile(r"^<function_decl>\s(\w+?)\(")
+
+    def parse_arg(self, args, **kwargs):
+        results = []
+        operands = gcc.get_op_operands(args)
+
+        return results
 
     def get_next_arg(self, args, offset):
         end = 0
@@ -80,6 +86,12 @@ class Parser(object):
 
     def extract_fnname(self, call):
         s = self.regfnname.search(call)
+        if s:
+            return s.group(1)
+        return None
+
+    def extract_fndecl_name(self, call):
+        s = self.regfndecl.search(call)
         if s:
             return s.group(1)
         return None
