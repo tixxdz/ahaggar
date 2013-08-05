@@ -80,7 +80,9 @@ OP_SYMBOL = {
 
 def op_symbol(code):
     if is_code_valid_gcc_tree(code):
-        return OP_SYMBOL[TREE[code]]
+        idx = TREE[code]
+        if idx in OP_SYMBOL:
+            return OP_SYMBOL[idx]
 
     return ""
 
