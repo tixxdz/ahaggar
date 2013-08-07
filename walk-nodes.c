@@ -114,6 +114,40 @@ int walk_tree_vector_node(tree node, void *data)
 	return ret;
 }
 
+int walk_function_decl_node(tree fn, void *data)
+{
+	tree arg;
+	int ret = -1;
+	bool wrote_arg = false;
+	walk_tree_fn tree_walker = ((struct plugin_data *)data)->tree_walker;
+	struct output_buffer *buffer = ((struct plugin_data *)data)->buffer;
+
+	if (!fn)
+		return ret;
+
+	output_char(buffer, '(');
+
+	for (arg = TYPE_ARG_TYPES(fn);
+	arg && arg != void_list_node && arg != error_mark_node;
+	arg = TREE_CHAIN(arg)) {
+		if (wrote_arg)
+			output_printf(buffer, ", ");
+
+		wrote_arg = true;
+		base_cp_tree_walker(&(TREE_VALUE(arg)),
+				    tree_walker, data);
+	}
+
+	if (arg == void_list_node && !wrote_arg)
+		output_printf(buffer, "void");
+	else if (!arg && wrote_arg)
+		output_printf(buffer, ", ...");
+
+	output_char(buffer, ')');
+
+	return ret;
+}
+
 int walk_function_decl_args(tree fn, void *data)
 {
 	int ret = -1;
@@ -385,7 +419,7 @@ int walk_pointer_reference_node(tree node, void *data)
 			output_printf(buffer, "<T%x>", TYPE_UID(op0));
 
 		output_char(buffer, ')');
-		output_function_name(buffer, tnode, pdata->flags);
+		walk_function_decl_node(tnode, pdata);
 	} else {
 		tree tnode = TREE_TYPE(op0);
 		base_cp_tree_walker(&tnode, tree_walker, data);
