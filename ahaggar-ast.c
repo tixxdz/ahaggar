@@ -351,13 +351,16 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		*walk_subtrees = 0;
 		break;
 
-	/*
 	case TREE_LIST:
+		walk_tree_list_node(node, ast);
+		*walk_subtrees = 0;
 		break;
 
 	case TREE_BINFO:
+		base_cp_tree_walker(&(BINFO_TYPE(node)),
+				    tree_walker, data);
+		*walk_subtrees = 0;
 		break;
-	*/
 
 	case TREE_VEC:
 		walk_tree_vector_node(node, ast);
@@ -464,11 +467,11 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 	*/
 
-	/*
 	case FUNCTION_TYPE:
 	case METHOD_TYPE:
+		walk_function_type_node(node, ast);
+		*walk_subtrees = 0;
 		break;
-	*/
 
 	case FUNCTION_DECL:
 	case CONST_DECL:
