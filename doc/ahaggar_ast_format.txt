@@ -1,0 +1,55 @@
+AST nodes
+
+
+* INTEGER_CST:
+  <integer_cst> 1
+
+* STRING_CST
+  <string_cst> "aaaa..."
+
+* FUNCTION_DECL:
+  <function_decl> function(char * arg) [file.c:01]
+  <function_decl> function, ...
+
+* LABEL_DECL:
+  <label_decl> <label> [file.c:01]
+
+* VAR_DECL:
+  <var_decl> variable
+
+* ARRAY_REF:
+  <array_ref> <...> myarray[]...
+
+
+Expressions:
+------------
+
+* COND_EXPR:
+  <cond_expr> (
+    if (
+    <XXX_expr> (condition_expr))
+    {
+      XXX_instructions
+    }
+  ) [file.c:10]
+
+  <cond_expr> (
+    if (
+    <XXX_expr> (condition_expr))
+      XXX_instructions
+    else
+      XXX_instructions
+  ) [file.c:10]
+
+
+* MODIFY_EXPR:
+  <modify_expr> (x = y) [file.c:01]
+
+* CALL_EXPR:
+  <call_expr> function_call(x, y, z) [file.c:01]
+
+* RETURN_EXPR:
+  <return_expr> (result) [file.c:01]
+
+* GOTO_EXPR:
+  <goto_expr> goto <label_decl> <label> [file.c:01]
