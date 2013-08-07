@@ -171,6 +171,44 @@ int walk_function_decl_args(tree fn, void *data)
 	return 0;
 }
 
+int walk_function_type_node(tree fn, void *data)
+{
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	struct output_buffer *buffer = pdata->buffer;
+
+	if (!fn)
+		return ret;
+
+	ret = 0;
+	base_cp_tree_walker(&(TREE_TYPE(fn)), tree_walker, data);
+	output_space(buffer);
+
+	if (TREE_CODE(fn) == METHOD_TYPE) {
+		tree tbase = TYPE_METHOD_BASETYPE(fn);
+		if (tbase)
+			output_decl_name(buffer, TYPE_NAME(tbase),
+					 pdata->flags);
+		else
+			output_printf(buffer, "<null method basetype>");
+
+		output_printf(buffer, "::");
+	}
+
+	if (TYPE_NAME(fn) && DECL_NAME(TYPE_NAME(fn)))
+		output_decl_name(buffer, TYPE_NAME(fn),
+				 pdata->flags);
+	else if (pdata->flags & TDF_NOUID)
+		output_printf(buffer, "<Txxxx>");
+	else
+		output_printf(buffer, "<T%x>", TYPE_UID(fn));
+
+	walk_function_decl_node(fn, pdata);
+
+	return ret;
+}
+
 int walk_array_domain(tree node, void *data)
 {
 	int ret = 0;
