@@ -24,6 +24,10 @@ class Parser(object):
     def parse_arg(self, args, **kwargs):
         results = []
         operands = gcc.get_op_operands(args)
+        for op in operands:
+            o = parse_operand(op)
+            if o:
+                results.append(o)
 
         return results
 
