@@ -195,7 +195,9 @@ again:
 
 	case ARRAY_REF:
 		if (TREE_CODE(TREE_OPERAND(op0, 0)) == VAR_DECL)
-			goto again;
+			output_function_name(buffer,
+					     TREE_OPERAND(op0, 0),
+					     ast->flags);
 		else
 			base_cp_tree_walker(&op0, tree_walker, data);
 		break;
