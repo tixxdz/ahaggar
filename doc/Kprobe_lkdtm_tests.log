@@ -1,0 +1,7 @@
+drivers/misc/lkdtm.c:363: error:
+drivers/misc/lkdtm.c: In function ‘lkdtm_do_action’:
+cc1: error: function '__compiletime_size_overflow' detected an overflow 8 < 64
+
+<function_decl> lkdtm_do_action(ctype  which) [drivers/misc/lkdtm.c:308]
+  <@0x7fcfeb5d07b8> memset(<addr_expr> <var_decl> &data, <integer_cst> 0, <integer_cst> 64u) [drivers/misc/lkdtm.c:334]
+  <@0x7fcfeb634720> __compiletime_size_overflow(<integer_cst> 8ul, <integer_cst> 64u) [drivers/misc/lkdtm.c:334]
