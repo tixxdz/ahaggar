@@ -1,4 +1,5 @@
 /* Misc check for constants defined during compile time */
+/*
 {
 	.name = "open",
 	.patterns = (struct pattern_match []) {
@@ -37,4 +38,23 @@
 		},
 		{ NULL },
 	},
+},
+*/
+{
+	.name = "strncpy",
+},
+{
+	.name = "memset",
+},
+{
+	.name = "memcpy",
+},
+{
+	.name = "strncat",
+},
+{
+	.name = "__compiletime_size_overflow",
+},
+{
+	.name = "__compiletime_ptr_overflow",
 },

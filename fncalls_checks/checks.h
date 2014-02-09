@@ -28,5 +28,6 @@
 #include "mem-checks.h"
 #include "malloc-checks.h"
 #include "file-checks.h"
+#include "builtins-checks.h"
 
 #endif /* end of _CHECKS_H */
