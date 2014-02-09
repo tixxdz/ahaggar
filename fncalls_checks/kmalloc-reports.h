@@ -1,4 +1,5 @@
 /* Report kmalloc operations */
+/*
 {
 	.name = "__kmalloc",
 },
@@ -26,6 +27,7 @@
 {
 	.name = "kzalloc_node",
 },
+*/
 {
 	.name = "kfree",
 	.patterns = (struct pattern_match []) {
@@ -37,3 +39,6 @@
 		{ NULL },
 	},
 },
+/*{
+	.name = "memset",
+}*/

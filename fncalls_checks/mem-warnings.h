@@ -49,7 +49,7 @@
 		{ NULL },
 	}
 },
-{
+/*{
 	.name = "memcmp",
 	.patterns = (struct pattern_match []) {
 		{
@@ -58,7 +58,7 @@
 		},
 		{ NULL },
 	}
-},
+},*/
 /* bcopy() was removed by POSIX.1-2008
  * Add it the an api-warnings.h file
 {

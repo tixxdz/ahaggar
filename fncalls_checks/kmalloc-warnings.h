@@ -18,6 +18,7 @@
 		{ NULL },
 	}
 },
+/*
 {
 	.name = "memset",
 	.patterns = (struct pattern_match []) {
@@ -27,4 +28,16 @@
 		},
 		{ NULL },
 	}
+},
+*/
+{
+	.name = "kfree",
+	.patterns = (struct pattern_match []) {
+		{
+		.active = 1,
+		.args = "^\\(<pointer_type>\\s<integer_cst>\\s0\\)$",
+		.msg = "function 'kfree' is nop, ptr argument is NULL"
+		},
+		{ NULL },
+	},
 },
