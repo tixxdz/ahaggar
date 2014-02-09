@@ -70,7 +70,9 @@ static char *tmp_buffer = NULL;
 static char *tmp_message = NULL;
 
 static struct target_functions errors[] = {
+//#include "fncalls_checks/api-warnings.h"
 //#include "fncalls_checks/file-errors.h"
+//#include "fncalls_checks/builtins-warnings.h"
 };
 
 static struct target_functions warnings[] = {
@@ -89,7 +91,8 @@ static struct target_functions reports[] = {
 //#include "fncalls_checks/file-warnings.h"
 //#include "fncalls_checks/file-reports.h"
 //#include "fncalls_checks/kmalloc-reports.h"
-#include "fncalls_checks/const-reports.h"
+//#include "fncalls_checks/const-reports.h"
+//#include "fncalls_checks/kmemory-reports.h"
 };
 
 static struct hash_functions ghash[] = {
