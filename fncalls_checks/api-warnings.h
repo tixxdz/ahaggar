@@ -1,5 +1,16 @@
 /* Example of warnings on misc API */
 {
+	.name = "reboot",
+	.patterns = (struct pattern_match []) {
+		{
+		.active = 1,
+		.force_match = 1,
+		.msg = "do not use the reboot system call."
+		},
+		{ NULL },
+	},
+},
+{
 	.name = "gets",
 	.patterns = (struct pattern_match []) {
 		{
