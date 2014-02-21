@@ -39,7 +39,7 @@
 /* Misc stuff for plugins */
 struct plugin_data {
 
-	int *indent_level;
+	unsigned int *indent_level;
 	int to_files;
 	int only_main;
 	int flags;	/* Dump flags */
