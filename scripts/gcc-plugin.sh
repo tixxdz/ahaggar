@@ -12,7 +12,7 @@ if [ "$?" -ne 0 ] ; then
 	exit 1
 fi
 
-plugincc=`$1 -x c -shared - -o /dev/null -I$PLUG_PATH 2>&1 <<EOF
+plugincc=`$1 -E -x c -shared - -o /dev/null -I$PLUG_PATH 2>&1 <<EOF
 #include "gcc-plugin.h"
 #include "tree.h"
 #include "tm.h"
