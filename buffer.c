@@ -33,15 +33,15 @@
 
 #include "buffer.h"
 
-static struct output_buffer *__output_init(unsigned int len)
+static output_buf *__output_init(unsigned int len)
 {
-	struct output_buffer *out;
+	output_buf *out;
 
 	if (len < BUF_SIZE)
 		len = BUF_SIZE;
 
-	out = (struct output_buffer *)xmalloc(sizeof(struct output_buffer));
-	memset(out, 0, sizeof(struct output_buffer));
+	out = (output_buf *)xmalloc(sizeof(output_buf));
+	memset(out, 0, sizeof(output_buf));
 
 	output_size(out) = len;
 	/* output_used(out) = 0; */
@@ -53,12 +53,12 @@ static struct output_buffer *__output_init(unsigned int len)
 	return out;
 }
 
-struct output_buffer *output_init(void)
+output_buf *output_init(void)
 {
 	return __output_init(BUF_SIZE);
 }
 
-void output_fini(struct output_buffer *d)
+void output_fini(output_buf *d)
 {
 	if (d) {
 		free(d->buf);
@@ -67,13 +67,13 @@ void output_fini(struct output_buffer *d)
 	}
 }
 
-struct output_buffer *output_reset(struct output_buffer *d)
+output_buf *output_reset(output_buf *d)
 {
 	output_fini(d);
 	return output_init();
 }
 
-void output_flush(struct output_buffer *d)
+void output_flush(output_buf *d)
 {
 	if (d) {
 		memset(d->buf, 0, output_size(d));
@@ -83,10 +83,10 @@ void output_flush(struct output_buffer *d)
 }
 
 /* callers should make sure that '\0' is included */
-struct output_buffer *output_expand(struct output_buffer *d,
+output_buf *output_expand(output_buf *d,
 				    unsigned long need)
 {
-	struct output_buffer *out = d;
+	output_buf *out = d;
 	unsigned long newsize = output_size(out) * 2;
 
 	if (!out)
@@ -106,9 +106,9 @@ struct output_buffer *output_expand(struct output_buffer *d,
 	return out;
 }
 
-struct output_buffer *output_local_prepare(struct output_buffer *d)
+output_buf *output_local_prepare(output_buf *d)
 {
-	struct output_buffer *out = d;
+	output_buf *out = d;
 
 	if (!out)
 		out = output_init();
@@ -119,11 +119,11 @@ struct output_buffer *output_local_prepare(struct output_buffer *d)
 }
 
 /* returns 0 on success, negative on errors */
-int output_base_char(struct output_buffer *d, const int c)
+int output_base_char(output_buf *d, const int c)
 {
 	int ret = -1;
 	int need = 2;
-	struct output_buffer *out;
+	output_buf *out;
 
 	out = output_expand(d, need);
 	ret = snprintf(output_offset(out),
@@ -141,12 +141,12 @@ int output_base_char(struct output_buffer *d, const int c)
 }
 
 /* returns 0 on success, negative on errors */
-int output_base_printf(struct output_buffer *d, const char *fmt, ...)
+int output_base_printf(output_buf *d, const char *fmt, ...)
 {
 	int ret = -1;
 	int need;
 	va_list va;
-	struct output_buffer *out;
+	output_buf *out;
 
 	va_start(va, fmt);
 	need = vsnprintf(NULL, 0, fmt, va);
@@ -174,7 +174,7 @@ int output_base_printf(struct output_buffer *d, const char *fmt, ...)
 	return 0;
 }
 
-void output_base_indent_to(struct output_buffer *d, const int column)
+void output_base_indent_to(output_buf *d, const int column)
 {
 	int i;
 
@@ -182,11 +182,11 @@ void output_base_indent_to(struct output_buffer *d, const int column)
 		output_space(d);
 }
 
-int output_base_swap_meta(struct output_buffer *a,
-			  struct output_buffer *b)
+int output_base_swap_meta(output_buf *a,
+			  output_buf *b)
 {
 	int ret = -1;
-	struct output_buffer tmp;
+	output_buf tmp;
 
 	if (!a || !b)
 		return ret;
@@ -198,8 +198,8 @@ int output_base_swap_meta(struct output_buffer *a,
 	return 0;
 }
 
-int output_base_copy(struct output_buffer *dest,
-		     struct output_buffer *src,
+int output_base_copy(output_buf *dest,
+		     output_buf *src,
 		     size_t n)
 {
 	unsigned long need;
@@ -228,7 +228,7 @@ int output_base_copy(struct output_buffer *dest,
 
 }
 
-int output_base_concat(struct output_buffer *dest, struct output_buffer *src)
+int output_base_concat(output_buf *dest, output_buf *src)
 {
 	unsigned long need = output_strlen(src);
 	if(!need)

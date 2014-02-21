@@ -46,23 +46,23 @@
 #include "nodes-utils.h"
 #include "print-nodes.h"
 
-void output_node_addr(struct output_buffer *d, tree node, int flags)
+void output_node_addr(output_buf *d, tree node, int flags)
 {
 	if (flags & TDF_ADDRESS || flags & TDF_STMTADDR)
 		output_printf(d, "<@%p> ", (void *)node);
 }
 
-void output_node_index(struct output_buffer *d, unsigned int index)
+void output_node_index(output_buf *d, unsigned int index)
 {
 	output_printf(d, "@%u ", index);
 }
 
-void __output_expr_code(struct output_buffer *d, tree expr)
+void __output_expr_code(output_buf *d, tree expr)
 {
 	output_printf(d, "%s", __get_expr_code(expr));
 }
 
-void output_expr_code(struct output_buffer *d, tree node, int flags)
+void output_expr_code(output_buf *d, tree node, int flags)
 {
 	if (flags & TDF_VERBOSE) {
 		output_char(d, '<');
@@ -71,36 +71,36 @@ void output_expr_code(struct output_buffer *d, tree node, int flags)
 	}
 }
 
-void output_var_parm_decl_code(struct output_buffer *d,
+void output_var_parm_decl_code(output_buf *d,
 			       tree node, int flags)
 {
-	if (node && (TREE_CODE(node) == VAR_DECL
-	|| TREE_CODE(node) == PARM_DECL))
+	if (node && (TREE_CODE(node) == VAR_DECL ||
+	    TREE_CODE(node) == PARM_DECL))
 		output_expr_code(d, node, flags);
 }
 
-void output_location(struct output_buffer *d, tree t)
+void output_location(output_buf *d, tree t)
 {
 	output_printf(d, "%s", __get_location(t));
 }
 
-void output_decl_name(struct output_buffer *d, tree decl, int flags)
+void output_decl_name(output_buf *d, tree decl, int flags)
 {
 	output_printf(d, "%s", __get_decl_name(decl, flags));
 }
 
 /* copied from GCC: tree-pretty-print.c */
-void output_function_name(struct output_buffer *d, tree fn, int flags)
+void output_function_name(output_buf *d, tree fn, int flags)
 {
 	output_printf(d, "%s", __get_function_name(fn, flags));
 }
 
-void output_int_cst(struct output_buffer *d, tree int_cst)
+void output_int_cst(output_buf *d, tree int_cst)
 {
 	output_printf(d, "%s", __get_int_cst(int_cst));
 }
 
-void output_string_cst(struct output_buffer *d, tree string_cst)
+void output_string_cst(output_buf *d, tree string_cst)
 {
 	output_char(d, '\"');
 	output_printf(d, "%s", __get_string_cst(string_cst));

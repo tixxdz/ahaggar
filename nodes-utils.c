@@ -49,7 +49,7 @@
  * store the result somewhere first.
  */
 
-static struct output_buffer *gout = NULL;
+static output_buf *gout;
 
 static const char *__decl_name(tree decl)
 {
@@ -75,7 +75,7 @@ const char *__get_class_or_enum(tree t)
 
 char *__get_type_declaration(tree t)
 {
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (!t)
 		goto out;
@@ -99,7 +99,7 @@ out:
 char *__get_type_quals(tree t)
 {
 	unsigned int quals;
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (!t)
 		goto out;
@@ -122,7 +122,7 @@ char *__get_tcc_declaration(tree t, int flags)
 {
 	enum tree_code code;
 	enum tree_code_class tclass;
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (!t)
 		goto out;
@@ -155,7 +155,7 @@ char *__get_tcc_type(tree t, int flags)
 {
 	enum tree_code code;
 	enum tree_code_class tclass;
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (!t)
 		goto out;
@@ -224,7 +224,7 @@ out:
 char *__get_location(tree t)
 {
 	location_t loc;
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (!t)
 		goto out;
@@ -240,7 +240,7 @@ out:
 
 char *__get_location_as_string(location_t loc)
 {
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (!loc)
 		goto out;
@@ -254,7 +254,7 @@ out:
 
 char *__get_decl_name(tree decl, int flags)
 {
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (decl) {
 		if (DECL_P(decl) && (flags & TDF_ASMNAME)
@@ -274,7 +274,7 @@ char *__get_decl_name(tree decl, int flags)
 char *__get_function_name(tree fn, int flags)
 {
 	tree t = fn;
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (!t)
 		goto out;
@@ -294,7 +294,7 @@ out:
 
 char *__get_expr_code(tree expr)
 {
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (expr)
 		output_printf(adata, "%s",
@@ -320,7 +320,7 @@ char *__get_int_cst(tree int_cst)
 	char long_type[4];
 	tree type = TREE_TYPE(int_cst);
 	int is_unsigned = TYPE_UNSIGNED(type);
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	memset(buffer, 0, sizeof(buffer));
 	memset(long_type, 0, sizeof(long_type));
@@ -383,7 +383,7 @@ char *__get_string_cst(tree string_cst)
 	int i;
 	const char *ptr;
 	tree node = string_cst;
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (!node)
 		goto out;
@@ -471,7 +471,7 @@ out:
 
 char *__get_extra_decl(tree decl)
 {
-	struct output_buffer *adata = output_local_prepare(gout);
+	output_buf *adata = output_local_prepare(gout);
 
 	if (decl) {
 		/*t = DECL_RESULT(decl);*/

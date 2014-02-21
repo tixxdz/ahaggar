@@ -27,7 +27,9 @@
 #define BUF_SIZE 4096
 #endif
 
-struct output_buffer {
+typedef struct output_buf output_buf;
+
+struct output_buf {
 	char *buf;
 	char *offset;
 	unsigned long size;
@@ -41,24 +43,24 @@ struct output_buffer {
 #define output_used(out)	output_base(out)->used
 #define output_strlen(out)	output_used(out)
 
-struct output_buffer *output_init(void);
-void output_fini(struct output_buffer *d);
-struct output_buffer *output_reset(struct output_buffer *d);
-void output_flush(struct output_buffer *d);
-struct output_buffer *output_expand(struct output_buffer *d,
+output_buf *output_init(void);
+void output_fini(output_buf *d);
+output_buf *output_reset(output_buf *d);
+void output_flush(output_buf *d);
+output_buf *output_expand(output_buf *d,
 				    unsigned long need);
 
-struct output_buffer *output_local_prepare(struct output_buffer *d);
+output_buf *output_local_prepare(output_buf *d);
 
-int output_base_char(struct output_buffer *d, const int c);
-int output_base_printf(struct output_buffer *d, const char *fmt, ...);
-void output_base_indent_to(struct output_buffer *d, const int column);
+int output_base_char(output_buf *d, const int c);
+int output_base_printf(output_buf *d, const char *fmt, ...);
+void output_base_indent_to(output_buf *d, const int column);
 
-int output_base_swap_meta(struct output_buffer *a,
-			  struct output_buffer *b);
-int output_base_copy(struct output_buffer *dest,
-		     struct output_buffer *src, size_t n);
-int output_base_concat(struct output_buffer *dest, struct output_buffer *src);
+int output_base_swap_meta(output_buf *a,
+			  output_buf *b);
+int output_base_copy(output_buf *dest,
+		     output_buf *src, size_t n);
+int output_base_concat(output_buf *dest, output_buf *src);
 
 #define output_char(out, c)	output_base_char(output_base(out), c)
 #define output_space(out)	output_char(out, ' ')

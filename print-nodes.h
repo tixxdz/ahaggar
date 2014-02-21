@@ -23,16 +23,16 @@
 #ifndef _PRINT_NODES_H
 #define _PRINT_NODES_H
 
-void output_node_addr(struct output_buffer *d, tree node, int flags);
-void output_node_index(struct output_buffer *d, unsigned int index);
-void __output_expr_code(struct output_buffer *d, tree expr);
-void output_expr_code(struct output_buffer *d, tree node, int flags);
-void output_var_parm_decl_code(struct output_buffer *d,
+void output_node_addr(output_buf *d, tree node, int flags);
+void output_node_index(output_buf *d, unsigned int index);
+void __output_expr_code(output_buf *d, tree expr);
+void output_expr_code(output_buf *d, tree node, int flags);
+void output_var_parm_decl_code(output_buf *d,
 			       tree node, int flags);
-void output_location(struct output_buffer *d, tree t);
-void output_decl_name(struct output_buffer *d, tree decl, int flags);
-void output_function_name(struct output_buffer *d, tree fn, int flags);
-void output_int_cst(struct output_buffer *d, tree int_cst);
-void output_string_cst(struct output_buffer *d, tree string_cst);
+void output_location(output_buf *d, tree t);
+void output_decl_name(output_buf *d, tree decl, int flags);
+void output_function_name(output_buf *d, tree fn, int flags);
+void output_int_cst(output_buf *d, tree int_cst);
+void output_string_cst(output_buf *d, tree string_cst);
 
 #endif /* _PRINT_NODES_H */
