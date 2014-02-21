@@ -36,7 +36,7 @@
 #include "regex-utils.h"
 #include "file-checks.h"
 
-static char *open_args_int_cst = "<integer_cst> ";
+static const char *open_args_int_cst = "<integer_cst> ";
 
 static char *open_to_int_cst_arg(const char *call, int arg_idx, int flags)
 {
