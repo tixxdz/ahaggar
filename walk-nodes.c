@@ -974,7 +974,7 @@ int walk_component_ref_node(tree node, void *data)
 {
 	tree op0;
 	int ret = -1;
-	char *ptr;
+	const char *ptr;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
 	output_buf *buffer = pdata->buffer;
