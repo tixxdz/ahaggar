@@ -33,7 +33,7 @@
 #include "regex-utils.h"
 #include "mem-checks.h"
 
-static char *int_const_tag = "<integer_cst> ";
+static const char *int_const_tag = "<integer_cst> ";
 
 char *mem_to_int_cst_size(const char *call, int arg_idx, int flags)
 {
