@@ -89,7 +89,7 @@ static int ahg_ast_decl_node(tree node, void *data)
 	int ret = -1;
 	tree op0 = node;
 	struct plugin_data *ast = (struct plugin_data *)data;
-	struct output_buffer *buffer = ast->buffer;
+	output_buf *buffer = ast->buffer;
 
 	if (!op0)
 		return ret;
@@ -118,7 +118,7 @@ static void ahg_ast_walk_call_args(tree node, void *data)
 	call_expr_arg_iterator iter;
 	struct plugin_data *ast = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = ast->tree_walker;
-	struct output_buffer *buffer = ast->buffer;
+	output_buf *buffer = ast->buffer;
 
 	if (!op0)
 		return;
@@ -143,7 +143,7 @@ static int ahg_ast_call_aggr_init(tree node, void *data)
 	tree op0 = node;
 	struct plugin_data *ast = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = ast->tree_walker;
-	struct output_buffer *buffer = ast->buffer;
+	output_buf *buffer = ast->buffer;
 
 	if (!op0)
 		return ret;
@@ -277,7 +277,7 @@ static int ahg_ast_function(tree node, void *data)
 	int saved_flags;
 	tree fndecl = node;
 	struct plugin_data *ast = (struct plugin_data *)data;
-	struct output_buffer *buffer = ast->buffer;
+	output_buf *buffer = ast->buffer;
 
 	if (errorcount || !is_function_decl(fndecl))
 		return ret;
@@ -307,7 +307,7 @@ static int ahg_ast_node_walker(tree node, void *data,
 {
 	int ret = -1;
 	struct plugin_data *ast = (struct plugin_data *)data;
-	struct output_buffer *buffer = ast->buffer;
+	output_buf *buffer = ast->buffer;
 
 	if (!node)
 		return ret;
@@ -334,7 +334,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	static const char *symbol_prefix = "";
 	struct plugin_data *ast = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = ast->tree_walker;
-	struct output_buffer *buffer = ast->buffer;
+	output_buf *buffer = ast->buffer;
 
 	if (!node)
 		return NULL_TREE;
@@ -867,7 +867,7 @@ static void ahaggar_ast_main(void *gcc_data, void *user_data)
 {
 	tree fndecl = (tree)gcc_data;
 	struct plugin_data *ast = (struct plugin_data *)user_data;
-	struct output_buffer *buffer = ast->buffer;
+	output_buf *buffer = ast->buffer;
 
 	output_flush(buffer);
 
@@ -887,7 +887,7 @@ static int ahg_ast_output_dump(void *data, void *plug_data)
 {
 	ssize_t ret;
 	struct plugin_data *ast = (struct plugin_data *)plug_data;
-	struct output_buffer *buffer = ast->buffer;
+	output_buf *buffer = ast->buffer;
 
 	ret = write(ast->fd, output_buf(buffer),
 		    output_strlen(buffer));

@@ -65,7 +65,7 @@ int walk_tree_list_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -92,7 +92,7 @@ int walk_tree_vector_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -120,7 +120,7 @@ int walk_function_decl_node(tree fn, void *data)
 	int ret = -1;
 	bool wrote_arg = false;
 	walk_tree_fn tree_walker = ((struct plugin_data *)data)->tree_walker;
-	struct output_buffer *buffer = ((struct plugin_data *)data)->buffer;
+	output_buf *buffer = ((struct plugin_data *)data)->buffer;
 
 	if (!fn)
 		return ret;
@@ -154,7 +154,7 @@ int walk_function_decl_args(tree fn, void *data)
 	tree arg;
 	tree op0 = fn;
 	walk_tree_fn tree_walker = ((struct plugin_data *)data)->tree_walker;
-	struct output_buffer *buffer = ((struct plugin_data *)data)->buffer;
+	output_buf *buffer = ((struct plugin_data *)data)->buffer;
 
 	if (!op0)
 		return ret;
@@ -176,7 +176,7 @@ int walk_function_type_node(tree fn, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!fn)
 		return ret;
@@ -216,7 +216,7 @@ int walk_array_domain(tree node, void *data)
 	tree max;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	output_char(buffer, '[');
 
@@ -272,7 +272,7 @@ int walk_declaration_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -339,7 +339,7 @@ int walk_type_declaration_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -365,7 +365,7 @@ int walk_label_declaration_node(tree node, void *data)
 {
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -393,7 +393,7 @@ int walk_number_types_node(tree node, void *data)
 	enum tree_code_class tclass;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -427,7 +427,7 @@ int walk_pointer_reference_node(tree node, void *data)
 	const char *str;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!op0)
 		return ret;
@@ -475,7 +475,7 @@ int walk_record_union_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -496,7 +496,7 @@ int walk_modify_init_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -517,7 +517,7 @@ int walk_bind_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -561,7 +561,7 @@ int walk_target_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -583,7 +583,7 @@ int walk_cond_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -663,7 +663,7 @@ int walk_switch_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -715,7 +715,7 @@ int walk_case_label_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -746,7 +746,7 @@ int walk_label_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -775,7 +775,7 @@ int walk_loop_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -807,7 +807,7 @@ int walk_goto_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -836,7 +836,7 @@ int walk_return_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -873,7 +873,7 @@ int walk_unary_logic_expr_node(tree node, void *data)
 	/* enum tree_code code; */
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -905,7 +905,7 @@ int walk_post_inc_dec_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -936,7 +936,7 @@ int walk_binary_arith_logic_node(tree node, void *data)
 	/* enum tree_code code; */
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -977,7 +977,7 @@ int walk_component_ref_node(tree node, void *data)
 	char *ptr;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -1026,7 +1026,7 @@ int walk_array_ref_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -1070,7 +1070,7 @@ int walk_asm_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;

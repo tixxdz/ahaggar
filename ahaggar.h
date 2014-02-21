@@ -34,6 +34,8 @@
 #define FUNCTION_DECL_CODE "<function_decl>"
 #define GIMPLE_CALL_CODE "<gimple_call>"
 
+#include "buffer.h"
+
 /* Misc stuff for plugins */
 struct plugin_data {
 
@@ -43,7 +45,7 @@ struct plugin_data {
 	int flags;	/* Dump flags */
 	int fd;
 
-	struct output_buffer *buffer;
+	output_buf *buffer;
 
 	struct pmap_nodes *pm_nodes; /* uniq nodes on a map */
 	struct sp_tree_nodes *sp_nodes; /* nodes on splay tree */
