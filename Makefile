@@ -27,6 +27,14 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 		else echo sh; fi ; fi)
 endif
 
+ifeq ($(cc-version),)
+cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
+endif
+
+ifeq ($(cc-ifversion),)
+cc-ifversion = $(shell [ $(call cc-version, $(CC)) $(1) $(2) ] && echo $(3))
+endif
+
 ifeq ($(PLUGINCC),)
 PLUGINCC := $(shell $(CONFIG_SHELL) \
 	    $(srctree)/scripts/gcc-plugin.sh \
