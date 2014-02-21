@@ -36,9 +36,15 @@ cc-ifversion = $(shell [ $(call cc-version, $(CC)) $(1) $(2) ] && echo $(3))
 endif
 
 ifeq ($(PLUGINCC),)
+ifeq ($(call cc-ifversion, -ge, 0408, y), y)
+PLUGINCC := $(shell $(CONFIG_SHELL) \
+           $(srctree)/scripts/gcc-plugin.sh \
+           "$(HOSTCXX)" "$(HOSTCXX)" "$(CC)")
+else
 PLUGINCC := $(shell $(CONFIG_SHELL) \
 	    $(srctree)/scripts/gcc-plugin.sh \
 	    "$(HOSTCC)" "$(HOSTCXX)" "$(CC)")
+endif
 endif
 
 ifneq ($(PLUGINCC),)
