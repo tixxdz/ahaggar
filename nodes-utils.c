@@ -172,9 +172,6 @@ char *__get_tcc_type(tree t, int flags)
 	} else if (code == VECTOR_TYPE) {
 		output_printf(adata, "vector");
 	} else if (code == INTEGER_TYPE) {
-		if (TYPE_IS_SIZETYPE(t))
-			output_printf(adata, " sizetype");
-
 		output_printf(adata, "%s",
 			      TYPE_UNSIGNED(t) ? "unsigned" : "signed");
 
