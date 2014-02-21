@@ -51,7 +51,7 @@ int walk_gimple_unary_rhs(gimple gs, void *data)
 	tree rhs;
 	enum tree_code rhs_code;
 	walk_tree_fn tree_walker = ((struct plugin_data *)data)->tree_walker;
-	struct output_buffer *buffer = ((struct plugin_data *)data)->buffer;
+	output_buf *buffer = ((struct plugin_data *)data)->buffer;
 
 	if (!gs)
 		return ret;
@@ -138,7 +138,7 @@ int walk_gimple_binary_rhs(gimple gs, void *data)
 	tree rhs2;
 	enum tree_code rhs_code;
 	walk_tree_fn tree_walker = ((struct plugin_data *)data)->tree_walker;
-	struct output_buffer *buffer = ((struct plugin_data *)data)->buffer;
+	output_buf *buffer = ((struct plugin_data *)data)->buffer;
 
 	if (!gs)
 		return ret;
@@ -203,7 +203,7 @@ int walk_gimple_ternary_rhs(gimple gs, void *data)
 	tree rhs3;
 	enum tree_code rhs_code;
 	walk_tree_fn tree_walker = ((struct plugin_data *)data)->tree_walker;
-	struct output_buffer *buffer = ((struct plugin_data *)data)->buffer;
+	output_buf *buffer = ((struct plugin_data *)data)->buffer;
 
 	if (!gs)
 		return ret;
@@ -277,7 +277,7 @@ int walk_gimple_phi(gimple phi, void *data)
 	int ret = -1;
 	unsigned int i;
 	walk_tree_fn tree_walker = ((struct plugin_data *)data)->tree_walker;
-	struct output_buffer *buffer = ((struct plugin_data *)data)->buffer;
+	output_buf *buffer = ((struct plugin_data *)data)->buffer;
 
 	if (!phi)
 		return ret;

@@ -123,7 +123,7 @@ static ssize_t output_buffer_write(void *plug_data)
 {
 
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	return write(pdata->fd, output_buf(buffer), output_strlen(buffer));
 }
@@ -328,7 +328,7 @@ static int dump_decl_output(void *plug_data)
 	int ret = -1;
 	char *ch;
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 	char *offset = output_buf(buffer) + 1;
 
 	if (!strstarts(offset, FUNCTION_DECL_CODE))
@@ -347,12 +347,12 @@ static int dump_decl_output(void *plug_data)
 /* Save the next function call into the substring
  * On success returns its lenght */
 static size_t next_fncall_to_substring(struct substring *sub,
-				       struct output_buffer *out)
+				       output_buf *out)
 {
 	size_t ret = 0;
 	char *offset = NULL;
 	struct substring *substr = sub;
-	struct output_buffer *buffer = out;
+	output_buf *buffer = out;
 
 	if (!sub_start(substr)) {
 		offset = output_buf(buffer) + 1;
@@ -446,7 +446,7 @@ static struct target_functions *match_fncall(htab_t hashtable,
 	struct target_functions *fn = NULL;
 	struct substring *substr = sub;
 	struct plugin_data *pdata = (struct plugin_data *)plug_data;
-	struct output_buffer *buffer = pdata->buffer;
+	output_buf *buffer = pdata->buffer;
 
 	if (!next_fncall_to_substring(substr, buffer))
 		return fn;
