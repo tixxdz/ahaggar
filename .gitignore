@@ -1,0 +1,6 @@
+*.a
+*.so
+*.log
+*.o
+*.plist
+*.pyc
