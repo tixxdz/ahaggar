@@ -572,9 +572,13 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case NAMESPACE_DECL:
 		/* output_node_addr(buffer, node, ast->flags); */
 		output_node_init(node, ast);
+		if (in_function_body)
+			output_char(buffer, '\"');
 		output_printf(buffer, "%s", symbol_prefix);
 	case FIELD_DECL:
 		output_decl_name(buffer, node, ast->flags);
+		if (in_function_body)
+			output_char(buffer, '\"');
 		*walk_subtrees = 0;
 		break;
 
