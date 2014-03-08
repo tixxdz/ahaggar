@@ -371,6 +371,7 @@ int walk_label_declaration_node(tree node, void *data)
 		return ret;
 
 	ret = 0;
+	output_char(buffer, '\"');
 	if (DECL_NAME(node)) {
 		output_decl_name(buffer, node, pdata->flags);
 	} else if (LABEL_DECL_UID(node) != -1) {
@@ -383,6 +384,7 @@ int walk_label_declaration_node(tree node, void *data)
 			output_printf(buffer,
 				      "<D.%u>", DECL_UID(node));
 	}
+	output_char(buffer, '\"');
 
 	return ret;
 }
@@ -854,8 +856,6 @@ int walk_return_expr_node(tree node, void *data)
 			base_cp_tree_walker(&expr,
 					    tree_walker, data);
 		} else {
-			output_indent_to_newline(buffer, indent_level * INDENT);
-			output_expr_code(buffer, node, pdata->flags);
 			base_cp_tree_walker(&expr,
 					    tree_walker, data);
 		}

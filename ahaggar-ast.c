@@ -543,16 +543,10 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 
 	case LABEL_DECL:
-		if (!is_expr) {
-			output_indent_to_newline(buffer,
-						 walker_depth * INDENT);
-			output_expr_code(buffer, node, ast->flags);
-			walk_label_declaration_node(node, ast);
-			print_location = true;
-		} else {
-			output_expr_code(buffer, node, ast->flags);
-			walk_label_declaration_node(node, ast);
-		}
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_expr_code(buffer, node, ast->flags);
+		walk_label_declaration_node(node, ast);
 		*walk_subtrees = 0;
 		break;
 
@@ -823,12 +817,12 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	case LABEL_EXPR:
 		is_expr = true;
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_expr_code(buffer, node, ast->flags);
+		output_node_init(node, ast);
+		output_char(buffer, '{');
 		walk_label_expr_node(node, ast);
+		output_node_final(node, ast);
+		output_char(buffer, '}');
 		is_expr = false;
-		print_location = true;
 		*walk_subtrees = 0;
 		break;
 
