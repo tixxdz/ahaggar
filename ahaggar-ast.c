@@ -610,12 +610,17 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	case DECL_EXPR:
 		is_expr = true;
+		output_node_init(node, ast);
+		output_char(buffer, '{');
 		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_expr_code(buffer, node, ast->flags);
+					 (walker_depth+1) * INDENT);
+		output_printf(buffer, "\"tree_type\" : \"");
+		walk_declaration_node_type(DECL_EXPR_DECL(node), ast);
+		output_char(buffer, '\"');
 		walk_declaration_node(DECL_EXPR_DECL(node), ast);
+		output_node_final(node, ast);
+		output_char(buffer, '}');
 		is_expr = false;
-		print_location = true;
 		*walk_subtrees = 0;
 		break;
 
