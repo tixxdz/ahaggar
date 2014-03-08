@@ -519,6 +519,8 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	case STRING_CST:
 		output_node_addr(buffer, node, ast->flags);
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
 		output_expr_code(buffer, node, ast->flags);
 		output_string_cst(buffer, node);
 		*walk_subtrees = 0;
