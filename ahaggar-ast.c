@@ -87,7 +87,7 @@ static void output_walker_depth(void *data)
 	unsigned int depth = walker_depth + 1;
 
 	output_indent_to_newline(buffer, depth * INDENT);
-	output_printf(buffer, "\"__walker_depth\" : %u", walker_depth);
+	output_printf(buffer, "\"__walker_depth\" : %u,", walker_depth);
 }
 
 static void output_node_location(tree node, void *data)
@@ -97,7 +97,7 @@ static void output_node_location(tree node, void *data)
 	unsigned int depth = walker_depth + 1;
 
 	output_indent_to_newline(buffer, depth * INDENT);
-	output_printf(buffer, "\"__location\" : \"%s\"",
+	output_printf(buffer, "\"__location\" : \"%s\",",
 		      __get_location(node));
 	output_indent_to_newline(buffer, walker_depth * INDENT);
 }
