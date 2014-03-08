@@ -716,7 +716,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case TRUTH_NOT_EXPR:
 	case PREDECREMENT_EXPR:
 	case PREINCREMENT_EXPR:
-	case INDIRECT_REF: {
 		is_expr = true;
 		/* tree op0 = TREE_OPERAND(node, 0); */
 		symbol_prefix = op_symbol(node);
@@ -727,10 +726,16 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
 		output_char(buffer, '}');
+	/* TODO: print "indirect_ref" */
+	case INDIRECT_REF:
+		is_expr = true;
+		symbol_prefix = op_symbol(node);
+		walker_depth--;
+		walk_unary_logic_expr_node(node, ast);
+		walker_depth++;
 		is_expr = false;
 		*walk_subtrees = 0;
 		break;
-	}
 
 	case POSTDECREMENT_EXPR:
 	case POSTINCREMENT_EXPR:
