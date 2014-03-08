@@ -822,12 +822,12 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case LTGT_EXPR:
 	case ORDERED_EXPR:
 		is_expr = true;
+		output_node_init(node, ast);
+		output_char(buffer, '{');
+		walk_binary_arith_logic_node(node, ast);
 		output_indent_to_newline(buffer,
 					 walker_depth * INDENT);
-		output_expr_code(buffer, node, ast->flags);
-		output_char(buffer, '(');
-		walk_binary_arith_logic_node(node, ast);
-		output_char(buffer, ')');
+		output_char(buffer, '}');
 		is_expr = false;
 		*walk_subtrees = 0;
 		break;

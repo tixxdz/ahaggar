@@ -990,7 +990,8 @@ int walk_binary_arith_logic_node(tree node, void *data)
 		base_cp_tree_walker(&op0, tree_walker, data);
 	}
 
-	output_printf(buffer, " %s ", op_symbol(node));
+	/* output_printf(buffer, " %s ", op_symbol(node)); */
+	output_char(buffer, ',');
 
 	if (op_prio(op1) <= op_prio(node)) {
 		output_char(buffer, '(');
