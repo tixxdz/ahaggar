@@ -47,6 +47,7 @@ int walk_function_decl_args(tree fn, void *data);
 int walk_function_type_node(tree fn, void *data);
 int walk_array_domain(tree node, void *data);
 int walk_array_node(tree node, void *data);
+int walk_declaration_node_type(tree node, void *data);
 int walk_declaration_node(tree node, void *data);
 int walk_type_declaration_node(tree node, void *data);
 int walk_label_declaration_node(tree node, void *data);
