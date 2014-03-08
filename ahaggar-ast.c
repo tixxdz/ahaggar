@@ -78,6 +78,46 @@ static struct plugin_info ahaggar_ast_info = {
 		" -fplugin-arg-ahaggar_ast-unit=all|main\n",
 };
 
+static void output_walker_depth(void *data)
+{
+	struct plugin_data *ast = (struct plugin_data *)data;
+	output_buf *buffer = ast->buffer;
+	unsigned int depth = walker_depth + 1;
+
+	output_indent_to_newline(buffer, depth * INDENT);
+	output_printf(buffer, "\"__walker_depth\" : %u", walker_depth);
+}
+
+static void output_node_location(tree node, void *data)
+{
+	struct plugin_data *ast = (struct plugin_data *)data;
+	output_buf *buffer = ast->buffer;
+	unsigned int depth = walker_depth + 1;
+
+	output_indent_to_newline(buffer, depth * INDENT);
+	output_printf(buffer, "\"__location\" : \"%s\"",
+		      __get_location(node));
+	output_indent_to_newline(buffer, walker_depth * INDENT);
+}
+
+static void output_node_init(tree node, void *data)
+{
+	struct plugin_data *ast = (struct plugin_data *)data;
+	output_buf *buffer = ast->buffer;
+
+	output_indent_to_newline(buffer, walker_depth * INDENT);
+	output_expr_code(buffer, node, ast->flags);
+}
+
+static void output_node_final(tree node, void *data)
+{
+	struct plugin_data *ast = (struct plugin_data *)data;
+	output_buf *buffer = ast->buffer;
+
+	output_walker_depth(data);
+	output_node_location(node, data);
+}
+
 /* return 1 on success */
 static inline bool is_function_body_ok(tree body)
 {
@@ -510,8 +550,8 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case PARM_DECL:
 	case DEBUG_EXPR_DECL:
 	case NAMESPACE_DECL:
-		output_node_addr(buffer, node, ast->flags);
-		output_expr_code(buffer, node, ast->flags);
+		/* output_node_addr(buffer, node, ast->flags); */
+		output_node_init(node, ast);
 		output_printf(buffer, "%s", symbol_prefix);
 	case FIELD_DECL:
 		output_decl_name(buffer, node, ast->flags);
@@ -578,14 +618,12 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	case MODIFY_EXPR:
 	case INIT_EXPR:
 		is_expr = true;
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_expr_code(buffer, node, ast->flags);
-		output_char(buffer, '(');
+		output_node_init(node, ast);
+		output_char(buffer, '{');
 		walk_modify_init_expr_node(node, ast);
-		output_char(buffer, ')');
+		output_node_final(node, ast);
+		output_char(buffer, '}');
 		is_expr = false;
-		print_location = true;
 		*walk_subtrees = 0;
 		break;
 
