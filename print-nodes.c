@@ -109,5 +109,5 @@ void output_string_cst(output_buf *d, tree string_cst)
 
 void output_op_prio(output_buf *d)
 {
-	output_printf(d, "\"__op_prio\" : 1");
+	output_printf(d, "\"__op_prio\" : 1,");
 }
