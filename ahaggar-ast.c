@@ -578,9 +578,13 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	case COMPONENT_REF: {
 		tree op0 = TREE_OPERAND(node, 0);
-		output_expr_code(buffer, node, ast->flags);
+		output_node_init(node, ast);
+		output_char(buffer, '{');
 		/* output_var_parm_decl_code(buffer, op0, ast->flags); */
 		walk_component_ref_node(node, ast);
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_char(buffer, '}');
 		*walk_subtrees = 0;
 		break;
 	}
