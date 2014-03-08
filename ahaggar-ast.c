@@ -60,6 +60,8 @@ int plugin_is_GPL_compatible;
 
 static unsigned int walker_depth;
 
+static int in_function_body;
+
 static struct plugin_data *ast;
 
 static void ahaggar_ast_main(void *, void *);
@@ -104,6 +106,11 @@ static void output_node_init(tree node, void *data)
 {
 	struct plugin_data *ast = (struct plugin_data *)data;
 	output_buf *buffer = ast->buffer;
+
+	/* do not print expr code if we are not walking
+	 * function body, to preserve function decl */
+	if (!in_function_body)
+		return;
 
 	output_indent_to_newline(buffer, walker_depth * INDENT);
 	output_expr_code(buffer, node, ast->flags);
@@ -300,6 +307,8 @@ static int ahg_ast_analyze_body(tree fndecl, void *data)
 	if (!is_function_body_ok(body))
 		return ret;
 
+	in_function_body = true;
+
 	/* setup the internal nodes of the function */
 	ast->sp_nodes = sptree_nodes_init();
 	sptree_nodes_set_root(ast->sp_nodes, fndecl);
@@ -307,6 +316,8 @@ static int ahg_ast_analyze_body(tree fndecl, void *data)
 	ahg_ast_walk_body(body, data);
 
 	sptree_nodes_finish(ast->sp_nodes);
+
+	in_function_body = false;
 
 	return 0;
 }
@@ -869,14 +880,12 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	case RETURN_EXPR:
 		is_expr = true;
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_expr_code(buffer, node, ast->flags);
-		output_char(buffer, '(');
+		output_node_init(node, ast);
+		output_char(buffer, '{');
 		walk_return_expr_node(node, ast);
-		output_char(buffer, ')');
+		output_node_final(node, ast);
+		output_char(buffer, '}');
 		is_expr = false;
-		print_location = true;
 		*walk_subtrees = 0;
 		break;
 
@@ -912,17 +921,20 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 static void ahaggar_ast_main(void *gcc_data, void *user_data)
 {
+	int ret;
 	tree fndecl = (tree)gcc_data;
 	struct plugin_data *ast = (struct plugin_data *)user_data;
 	output_buf *buffer = ast->buffer;
 
 	output_flush(buffer);
 
-	if (!ahg_ast_function(fndecl, ast)) {
-		ahg_ast_analyze_body(fndecl, ast);
-		output_newline(buffer);
-		ast->output_handler(NULL, ast);
-	}
+	ret = ahg_ast_function(fndecl, ast);
+	if (ret)
+		return;
+
+	ahg_ast_analyze_body(fndecl, ast);
+	output_newline(buffer);
+	ast->output_handler(NULL, ast);
 }
 
 static int ahg_ast_checker(void *node, void *plug_data)
