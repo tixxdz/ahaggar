@@ -483,9 +483,9 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 			output_node_init(TREE_TYPE(node), ast);
 			output_char(buffer, '{');
 			walker_depth++;
-			output_indent_to_newline(buffer,
-						 walker_depth * INDENT);
 		}
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
 		output_expr_code(buffer, node, ast->flags);
 		output_int_cst(buffer, node);
 		if (TREE_CODE(TREE_TYPE(node)) == POINTER_TYPE) {
