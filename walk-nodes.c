@@ -837,6 +837,7 @@ int walk_return_expr_node(tree node, void *data)
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
 	output_buf *buffer = pdata->buffer;
+	unsigned int indent_level = (unsigned int) *pdata->indent_level + 1;
 
 	if (!node)
 		return ret;
@@ -853,12 +854,16 @@ int walk_return_expr_node(tree node, void *data)
 			base_cp_tree_walker(&expr,
 					    tree_walker, data);
 		} else {
+			output_indent_to_newline(buffer, indent_level * INDENT);
+			output_expr_code(buffer, node, pdata->flags);
 			base_cp_tree_walker(&expr,
 					    tree_walker, data);
 		}
 		/* output_expr_code(buffer, expr, pdata->flags); */
 	} else {
-		output_printf(buffer, "<void>");
+		output_indent_to_newline(buffer, indent_level * INDENT);
+		output_expr_code(buffer, node, pdata->flags);
+		output_printf(buffer, "\"<void>\"");
 	}
 
 	return 0;
