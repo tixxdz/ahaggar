@@ -267,7 +267,7 @@ int walk_array_node(tree node, void *data)
 	return 0;
 }
 
-int walk_declaration_node(tree node, void *data)
+int walk_declaration_node_type(tree node, void *data)
 {
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
@@ -298,13 +298,41 @@ int walk_declaration_node(tree node, void *data)
 	} else if (TREE_CODE(node) == FUNCTION_DECL) {
 		base_cp_tree_walker(&(TREE_TYPE(TREE_TYPE(node))),
 				    tree_walker, data);
-		output_space(buffer);
-		output_decl_name(buffer, node, pdata->flags);
-		walk_function_decl_args(TREE_TYPE(node), data);
 	} else {
 		base_cp_tree_walker(&(TREE_TYPE(node)),
 				    tree_walker, data);
-		output_space(buffer);
+	}
+
+}
+
+int walk_declaration_node(tree node, void *data)
+{
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	output_buf *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	output_printf(buffer, __get_type_declaration(node));
+
+	if (TREE_TYPE(node)
+	&& TREE_CODE(TREE_TYPE(node)) == ARRAY_TYPE) {
+		tree tmp = TREE_TYPE(node);
+		while (TREE_CODE(TREE_TYPE(tmp)) == ARRAY_TYPE)
+			 tmp = TREE_TYPE(tmp);
+
+		base_cp_tree_walker(&node, tree_walker, data);
+
+		for (tmp = TREE_TYPE(node);
+		TREE_CODE(tmp) == ARRAY_TYPE; tmp = TREE_TYPE(tmp)) {
+			walk_array_domain(TYPE_DOMAIN(tmp), data);
+		}
+	} else if (TREE_CODE(node) == FUNCTION_DECL) {
+		output_decl_name(buffer, node, pdata->flags);
+		walk_function_decl_args(TREE_TYPE(node), data);
+	} else {
 		base_cp_tree_walker(&node, tree_walker, data);
 	}
 
