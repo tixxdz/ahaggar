@@ -503,7 +503,7 @@ int walk_modify_init_expr_node(tree node, void *data)
 
 	base_cp_tree_walker(&(TREE_OPERAND(node, 0)),
 			    tree_walker, data);
-	output_printf(buffer, " = ");
+	output_printf(buffer, ",");
 	base_cp_tree_walker(&(TREE_OPERAND(node, 1)),
 			    tree_walker, data);
 

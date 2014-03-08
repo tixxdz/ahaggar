@@ -65,9 +65,9 @@ void __output_expr_code(output_buf *d, tree expr)
 void output_expr_code(output_buf *d, tree node, int flags)
 {
 	if (flags & TDF_VERBOSE) {
-		output_char(d, '<');
+		output_char(d, '\"');
 		__output_expr_code(d, node);
-		output_printf(d, "> ");
+		output_printf(d, "\" : ");
 	}
 }
 
