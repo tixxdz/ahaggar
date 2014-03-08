@@ -720,13 +720,13 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		is_expr = true;
 		/* tree op0 = TREE_OPERAND(node, 0); */
 		symbol_prefix = op_symbol(node);
-		output_indent_to_newline(buffer,
-					 walker_depth * INDENT);
-		output_expr_code(buffer, node, ast->flags);
-		output_char(buffer, '(');
+		output_node_init(node, ast);
+		output_char(buffer, '{');
 		/* output_expr_code(buffer, op0, ast->flags); */
 		walk_unary_logic_expr_node(node, ast);
-		output_char(buffer, ')');
+		output_indent_to_newline(buffer,
+					 walker_depth * INDENT);
+		output_char(buffer, '}');
 		is_expr = false;
 		*walk_subtrees = 0;
 		break;
