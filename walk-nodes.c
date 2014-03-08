@@ -303,6 +303,7 @@ int walk_declaration_node_type(tree node, void *data)
 				    tree_walker, data);
 	}
 
+	return 0;
 }
 
 int walk_declaration_node(tree node, void *data)
@@ -907,6 +908,7 @@ int walk_unary_logic_expr_node(tree node, void *data)
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
 	output_buf *buffer = pdata->buffer;
+	unsigned int indent_level = (unsigned int) *pdata->indent_level + 1;
 
 	if (!node)
 		return ret;
@@ -922,9 +924,10 @@ int walk_unary_logic_expr_node(tree node, void *data)
 		output_printf(buffer, "%s", op_symbol_code(code));*/
 
 	if (op_prio(op0) < op_prio(node)) {
-		output_char(buffer, '(');
 		base_cp_tree_walker(&op0, tree_walker, data);
-		output_char(buffer, ')');
+		output_indent_to_newline(buffer,
+					 indent_level * INDENT);
+		output_op_prio(buffer);
 	} else {
 		base_cp_tree_walker(&op0, tree_walker, data);
 	}
@@ -939,6 +942,7 @@ int walk_post_inc_dec_expr_node(tree node, void *data)
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
 	output_buf *buffer = pdata->buffer;
+	unsigned int indent_level = (unsigned int) *pdata->indent_level + 1;
 
 	if (!node)
 		return ret;
@@ -947,9 +951,10 @@ int walk_post_inc_dec_expr_node(tree node, void *data)
 	op0 = TREE_OPERAND(node, 0);
 
 	if (op_prio(op0) < op_prio(node)) {
-		output_char(buffer, '(');
 		base_cp_tree_walker(&op0, tree_walker, data);
-		output_char(buffer, ')');
+		output_indent_to_newline(buffer,
+					 indent_level * INDENT);
+		output_op_prio(buffer);
 	} else {
 		base_cp_tree_walker(&op0, tree_walker, data);
 	}
@@ -970,6 +975,7 @@ int walk_binary_arith_logic_node(tree node, void *data)
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
 	output_buf *buffer = pdata->buffer;
+	unsigned int indent_level = (unsigned int) *pdata->indent_level + 1;
 
 	if (!node)
 		return ret;
@@ -983,9 +989,10 @@ int walk_binary_arith_logic_node(tree node, void *data)
 	op1 = TREE_OPERAND(node, 1);
 
 	if (op_prio(op0) <= op_prio(node)) {
-		output_char(buffer, '(');
 		base_cp_tree_walker(&op0, tree_walker, data);
-		output_char(buffer, ')');
+		output_indent_to_newline(buffer,
+					 indent_level * INDENT);
+		output_op_prio(buffer);
 	} else {
 		base_cp_tree_walker(&op0, tree_walker, data);
 	}
@@ -994,9 +1001,10 @@ int walk_binary_arith_logic_node(tree node, void *data)
 	output_char(buffer, ',');
 
 	if (op_prio(op1) <= op_prio(node)) {
-		output_char(buffer, '(');
 		base_cp_tree_walker(&op1, tree_walker, data);
-		output_char(buffer, ')');
+		output_indent_to_newline(buffer,
+					 indent_level * INDENT);
+		output_op_prio(buffer);
 	} else {
 		base_cp_tree_walker(&op1, tree_walker, data);
 	}
@@ -1012,6 +1020,7 @@ int walk_component_ref_node(tree node, void *data)
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
 	output_buf *buffer = pdata->buffer;
+	unsigned int indent_level = (unsigned int) *pdata->indent_level + 1;
 
 	if (!node)
 		return ret;
@@ -1039,9 +1048,10 @@ int walk_component_ref_node(tree node, void *data)
 	}
 
 	if (op_prio(op0) < op_prio(node)) {
-		output_char(buffer, '(');
 		base_cp_tree_walker(&op0, tree_walker, data);
-		output_char(buffer, ')');
+		output_indent_to_newline(buffer,
+					 indent_level * INDENT);
+		output_op_prio(buffer);
 	} else {
 		base_cp_tree_walker(&op0, tree_walker, data);
 	}
@@ -1061,6 +1071,7 @@ int walk_array_ref_node(tree node, void *data)
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
 	output_buf *buffer = pdata->buffer;
+	unsigned int indent_level = (unsigned int) *pdata->indent_level + 1;
 
 	if (!node)
 		return ret;
@@ -1068,9 +1079,10 @@ int walk_array_ref_node(tree node, void *data)
 	ret = 0;
 	op0 = TREE_OPERAND(node, 0);
 	if (op_prio(op0) < op_prio(node)) {
-		output_char(buffer, '(');
 		base_cp_tree_walker(&op0, tree_walker, data);
-		output_char(buffer, ')');
+		output_indent_to_newline(buffer,
+					 indent_level * INDENT);
+		output_op_prio(buffer);
 	} else {
 		base_cp_tree_walker(&op0, tree_walker, data);
 	}
