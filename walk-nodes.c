@@ -624,11 +624,8 @@ int walk_cond_expr_node(tree node, void *data)
 
 	if (TREE_TYPE(node) == NULL
 	|| TREE_TYPE(node) == void_type_node) {
-		output_indent_to_newline(buffer, indent);
-		output_printf(buffer, "if (");
 		base_cp_tree_walker(&(COND_EXPR_COND(node)),
 				    tree_walker, data);
-		output_char(buffer, ')');
 		if (COND_EXPR_THEN(node)
 		&& (IS_EMPTY_STMT(COND_EXPR_THEN(node))
 			|| TREE_CODE(COND_EXPR_THEN(node)) == GOTO_EXPR)
