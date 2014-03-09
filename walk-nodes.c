@@ -632,9 +632,33 @@ static int walk_cond_expr_then_node(tree node, void *data)
 	return 0;
 }
 
-int walk_cond_expr_node(tree node, void *data)
+static int walk_cond_expr_else_node(tree node, void *data)
 {
 	int indent;
+	int ret = -1;
+	struct plugin_data *pdata = (struct plugin_data *)data;
+	walk_tree_fn tree_walker = pdata->tree_walker;
+	output_buf *buffer = pdata->buffer;
+
+	if (!node)
+		return ret;
+
+	indent = (*(pdata->indent_level) + 1) * INDENT;
+
+	output_indent_to_newline(buffer, indent);
+	output_printf(buffer, "\"cond_expr_else\" : {");
+	++*pdata->indent_level;
+	base_cp_tree_walker(&(COND_EXPR_ELSE(node)),
+			    tree_walker, data);
+	--*pdata->indent_level;
+	output_indent_to_newline(buffer, indent);
+	output_char(buffer, '}');
+
+	return 0;
+}
+
+int walk_cond_expr_node(tree node, void *data)
+{
 	int indent_level;
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
@@ -645,7 +669,6 @@ int walk_cond_expr_node(tree node, void *data)
 		return ret;
 
 	indent_level = *pdata->indent_level;
-	indent = (indent_level + 1) * INDENT;
 
 	if (TREE_TYPE(node) == NULL
 	|| TREE_TYPE(node) == void_type_node) {
@@ -659,15 +682,7 @@ int walk_cond_expr_node(tree node, void *data)
 			|| TREE_CODE(COND_EXPR_ELSE(node)) == GOTO_EXPR)) {
 			walk_cond_expr_then_node(node, pdata);
 			if (!IS_EMPTY_STMT(COND_EXPR_ELSE(node))) {
-				output_indent_to_newline(buffer, indent);
-				output_printf(buffer,
-					      "\"cond_expr_else\" : {");
-				++*pdata->indent_level;
-				base_cp_tree_walker(&(COND_EXPR_ELSE(node)),
-						    tree_walker, data);
-				--*pdata->indent_level;
-				output_indent_to_newline(buffer, indent);
-				output_char(buffer, '}');
+				walk_cond_expr_else_node(node, pdata);
 			}
 		} else if (!(pdata->flags & TDF_SLIM)) {
 			if (COND_EXPR_THEN(node)) {
@@ -676,15 +691,7 @@ int walk_cond_expr_node(tree node, void *data)
 
 			if (COND_EXPR_ELSE(node)
 			&& !IS_EMPTY_STMT(COND_EXPR_ELSE (node))) {
-				output_indent_to_newline(buffer, indent);
-				output_printf(buffer,
-					      "\"cond_expr_else\" : {");
-				++*pdata->indent_level;
-				base_cp_tree_walker(&(COND_EXPR_ELSE(node)),
-						    tree_walker, data);
-				--*pdata->indent_level;
-				output_indent_to_newline(buffer, indent);
-				output_char(buffer, '}');
+				walk_cond_expr_else_node(node, pdata);
 			}
 		}
 	} else {
