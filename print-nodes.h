@@ -35,5 +35,6 @@ void output_function_name(output_buf *d, tree fn, int flags);
 void output_int_cst(output_buf *d, tree int_cst);
 void output_string_cst(output_buf *d, tree string_cst);
 void output_op_prio(output_buf *d);
+void output_label_declaration(output_buf *d, tree node, int flags);
 
 #endif /* _PRINT_NODES_H */

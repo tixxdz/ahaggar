@@ -111,3 +111,21 @@ void output_op_prio(output_buf *d)
 {
 	output_printf(d, "\"__op_prio\" : 1,");
 }
+
+void output_label_declaration(output_buf *d, tree node, int flags)
+{
+	output_char(d, '\"');
+	if (DECL_NAME(node)) {
+		output_decl_name(d, node, flags);
+	} else if (LABEL_DECL_UID(node) != -1) {
+		output_printf(d, "<L%d>",
+			      (int)LABEL_DECL_UID(node));
+	} else {
+		if (flags & TDF_NOUID)
+			output_printf(d, "<D.xxxx>");
+		else
+			output_printf(d,
+				      "<D.%u>", DECL_UID(node));
+	}
+	output_char(d, '\"');
+}
