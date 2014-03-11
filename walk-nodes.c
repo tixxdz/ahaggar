@@ -878,7 +878,6 @@ int walk_goto_expr_node(tree node, void *data)
 		}
 	}
 
-	output_printf(buffer, "goto ");
 	base_cp_tree_walker(&op0, tree_walker, data);
 
 	return ret;

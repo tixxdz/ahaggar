@@ -840,11 +840,8 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	case LABEL_EXPR:
 		is_expr = true;
-		output_node_init(node, ast);
-		output_char(buffer, '{');
-		walk_label_expr_node(node, ast);
-		output_node_final(node, ast);
-		output_char(buffer, '}');
+		ahg_ast_tiny_walker(node, ast,
+				    walk_label_expr_node);
 		is_expr = false;
 		*walk_subtrees = 0;
 		break;
@@ -854,7 +851,6 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		ahg_ast_tiny_walker(node, ast,
 				    walk_loop_expr_node);
 		is_expr = false;
-		print_location = true;
 		*walk_subtrees = 0;
 		break;
 
@@ -890,12 +886,9 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 
 	case GOTO_EXPR:
 		is_expr = true;
-		output_indent_to_newline(buffer,
-					 walker_depth_print * INDENT);
-		output_expr_code(buffer, node, ast->flags);
-		walk_goto_expr_node(node, ast);
+		ahg_ast_tiny_walker(node, ast,
+				    walk_goto_expr_node);
 		is_expr = false;
-		print_location = true;
 		*walk_subtrees = 0;
 		break;
 
