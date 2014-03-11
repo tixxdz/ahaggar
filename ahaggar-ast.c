@@ -382,6 +382,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 	tree node = *b;
 	enum tree_code code;
 	static bool is_expr = false;
+	static bool is_component_ref = false;
 	static bool print_location = false;
 	static const char *symbol_prefix = "";
 	struct plugin_data *ast = (struct plugin_data *)data;
@@ -551,10 +552,9 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		break;
 
 	case LABEL_DECL:
-		output_indent_to_newline(buffer,
-					 walker_depth_print * INDENT);
-		output_expr_code(buffer, node, ast->flags);
-		walk_label_declaration_node(node, ast);
+		output_node_init(node, ast);
+		output_label_declaration(buffer, node, ast->flags);
+		output_char(buffer, ',');
 		*walk_subtrees = 0;
 		break;
 
@@ -579,12 +579,14 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_printf(buffer, "%s", symbol_prefix);
 	case FIELD_DECL:
 		output_decl_name(buffer, node, ast->flags);
-		if (in_function_body)
-			output_char(buffer, '\"');
+		if (in_function_body &&
+		    (code == FIELD_DECL || !is_component_ref))
+			output_printf(buffer, "\",");
 		*walk_subtrees = 0;
 		break;
 
 	case COMPONENT_REF: {
+		is_component_ref = true;
 		tree op0 = TREE_OPERAND(node, 0);
 		output_node_init(node, ast);
 		output_char(buffer, '{');
@@ -593,6 +595,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_indent_to_newline(buffer,
 					 walker_depth_print * INDENT);
 		output_char(buffer, '}');
+		is_component_ref = false;
 		*walk_subtrees = 0;
 		break;
 	}
@@ -624,7 +627,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 					 (walker_depth_print+1) * INDENT);
 		output_printf(buffer, "\"tree_type\" : \"");
 		walk_declaration_node_type(DECL_EXPR_DECL(node), ast);
-		output_char(buffer, '\"');
+		output_printf(buffer, "\",");
 		walk_declaration_node(DECL_EXPR_DECL(node), ast);
 		output_node_final(node, ast);
 		output_char(buffer, '}');
