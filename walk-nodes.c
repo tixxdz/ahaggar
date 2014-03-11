@@ -527,14 +527,12 @@ int walk_modify_init_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
 
 	base_cp_tree_walker(&(TREE_OPERAND(node, 0)),
 			    tree_walker, data);
-	output_printf(buffer, ",");
 	base_cp_tree_walker(&(TREE_OPERAND(node, 1)),
 			    tree_walker, data);
 
@@ -592,7 +590,6 @@ int walk_target_expr_node(tree node, void *data)
 	int ret = -1;
 	struct plugin_data *pdata = (struct plugin_data *)data;
 	walk_tree_fn tree_walker = pdata->tree_walker;
-	output_buf *buffer = pdata->buffer;
 
 	if (!node)
 		return ret;
@@ -600,7 +597,6 @@ int walk_target_expr_node(tree node, void *data)
 	ret = 0;
 	base_cp_tree_walker(&(TARGET_EXPR_SLOT(node)),
 			    tree_walker, data);
-	output_printf(buffer, ", ");
 	base_cp_tree_walker(&(TARGET_EXPR_INITIAL(node)),
 			    tree_walker, data);
 
@@ -1028,7 +1024,6 @@ int walk_binary_arith_logic_node(tree node, void *data)
 		base_cp_tree_walker(&op0, tree_walker, data);
 	} else {
 		base_cp_tree_walker(&op0, tree_walker, data);
-		output_char(buffer, ',');
 	}
 
 	if (prio) {
