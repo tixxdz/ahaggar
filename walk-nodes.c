@@ -623,7 +623,7 @@ static int walk_cond_expr_then_node(tree node, void *data)
 			    tree_walker, data);
 	--*pdata->indent_level;
 	output_indent_to_newline(buffer, indent);
-	output_char(buffer, '}');
+	output_printf(buffer, "},");
 
 	return 0;
 }
@@ -648,7 +648,7 @@ static int walk_cond_expr_else_node(tree node, void *data)
 			    tree_walker, data);
 	--*pdata->indent_level;
 	output_indent_to_newline(buffer, indent);
-	output_char(buffer, '}');
+	output_printf(buffer, "},");
 
 	return 0;
 }
