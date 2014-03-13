@@ -144,29 +144,22 @@ static inline bool is_function_body_ok(tree body)
 	return !(!body || TREE_CODE(body) != BIND_EXPR);
 }
 
-static int ahg_ast_decl_node(tree node, void *data)
+static int ahg_ast_recheck_decl(tree node, void *data)
 {
 	int ret = -1;
-	tree op0 = node;
+	unsigned int index;
 	struct plugin_data *ast = (struct plugin_data *)data;
 	output_buf *buffer = ast->buffer;
 
-	if (!op0)
+	if (!node)
 		return ret;
 
-	if (is_function_decl(op0)) {
-		unsigned int index = pmap_nodes_insert(ast->pm_nodes,
-						       op0);
-		if (!index)
-			return ret;
+	if (!is_function_decl(node))
+		return 0;
 
-		output_newline(buffer);
-		output_node_addr(buffer, op0, ast->flags);
-		/* output_node_index(buffer, index); */
-	}
-
-	output_expr_code(buffer, op0, ast->flags);
-	output_decl_name(buffer, op0, ast->flags);
+	index = pmap_nodes_insert(ast->pm_nodes, node);
+	if (!index)
+		return ret;
 
 	return 0;
 }
@@ -312,6 +305,7 @@ static int ahg_ast_analyze_body(tree fndecl, void *data)
 	int ret = -1;
 	tree body;
 	struct plugin_data *ast = (struct plugin_data *)data;
+	output_buf *buffer = ast->buffer;
 
 	if (!fndecl)
 		return ret;
@@ -326,7 +320,12 @@ static int ahg_ast_analyze_body(tree fndecl, void *data)
 	ast->sp_nodes = sptree_nodes_init();
 	sptree_nodes_set_root(ast->sp_nodes, fndecl);
 
+	output_indent_to_newline(buffer,
+				 walker_depth_print * INDENT);
+	output_printf(buffer, "\"function_body\" : {");
 	ahg_ast_walk_body(body, data);
+	output_node_end(fndecl, ast);
+	output_printf(buffer, "}");
 
 	sptree_nodes_finish(ast->sp_nodes);
 
@@ -335,13 +334,10 @@ static int ahg_ast_analyze_body(tree fndecl, void *data)
 	return 0;
 }
 
-static int ahg_ast_function(tree node, void *data)
+static int ahg_ast_check_function(tree fndecl, void *data)
 {
 	int ret = -1;
-	int saved_flags;
-	tree fndecl = node;
 	struct plugin_data *ast = (struct plugin_data *)data;
-	output_buf *buffer = ast->buffer;
 
 	if (errorcount || !is_function_decl(fndecl))
 		return ret;
@@ -352,15 +348,29 @@ static int ahg_ast_function(tree node, void *data)
 	if (!pmap_nodes_insert(ast->pm_nodes, fndecl))
 		return ret;
 
-	if (ahg_ast_decl_node(fndecl, ast))
-		return ret;
+	return ahg_ast_recheck_decl(fndecl, ast);
+}
+
+static int ahg_ast_function(tree node, void *data)
+{
+	int saved_flags;
+	tree fndecl = node;
+	struct plugin_data *ast = (struct plugin_data *)data;
+	output_buf *buffer = ast->buffer;
 
 	saved_flags = ast->flags;
 	ast->flags = 0;
+	output_indent_to_newline(buffer,
+			         walker_depth_print * INDENT);
+	output_expr_code(buffer, fndecl, ast->flags);
+	output_expr_code(buffer, fndecl, ast->flags);
+	output_decl_name(buffer, fndecl, ast->flags);
 	output_char(buffer, '(');
 	walk_function_decl_args(fndecl, ast);
 	output_printf(buffer, ") ");
-	output_location(buffer, fndecl);
+	output_node_location(fndecl, ast);
+	output_node_end(fndecl, ast);
+
 	ast->flags = saved_flags;
 
 	return 0;
@@ -968,12 +978,20 @@ static void ahaggar_ast_main(void *gcc_data, void *user_data)
 
 	output_flush(buffer);
 
-	ret = ahg_ast_function(fndecl, ast);
+	ret = ahg_ast_check_function(fndecl, ast);
 	if (ret)
 		return;
 
-	ahg_ast_analyze_body(fndecl, ast);
 	output_newline(buffer);
+	output_char(buffer, '{');
+	walker_depth_print++;
+	ahg_ast_function(fndecl, ast);
+	ahg_ast_analyze_body(fndecl, ast);
+	walker_depth_print--;
+	output_newline(buffer);
+	output_char(buffer, '}');
+	output_newline(buffer);
+
 	ast->output_handler(NULL, ast);
 }
 
