@@ -325,7 +325,7 @@ static int ahg_ast_analyze_body(tree fndecl, void *data)
 	output_printf(buffer, "\"function_body\" : {");
 	ahg_ast_walk_body(body, data);
 	output_node_end(fndecl, ast);
-	output_printf(buffer, "}");
+	output_printf(buffer, "},");
 
 	sptree_nodes_finish(ast->sp_nodes);
 
@@ -353,25 +353,25 @@ static int ahg_ast_check_function(tree fndecl, void *data)
 
 static int ahg_ast_function(tree node, void *data)
 {
-	int saved_flags;
 	tree fndecl = node;
 	struct plugin_data *ast = (struct plugin_data *)data;
 	output_buf *buffer = ast->buffer;
 
-	saved_flags = ast->flags;
-	ast->flags = 0;
 	output_indent_to_newline(buffer,
 			         walker_depth_print * INDENT);
 	output_expr_code(buffer, fndecl, ast->flags);
+	output_char(buffer, '{');
+	output_indent_to_newline(buffer,
+			         (walker_depth_print+1) * INDENT);
 	output_expr_code(buffer, fndecl, ast->flags);
+	output_char(buffer, '\"');
 	output_decl_name(buffer, fndecl, ast->flags);
 	output_char(buffer, '(');
 	walk_function_decl_args(fndecl, ast);
-	output_printf(buffer, ") ");
+	output_printf(buffer, ")\",");
 	output_node_location(fndecl, ast);
 	output_node_end(fndecl, ast);
-
-	ast->flags = saved_flags;
+	output_printf(buffer, "},");
 
 	return 0;
 }
@@ -988,8 +988,10 @@ static void ahaggar_ast_main(void *gcc_data, void *user_data)
 	ahg_ast_function(fndecl, ast);
 	ahg_ast_analyze_body(fndecl, ast);
 	walker_depth_print--;
+	output_node_end(fndecl, ast);
 	output_newline(buffer);
 	output_char(buffer, '}');
+	output_newline(buffer);
 	output_newline(buffer);
 
 	ast->output_handler(NULL, ast);
