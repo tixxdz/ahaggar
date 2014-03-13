@@ -123,7 +123,7 @@ static void output_node_init(tree node, void *data)
 	output_buf *buffer = ast->buffer;
 
 	/* do not print expr code if we are not walking
-	 * function body, to preserve function decl */
+	 * function body, to preserve function decl format */
 	if (!in_function_body)
 		return;
 
@@ -133,8 +133,6 @@ static void output_node_init(tree node, void *data)
 
 static void output_node_fini(tree node, void *data)
 {
-	struct plugin_data *ast = (struct plugin_data *)data;
-
 	output_walker_depth(data);
 	output_node_location(node, data);
 	output_node_end(node, data);
@@ -387,12 +385,14 @@ static int ahg_ast_tiny_walker(tree node, void *data,
 	return ret;
 }
 
-static inline test_and_set_parent_cnt(int *parent_counter)
+static inline int test_and_set_parent_cnt(int *parent_counter)
 {
-	if (*parent_counter == 1)
+	if (*parent_counter == 1) /* still same parent node */
 		*parent_counter++;
-	else if (*parent_counter == 2)
+	else if (*parent_counter == 2) /* got a new parent node */
 		*parent_counter = 0;
+
+	return *parent_counter;
 }
 
 static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
