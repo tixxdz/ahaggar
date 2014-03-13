@@ -94,6 +94,18 @@ static void output_walker_depth(void *data)
 	output_printf(buffer, "\"__walker_depth\" : %u,", walker_depth);
 }
 
+static void output_node_end(tree node, void *data)
+{
+	struct plugin_data *ast = (struct plugin_data *)data;
+	output_buf *buffer = ast->buffer;
+	unsigned int depth = walker_depth_print + 1;
+
+	output_indent_to_newline(buffer, depth * INDENT);
+	output_printf(buffer, "\"__end\" : 1");
+
+	output_indent_to_newline(buffer, walker_depth_print * INDENT);
+}
+
 static void output_node_location(tree node, void *data)
 {
 	struct plugin_data *ast = (struct plugin_data *)data;
@@ -103,7 +115,6 @@ static void output_node_location(tree node, void *data)
 	output_indent_to_newline(buffer, depth * INDENT);
 	output_printf(buffer, "\"__location\" : \"%s\",",
 		      __get_location(node));
-	output_indent_to_newline(buffer, walker_depth_print * INDENT);
 }
 
 static void output_node_init(tree node, void *data)
@@ -120,13 +131,14 @@ static void output_node_init(tree node, void *data)
 	output_expr_code(buffer, node, ast->flags);
 }
 
-static void output_node_final(tree node, void *data)
+static void output_node_fini(tree node, void *data)
 {
 	struct plugin_data *ast = (struct plugin_data *)data;
 	output_buf *buffer = ast->buffer;
 
 	output_walker_depth(data);
 	output_node_location(node, data);
+	output_node_end(node, data);
 }
 
 /* return 1 on success */
@@ -370,7 +382,7 @@ static int ahg_ast_tiny_walker(tree node, void *data,
 	output_node_init(node, ast);
 	output_char(buffer, '{');
 	ret = walk_node(node, ast);
-	output_node_final(node, ast);
+	output_node_fini(node, ast);
 	output_printf(buffer, "},");
 
 	return ret;
@@ -641,7 +653,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		walk_declaration_node_type(DECL_EXPR_DECL(node), ast);
 		output_printf(buffer, "\",");
 		walk_declaration_node(DECL_EXPR_DECL(node), ast);
-		output_node_final(node, ast);
+		output_node_fini(node, ast);
 		output_printf(buffer, "},");
 		is_expr = false;
 		*walk_subtrees = 0;
@@ -692,7 +704,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 			ahg_ast_call_aggr_init(node, ast);
 		}
 
-		output_node_final(node, ast);
+		output_node_fini(node, ast);
 		output_printf(buffer, "},");
 		*walk_subtrees = 0;
 		break;
@@ -916,7 +928,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_node_init(node, ast);
 		output_char(buffer, '{');
 		walk_return_expr_node(node, ast);
-		output_node_final(node, ast);
+		output_node_fini(node, ast);
 		output_printf(buffer, "},");
 		is_expr = false;
 		*walk_subtrees = 0;
