@@ -134,7 +134,6 @@ static void output_node_init(tree node, void *data)
 static void output_node_fini(tree node, void *data)
 {
 	struct plugin_data *ast = (struct plugin_data *)data;
-	output_buf *buffer = ast->buffer;
 
 	output_walker_depth(data);
 	output_node_location(node, data);
@@ -519,8 +518,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_char(buffer, ',');
 		if (TREE_CODE(TREE_TYPE(node)) == POINTER_TYPE) {
 			walker_depth_print--;
-			output_indent_to_newline(buffer,
-						 walker_depth_print * INDENT);
+			output_node_end(node, ast);
 			output_printf(buffer, "},");
 		}
 		*walk_subtrees = 0;
@@ -616,8 +614,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_char(buffer, '{');
 		/* output_var_parm_decl_code(buffer, op0, ast->flags); */
 		walk_component_ref_node(node, ast);
-		output_indent_to_newline(buffer,
-					 walker_depth_print * INDENT);
+		output_node_end(node, ast);
 		output_printf(buffer, "},");
 		component_ref_parent = 0;
 		*walk_subtrees = 0;
@@ -732,8 +729,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		 * output_expr_code(buffer, op0, ast->flags);
 		 */
 		walk_unary_logic_expr_node(node, ast);
-		output_indent_to_newline(buffer,
-					 walker_depth_print * INDENT);
+		output_node_end(node, ast);
 		output_printf(buffer, "},");
 		*walk_subtrees = 0;
 		break;
@@ -751,8 +747,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_char(buffer, '{');
 		/* output_expr_code(buffer, op0, ast->flags); */
 		walk_unary_logic_expr_node(node, ast);
-		output_indent_to_newline(buffer,
-					 walker_depth_print * INDENT);
+		output_node_end(node, ast);
 		output_printf(buffer, "},");
 	/* TODO: print "indirect_ref" */
 	case INDIRECT_REF:
@@ -862,8 +857,7 @@ static tree ahg_ast_tree_walker(tree *b, int *walk_subtrees,
 		output_node_init(node, ast);
 		output_char(buffer, '{');
 		walk_binary_arith_logic_node(node, ast);
-		output_indent_to_newline(buffer,
-					 walker_depth_print * INDENT);
+		output_node_end(node, ast);
 		output_printf(buffer, "},");
 		is_expr = false;
 		*walk_subtrees = 0;
